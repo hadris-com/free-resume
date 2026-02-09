@@ -882,16 +882,20 @@ body.theme-dark .template-atelier .resume-page {
 
   /* ---------- A4 page setup ---------- */
   .resume-page {
-    width: 210mm !important;
-    min-height: 297mm !important;
+    width: 100% !important;
+    min-height: auto !important;
     margin: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     background: var(--paper-bg) !important;
     color: var(--paper-text) !important;
     overflow: visible !important;
-    page-break-after: always;
-    break-after: page;
+  }
+
+  .entry,
+  .template-aurora .timeline li {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   /* ---------- Force light Aurora banner in print ---------- */

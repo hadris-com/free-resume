@@ -38,7 +38,6 @@ const translations = {
     "actions.remove": "Remove",
     "actions.uploadRaw": "Upload raw CV",
     "actions.downloadRaw": "Download raw CV",
-    "actions.print": "Print",
     "actions.pdf": "Save PDF",
     "errors.invalidRawFile": "Could not import file. Choose a valid Free Resume JSON file.",
     "templates.berlin": "Berlin Classic",
@@ -120,7 +119,6 @@ const translations = {
     "actions.remove": "Eliminar",
     "actions.uploadRaw": "Subir CV raw",
     "actions.downloadRaw": "Descargar CV raw",
-    "actions.print": "Imprimir",
     "actions.pdf": "Guardar PDF",
     "errors.invalidRawFile": "No se pudo importar el archivo. Elige un JSON valido de Free Resume.",
     "templates.berlin": "Clasica Berlin",
@@ -202,7 +200,6 @@ const translations = {
     "actions.remove": "Entfernen",
     "actions.uploadRaw": "Raw-CV hochladen",
     "actions.downloadRaw": "Raw-CV herunterladen",
-    "actions.print": "Drucken",
     "actions.pdf": "Als PDF speichern",
     "errors.invalidRawFile": "Datei konnte nicht importiert werden. Bitte eine gultige Free Resume JSON-Datei auswahlen.",
     "templates.berlin": "Berlin Klassisch",
@@ -274,7 +271,6 @@ const state = {
 const refs = {
   templateSelect: document.getElementById("template-select"),
   themeToggle: document.getElementById("theme-toggle"),
-  printBtn: document.getElementById("print-btn"),
   downloadRawBtn: document.getElementById("download-raw-btn"),
   uploadRawBtn: document.getElementById("upload-raw-btn"),
   rawFileInput: document.getElementById("raw-file-input"),
@@ -338,25 +334,10 @@ function createResumeFilename() {
 }
 
 function openPdfDialog() {
-  const resumePage = refs.resumePreview.querySelector(".resume-page");
-  if (!resumePage) return;
-
-  const opt = {
-    margin: 0,
-    filename: `${createResumeFilename()}.pdf`,
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      onclone(clonedDoc) {
-        clonedDoc.body.classList.remove("theme-dark");
-      }
-    },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-  };
-
-  html2pdf().set(opt).from(resumePage).save();
+  const previousTitle = document.title;
+  document.title = createResumeFilename();
+  window.print();
+  document.title = previousTitle;
 }
 
 function normalizeUrl(raw) {
@@ -1360,11 +1341,6 @@ function handleClick(event) {
       renderDynamicEditors();
       renderPreview();
     }
-    return;
-  }
-
-  if (trigger.id === "print-btn") {
-    window.print();
     return;
   }
 
