@@ -366,6 +366,7 @@ const refs = {
   sampleBtn: document.getElementById("sample-btn"),
   rawFileInput: document.getElementById("raw-file-input"),
   resumePreview: document.getElementById("resume-preview"),
+  previewPanel: document.querySelector(".preview-panel"),
   experienceList: document.getElementById("experience-list"),
   educationList: document.getElementById("education-list"),
   skillsList: document.getElementById("skills-list"),
@@ -1541,12 +1542,32 @@ function renderDynamicEditors() {
   renderSkillsEditor();
 }
 
+function syncEditorPanelHeight() {
+  if (!refs.editorPanel || !refs.previewPanel) {
+    return;
+  }
+
+  const isDesktop = window.matchMedia("(min-width: 1181px)").matches;
+  if (!isDesktop) {
+    refs.editorPanel.style.height = "";
+    refs.editorPanel.style.maxHeight = "";
+    return;
+  }
+
+  const previewHeight = Math.round(refs.previewPanel.getBoundingClientRect().height);
+  if (previewHeight > 0) {
+    refs.editorPanel.style.height = `${previewHeight}px`;
+    refs.editorPanel.style.maxHeight = `${previewHeight}px`;
+  }
+}
+
 function renderPreview() {
   const templateConfig = templateCatalog[state.template] ?? templateCatalog.berlin;
   refs.resumePreview.className =
     `resume-preview ${templateConfig.baseClass}${templateConfig.variantClass ? ` ${templateConfig.variantClass}` : ""}`;
   refs.resumePreview.innerHTML = templateConfig.render();
   refs.blankPill.hidden = !isResumeBlank();
+  syncEditorPanelHeight();
   saveDraftToLocalStorage();
 }
 
@@ -1636,6 +1657,7 @@ function handleClick(event) {
 
   if (trigger.id === "add-skill-btn") {
     state.skills.push(createSkill());
+    state.skills[state.skills.length - 1].showLevel = false;
     renderDynamicEditors();
     renderPreview();
     return;
@@ -1738,7 +1760,15 @@ function init() {
   refs.rawFileInput?.addEventListener("change", handleRawFileChange);
   refs.editorPanel.addEventListener("input", handleInput);
   refs.editorPanel.addEventListener("change", handleInput);
+  window.addEventListener("resize", syncEditorPanelHeight);
   document.addEventListener("click", handleClick);
+
+  if ("ResizeObserver" in window && refs.previewPanel) {
+    const previewPanelObserver = new ResizeObserver(() => {
+      syncEditorPanelHeight();
+    });
+    previewPanelObserver.observe(refs.previewPanel);
+  }
 
   refs.privacyModal?.addEventListener("click", (event) => {
     if (event.target === refs.privacyModal) {
