@@ -59,7 +59,7 @@ const translations = {
     "empty.educationEditor": "No education entries yet.",
     "empty.skillsEditor": "No skills added yet.",
     "placeholders.name": "John Doe",
-    "placeholders.title": "Staff Infrastructure Engineer",
+    "placeholders.title": "Your Professional Title",
     "placeholders.email": "name@example.com",
     "placeholders.phone": "+49 000 000000",
     "placeholders.location": "Berlin, Germany",
@@ -1016,23 +1016,23 @@ function renderExperienceEditor() {
           <div class="repeat-item-grid">
             <label>
               <span>${t("fields.jobTitle")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="role" value="${escapeAttr(item.role)}" />
+              <input type="text" data-list="experience" data-index="${index}" data-key="role" value="${escapeAttr(item.role)}" placeholder="${t("placeholders.jobTitle")}" />
             </label>
             <label>
               <span>${t("fields.company")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="company" value="${escapeAttr(item.company)}" />
+              <input type="text" data-list="experience" data-index="${index}" data-key="company" value="${escapeAttr(item.company)}" placeholder="${t("placeholders.company")}" />
             </label>
             <label>
               <span>${t("fields.itemLocation")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" />
+              <input type="text" data-list="experience" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${t("placeholders.location")}" />
             </label>
             <label>
               <span>${t("fields.startDate")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" />
+              <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2022" />
             </label>
             <label>
               <span>${t("fields.endDate")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" />
+              <input type="text" data-list="experience" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="${t("placeholders.present")}" />
             </label>
           </div>
 
@@ -1066,23 +1066,23 @@ function renderEducationEditor() {
           <div class="repeat-item-grid">
             <label>
               <span>${t("fields.degree")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="degree" value="${escapeAttr(item.degree)}" />
+              <input type="text" data-list="education" data-index="${index}" data-key="degree" value="${escapeAttr(item.degree)}" placeholder="${t("placeholders.degree")}" />
             </label>
             <label>
               <span>${t("fields.school")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="school" value="${escapeAttr(item.school)}" />
+              <input type="text" data-list="education" data-index="${index}" data-key="school" value="${escapeAttr(item.school)}" placeholder="${t("placeholders.school")}" />
             </label>
             <label>
               <span>${t("fields.itemLocation")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" />
+              <input type="text" data-list="education" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${t("placeholders.location")}" />
             </label>
             <label>
               <span>${t("fields.startDate")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" />
+              <input type="text" data-list="education" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2018" />
             </label>
             <label>
               <span>${t("fields.endDate")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" />
+              <input type="text" data-list="education" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="2022" />
             </label>
           </div>
         </article>
@@ -1111,7 +1111,7 @@ function renderSkillsEditor() {
           <div class="repeat-item-grid skill-editor-grid">
             <label>
               <span>${t("fields.skillName")}</span>
-              <input type="text" data-list="skills" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" />
+              <input type="text" data-list="skills" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" placeholder="${t("placeholders.skill")}" />
             </label>
             <label>
               <span>${t("fields.skillLevel")}</span>
