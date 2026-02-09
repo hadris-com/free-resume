@@ -511,7 +511,7 @@ function getSkillItems() {
     .map((item) => ({
       name: String(item.name ?? "").trim(),
       level: normalizeSkillLevel(item.level),
-      showLevel: toBoolean(item.showLevel, true)
+      showLevel: toBoolean(item.showLevel, false)
     }))
     .filter((item) => hasText(item.name));
 }
@@ -905,7 +905,7 @@ const templateCatalog = {
 
 const rawExportConfig = {
   app: "free-resume",
-  schemaVersion: 1
+  schemaVersion: 2
 };
 
 const localDraftConfig = {
@@ -975,7 +975,7 @@ function sanitizeSkillItem(item) {
   return {
     name: toInputText(source?.name),
     level: normalizeSkillLevel(source?.level),
-    showLevel: toBoolean(source?.showLevel, true)
+    showLevel: toBoolean(source?.showLevel, false)
   };
 }
 
@@ -1046,6 +1046,20 @@ function buildRawResumePayload() {
   };
 }
 
+function resetSkillLevelVisibility(resumeState) {
+  if (!resumeState || !Array.isArray(resumeState.skills)) {
+    return resumeState;
+  }
+
+  return {
+    ...resumeState,
+    skills: resumeState.skills.map((item) => ({
+      ...item,
+      showLevel: false
+    }))
+  };
+}
+
 function loadDraftFromLocalStorage() {
   try {
     const rawDraft = window.localStorage.getItem(localDraftConfig.key);
@@ -1055,7 +1069,18 @@ function loadDraftFromLocalStorage() {
     }
 
     const parsedDraft = JSON.parse(rawDraft);
-    return parseRawResumePayload(parsedDraft);
+    const parsedState = parseRawResumePayload(parsedDraft);
+
+    if (!parsedState) {
+      return null;
+    }
+
+    const storedSchemaVersion = Number(parsedDraft?.schemaVersion);
+    if (!Number.isFinite(storedSchemaVersion) || storedSchemaVersion < rawExportConfig.schemaVersion) {
+      return resetSkillLevelVisibility(parsedState);
+    }
+
+    return parsedState;
   } catch (error) {
     console.warn("Could not load draft from localStorage", error);
     return null;
@@ -1206,14 +1231,14 @@ function buildSampleResumeState() {
       }
     ],
     skills: [
-      { name: "Product Strategy", level: "expert", showLevel: true },
-      { name: "UX Research", level: "advanced", showLevel: true },
-      { name: "Interaction Design", level: "expert", showLevel: true },
-      { name: "Design Systems", level: "advanced", showLevel: true },
-      { name: "Figma", level: "expert", showLevel: true },
-      { name: "Prototyping", level: "advanced", showLevel: true },
-      { name: "Accessibility", level: "advanced", showLevel: true },
-      { name: "HTML/CSS", level: "intermediate", showLevel: true }
+      { name: "Product Strategy", level: "expert", showLevel: false },
+      { name: "UX Research", level: "advanced", showLevel: false },
+      { name: "Interaction Design", level: "expert", showLevel: false },
+      { name: "Design Systems", level: "advanced", showLevel: false },
+      { name: "Figma", level: "expert", showLevel: false },
+      { name: "Prototyping", level: "advanced", showLevel: false },
+      { name: "Accessibility", level: "advanced", showLevel: false },
+      { name: "HTML/CSS", level: "intermediate", showLevel: false }
     ]
   });
 }
@@ -1312,7 +1337,7 @@ function createSkill() {
   return {
     name: "",
     level: "intermediate",
-    showLevel: true
+    showLevel: false
   };
 }
 
@@ -1449,10 +1474,10 @@ function renderSkillsEditor() {
           </div>
           <button
             type="button"
-            class="skill-level-toggle${toBoolean(item.showLevel, true) ? " is-active" : ""}"
+            class="skill-level-toggle${toBoolean(item.showLevel, false) ? " is-active" : ""}"
             data-action="toggle-skill-level"
             data-index="${index}"
-            aria-pressed="${toBoolean(item.showLevel, true)}"
+            aria-pressed="${toBoolean(item.showLevel, false)}"
           >
             ${t("fields.showSkillLevel")}
           </button>
@@ -1672,7 +1697,7 @@ function handleClick(event) {
   if (trigger.dataset.action === "toggle-skill-level") {
     const index = Number(trigger.dataset.index);
     if (!Number.isNaN(index) && state.skills[index]) {
-      state.skills[index].showLevel = !toBoolean(state.skills[index].showLevel, true);
+      state.skills[index].showLevel = !toBoolean(state.skills[index].showLevel, false);
       renderDynamicEditors();
       renderPreview();
     }

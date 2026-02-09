@@ -10,7 +10,6 @@ A modern, template-driven resume web application with:
 
 ## Run locally
 
-Open `/Users/waltervides/dev/free-resume/index.html` in a browser.
 
 ## Deploy with GitHub Actions (GitHub Pages)
 
