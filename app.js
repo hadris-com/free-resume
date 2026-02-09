@@ -78,7 +78,21 @@ const translations = {
     "levels.beginner": "Beginner",
     "levels.intermediate": "Intermediate",
     "levels.advanced": "Advanced",
-    "levels.expert": "Expert"
+    "levels.expert": "Expert",
+    "privacy.title": "Privacy Policy",
+    "privacy.intro": "Free Resume is a static, client-side application. Your privacy is our priority.",
+    "privacy.noCollection": "No personal data collected",
+    "privacy.noCollectionDetail": "This application does not collect, transmit, or process any personal data. All resume content you enter stays entirely within your browser.",
+    "privacy.localStorage": "Local storage only",
+    "privacy.localStorageDetail": "Your resume draft is saved to your browser's localStorage so you can continue editing later. This data never leaves your device. You can clear it at any time through your browser settings.",
+    "privacy.hosting": "Hosting",
+    "privacy.hostingDetail": "This site is hosted on GitHub Pages. GitHub may collect technical information such as your IP address in server logs. See GitHub's privacy statement for details.",
+    "privacy.noCookies": "No cookies",
+    "privacy.noCookiesDetail": "This application does not set or read any cookies.",
+    "privacy.noThirdParty": "No third-party services",
+    "privacy.noThirdPartyDetail": "All fonts and assets are self-hosted. No external requests are made when you use this application.",
+    "privacy.footer": "Privacy",
+    "privacy.close": "Close"
   },
   es: {
     "brand.title": "Free Resume",
@@ -159,7 +173,21 @@ const translations = {
     "levels.beginner": "Principiante",
     "levels.intermediate": "Intermedio",
     "levels.advanced": "Avanzado",
-    "levels.expert": "Experto"
+    "levels.expert": "Experto",
+    "privacy.title": "Politica de privacidad",
+    "privacy.intro": "Free Resume es una aplicacion estatica que se ejecuta en el navegador. Tu privacidad es nuestra prioridad.",
+    "privacy.noCollection": "No se recopilan datos personales",
+    "privacy.noCollectionDetail": "Esta aplicacion no recopila, transmite ni procesa datos personales. Todo el contenido de tu curriculum permanece en tu navegador.",
+    "privacy.localStorage": "Solo almacenamiento local",
+    "privacy.localStorageDetail": "Tu borrador se guarda en el localStorage del navegador para que puedas continuar editando. Estos datos nunca salen de tu dispositivo. Puedes eliminarlos desde la configuracion de tu navegador.",
+    "privacy.hosting": "Alojamiento",
+    "privacy.hostingDetail": "Este sitio esta alojado en GitHub Pages. GitHub puede registrar informacion tecnica como tu direccion IP. Consulta la declaracion de privacidad de GitHub para mas detalles.",
+    "privacy.noCookies": "Sin cookies",
+    "privacy.noCookiesDetail": "Esta aplicacion no utiliza ni lee cookies.",
+    "privacy.noThirdParty": "Sin servicios de terceros",
+    "privacy.noThirdPartyDetail": "Todas las fuentes y recursos se alojan localmente. No se realizan solicitudes externas al usar esta aplicacion.",
+    "privacy.footer": "Privacidad",
+    "privacy.close": "Cerrar"
   },
   de: {
     "brand.title": "Free Resume",
@@ -240,7 +268,21 @@ const translations = {
     "levels.beginner": "Grundlagen",
     "levels.intermediate": "Fortgeschritten",
     "levels.advanced": "Sehr gut",
-    "levels.expert": "Experte"
+    "levels.expert": "Experte",
+    "privacy.title": "Datenschutzerklarung",
+    "privacy.intro": "Free Resume ist eine statische, clientseitige Anwendung. Dein Datenschutz hat fur uns Prioritat.",
+    "privacy.noCollection": "Keine personenbezogenen Daten erhoben",
+    "privacy.noCollectionDetail": "Diese Anwendung erhebt, ubertragt oder verarbeitet keine personenbezogenen Daten. Alle Lebenslauf-Inhalte bleiben vollstandig in deinem Browser.",
+    "privacy.localStorage": "Nur lokale Speicherung",
+    "privacy.localStorageDetail": "Dein Entwurf wird im localStorage des Browsers gespeichert, damit du spater weiterarbeiten kannst. Diese Daten verlassen dein Gerat nie. Du kannst sie jederzeit uber die Browser-Einstellungen loschen.",
+    "privacy.hosting": "Hosting",
+    "privacy.hostingDetail": "Diese Seite wird auf GitHub Pages gehostet. GitHub kann technische Informationen wie deine IP-Adresse in Server-Logs erfassen. Siehe GitHubs Datenschutzerklarung fur Details.",
+    "privacy.noCookies": "Keine Cookies",
+    "privacy.noCookiesDetail": "Diese Anwendung setzt und liest keine Cookies.",
+    "privacy.noThirdParty": "Keine Drittanbieterdienste",
+    "privacy.noThirdPartyDetail": "Alle Schriftarten und Ressourcen sind lokal gehostet. Bei der Nutzung dieser Anwendung werden keine externen Anfragen gestellt.",
+    "privacy.footer": "Datenschutz",
+    "privacy.close": "Schliessen"
   }
 };
 
@@ -279,7 +321,8 @@ const refs = {
   educationList: document.getElementById("education-list"),
   skillsList: document.getElementById("skills-list"),
   blankPill: document.getElementById("blank-pill"),
-  editorPanel: document.querySelector(".editor-panel")
+  editorPanel: document.querySelector(".editor-panel"),
+  privacyModal: document.getElementById("privacy-modal")
 };
 
 function tUI(key) {
@@ -1346,6 +1389,18 @@ function handleClick(event) {
 
   if (trigger.id === "pdf-btn") {
     openPdfDialog();
+    return;
+  }
+
+  if (trigger.id === "privacy-btn") {
+    refs.privacyModal?.showModal();
+    return;
+  }
+
+  if (trigger.id === "privacy-close-btn") {
+    refs.privacyModal?.close();
+    try { localStorage.setItem("free-resume:privacy-ack", "1"); } catch {}
+    return;
   }
 }
 
@@ -1366,6 +1421,17 @@ function init() {
   refs.editorPanel.addEventListener("input", handleInput);
   refs.editorPanel.addEventListener("change", handleInput);
   document.addEventListener("click", handleClick);
+
+  refs.privacyModal?.addEventListener("click", (event) => {
+    if (event.target === refs.privacyModal) {
+      refs.privacyModal.close();
+      try { localStorage.setItem("free-resume:privacy-ack", "1"); } catch {}
+    }
+  });
+
+  if (!localStorage.getItem("free-resume:privacy-ack")) {
+    refs.privacyModal?.showModal();
+  }
 }
 
 init();

@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Free Resume</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='6' y='2' width='20' height='28' rx='2' fill='%23334155'/><rect x='10' y='7' width='12' height='2' rx='1' fill='%23e2e8f0'/><rect x='10' y='12' width='10' height='1.5' rx='.75' fill='%2394a3b8'/><rect x='10' y='16' width='12' height='1.5' rx='.75' fill='%2394a3b8'/><rect x='10' y='20' width='8' height='1.5' rx='.75' fill='%2394a3b8'/></svg>" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="./fonts.css" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -157,7 +152,48 @@
           <div id="resume-preview" class="resume-preview template-berlin"></div>
         </section>
       </main>
+
+      <footer class="app-footer">
+        <button type="button" class="privacy-link" id="privacy-btn" data-i18n="privacy.footer">Privacy</button>
+      </footer>
     </div>
+
+    <dialog id="privacy-modal" class="privacy-modal" aria-labelledby="privacy-modal-title">
+      <div class="privacy-modal-content">
+        <header class="privacy-modal-header">
+          <h2 id="privacy-modal-title" data-i18n="privacy.title">Privacy Policy</h2>
+          <button type="button" class="privacy-modal-close" id="privacy-close-btn" data-i18n="privacy.close">Close</button>
+        </header>
+        <div class="privacy-modal-body">
+          <p class="privacy-intro" data-i18n="privacy.intro">Free Resume is a static, client-side application. Your privacy is our priority.</p>
+
+          <section class="privacy-section">
+            <h3 data-i18n="privacy.noCollection">No personal data collected</h3>
+            <p data-i18n="privacy.noCollectionDetail">This application does not collect, transmit, or process any personal data. All resume content you enter stays entirely within your browser.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3 data-i18n="privacy.localStorage">Local storage only</h3>
+            <p data-i18n="privacy.localStorageDetail">Your resume draft is saved to your browser's localStorage so you can continue editing later. This data never leaves your device. You can clear it at any time through your browser settings.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3 data-i18n="privacy.hosting">Hosting</h3>
+            <p data-i18n="privacy.hostingDetail">This site is hosted on GitHub Pages. GitHub may collect technical information such as your IP address in server logs. See GitHub's privacy statement for details.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3 data-i18n="privacy.noCookies">No cookies</h3>
+            <p data-i18n="privacy.noCookiesDetail">This application does not set or read any cookies.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3 data-i18n="privacy.noThirdParty">No third-party services</h3>
+            <p data-i18n="privacy.noThirdPartyDetail">All fonts and assets are self-hosted. No external requests are made when you use this application.</p>
+          </section>
+        </div>
+      </div>
+    </dialog>
 
     <script src="./app.js"></script>
   </body>
