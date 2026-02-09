@@ -1138,22 +1138,22 @@ function buildSampleResumeState() {
     theme: state.theme,
     showSkills: true,
     profile: {
-      name: "Alex Morgan",
+      name: "Lena Hoffmann",
       title: "Senior Product Designer",
-      email: "alex.morgan@example.com",
-      phone: "+1 415 555 0182",
-      location: "San Francisco, CA",
-      website: "alexmorgan.design",
-      linkedin: "linkedin.com/in/alexmorgan",
-      github: "github.com/alexmorgan"
+      email: "lena.hoffmann@example.com",
+      phone: "+49 30 1234 5678",
+      location: "Berlin, Germany",
+      website: "lenahoffmann.design",
+      linkedin: "linkedin.com/in/lenahoffmann",
+      github: "github.com/lenahoffmann"
     },
     summary:
       "Product designer with 8+ years building end-to-end digital products for SaaS and consumer platforms. I turn research into clear interaction systems, partner closely with engineering, and ship accessible interfaces that improve adoption and retention.",
     experience: [
       {
         role: "Senior Product Designer",
-        company: "Northstar Cloud",
-        location: "San Francisco, CA",
+        company: "Nordlicht Cloud",
+        location: "Berlin, Germany",
         start: "2022",
         end: "Present",
         bullets:
@@ -1162,7 +1162,7 @@ function buildSampleResumeState() {
       {
         role: "Product Designer",
         company: "Blueframe Labs",
-        location: "Remote",
+        location: "Berlin, Germany",
         start: "2018",
         end: "2022",
         bullets:
@@ -1171,7 +1171,7 @@ function buildSampleResumeState() {
       {
         role: "UX Designer",
         company: "Helio Commerce",
-        location: "Los Angeles, CA",
+        location: "Berlin, Germany",
         start: "2016",
         end: "2018",
         bullets:
@@ -1180,7 +1180,7 @@ function buildSampleResumeState() {
       {
         role: "Visual Designer",
         company: "Brightside Agency",
-        location: "Seattle, WA",
+        location: "Berlin, Germany",
         start: "2014",
         end: "2016",
         bullets:
@@ -1188,8 +1188,8 @@ function buildSampleResumeState() {
       },
       {
         role: "Design Intern",
-        company: "Studio North",
-        location: "Seattle, WA",
+        company: "Studio Mitte",
+        location: "Berlin, Germany",
         start: "2013",
         end: "2014",
         bullets:
@@ -1199,8 +1199,8 @@ function buildSampleResumeState() {
     education: [
       {
         degree: "B.A. in Interaction Design",
-        school: "University of Washington",
-        location: "Seattle, WA",
+        school: "Berlin University of the Arts",
+        location: "Berlin, Germany",
         start: "2012",
         end: "2016"
       }
