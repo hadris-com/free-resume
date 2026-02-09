@@ -25,8 +25,8 @@
 body.theme-dark {
   color-scheme: dark;
   --bg-0: #0d111c;
-  --bg-1: #132a2f;
-  --bg-2: #2a1e1a;
+  --bg-1: #0f3d45;
+  --bg-2: #3a2518;
   --panel-bg: rgba(13, 19, 30, 0.78);
   --panel-border: rgba(203, 213, 225, 0.12);
   --panel-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
@@ -75,6 +75,10 @@ body.theme-dark {
   opacity: 0.06;
   background-image: radial-gradient(circle, #000 1px, transparent 1px);
   background-size: 4px 4px;
+}
+
+body.theme-dark .bg-noise {
+  background-image: radial-gradient(circle, #fff 1px, transparent 1px);
 }
 
 .app-shell {
@@ -816,28 +820,38 @@ body.theme-dark .template-atelier .resume-page {
 }
 
 @media print {
+  /* ---------- Force light palette regardless of theme ---------- */
+  :root,
+  body,
+  body.theme-dark {
+    --paper-bg: #fdfdfc !important;
+    --paper-text: #181919 !important;
+    --paper-muted: #5d6572 !important;
+    --paper-divider: rgba(16, 24, 40, 0.18) !important;
+    color-scheme: light !important;
+  }
+
   html,
   body {
     margin: 0 !important;
     padding: 0 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
   }
 
-  body {
+  body,
+  body.theme-dark {
     background: transparent !important;
   }
 
-  .app-shell {
-    width: 100% !important;
-    margin: 0 !important;
+  /* ---------- Force exact color printing on resume ---------- */
+  .resume-page,
+  .resume-page *,
+  .resume-page *::before,
+  .resume-page *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  .workspace {
-    margin: 0 !important;
-    gap: 0 !important;
-  }
-
+  /* ---------- Hide app chrome ---------- */
   .bg-noise,
   .topbar,
   .editor-panel,
@@ -845,23 +859,61 @@ body.theme-dark .template-atelier .resume-page {
     display: none !important;
   }
 
+  .app-shell {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
   .workspace,
   .preview-panel,
   .resume-preview {
     display: block !important;
+    margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
     background: transparent !important;
     box-shadow: none !important;
+    border-radius: 0 !important;
   }
 
+  .workspace {
+    gap: 0 !important;
+  }
+
+  /* ---------- A4 page setup ---------- */
   .resume-page {
     width: 210mm !important;
     min-height: 297mm !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
+    background: var(--paper-bg) !important;
+    color: var(--paper-text) !important;
+    overflow: visible !important;
     page-break-after: always;
     break-after: page;
+  }
+
+  /* ---------- Force light Aurora banner in print ---------- */
+  .template-aurora .aurora-banner {
+    background:
+      linear-gradient(120deg, rgba(14, 99, 122, 0.95), rgba(13, 61, 101, 0.92)),
+      radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.18), transparent 45%) !important;
+    color: #f8fbff !important;
+  }
+
+  .template-aurora .aurora-role {
+    color: rgba(248, 251, 255, 0.86) !important;
+  }
+
+  /* ---------- Force light Atelier background in print ---------- */
+  .template-atelier .resume-page {
+    background:
+      linear-gradient(160deg, rgba(252, 252, 250, 1), rgba(250, 248, 244, 1)) !important;
+  }
+
+  /* ---------- Hide empty-state placeholders ---------- */
+  .empty-copy {
+    display: none !important;
   }
 }

@@ -338,10 +338,25 @@ function createResumeFilename() {
 }
 
 function openPdfDialog() {
-  const previousTitle = document.title;
-  document.title = createResumeFilename();
-  window.print();
-  document.title = previousTitle;
+  const resumePage = refs.resumePreview.querySelector(".resume-page");
+  if (!resumePage) return;
+
+  const opt = {
+    margin: 0,
+    filename: `${createResumeFilename()}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      onclone(clonedDoc) {
+        clonedDoc.body.classList.remove("theme-dark");
+      }
+    },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+  };
+
+  html2pdf().set(opt).from(resumePage).save();
 }
 
 function normalizeUrl(raw) {
