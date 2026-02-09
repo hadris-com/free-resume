@@ -43,6 +43,19 @@ const translations = {
     "templates.berlin": "Berlin Classic",
     "templates.aurora": "Aurora Timeline",
     "templates.atelier": "Atelier Grid",
+    "templates.noir": "Noir Minimal",
+    "templates.fjord": "Fjord Split",
+    "templates.summit": "Summit Modern",
+    "templates.solstice": "Solstice Banner",
+    "templates.bastion": "Bastion Ledger",
+    "templates.metro": "Metro Frame",
+    "templates.opal": "Opal Soft",
+    "templates.slate": "Slate Mono",
+    "templates.ember": "Ember Horizon",
+    "templates.orbit": "Orbit Matrix",
+    "templates.cosmos": "Cosmos Research",
+    "templates.kernel": "Kernel Systems",
+    "templates.glass": "Glass Prism",
     "preview.live": "Live preview",
     "preview.blank": "Starts blank",
     "sections.summary": "Profile",
@@ -138,6 +151,19 @@ const translations = {
     "templates.berlin": "Clasica Berlin",
     "templates.aurora": "Linea de tiempo Aurora",
     "templates.atelier": "Cuadricula Atelier",
+    "templates.noir": "Noir Minimal",
+    "templates.fjord": "Division Fjord",
+    "templates.summit": "Summit Moderno",
+    "templates.solstice": "Banner Solstice",
+    "templates.bastion": "Registro Bastion",
+    "templates.metro": "Marco Metro",
+    "templates.opal": "Opalo Suave",
+    "templates.slate": "Slate Mono",
+    "templates.ember": "Horizonte Ember",
+    "templates.orbit": "Matriz Orbit",
+    "templates.cosmos": "Investigacion Cosmos",
+    "templates.kernel": "Sistemas Kernel",
+    "templates.glass": "Prisma de Cristal",
     "preview.live": "Vista previa",
     "preview.blank": "Comienza en blanco",
     "sections.summary": "Perfil",
@@ -233,6 +259,19 @@ const translations = {
     "templates.berlin": "Berlin Klassisch",
     "templates.aurora": "Aurora Zeitleiste",
     "templates.atelier": "Atelier Raster",
+    "templates.noir": "Noir Minimal",
+    "templates.fjord": "Fjord Teilung",
+    "templates.summit": "Summit Modern",
+    "templates.solstice": "Solstice Banner",
+    "templates.bastion": "Bastion Ledger",
+    "templates.metro": "Metro Rahmen",
+    "templates.opal": "Opal Sanft",
+    "templates.slate": "Slate Mono",
+    "templates.ember": "Ember Horizont",
+    "templates.orbit": "Orbit Matrix",
+    "templates.cosmos": "Kosmos Forschung",
+    "templates.kernel": "Kernel Systeme",
+    "templates.glass": "Glas Prisma",
     "preview.live": "Live-Vorschau",
     "preview.blank": "Startet leer",
     "sections.summary": "Profil",
@@ -742,10 +781,84 @@ function renderAtelierTemplate() {
   `;
 }
 
-const templates = {
-  berlin: renderBerlinTemplate,
-  aurora: renderAuroraTemplate,
-  atelier: renderAtelierTemplate
+const templateCatalog = {
+  berlin: {
+    render: renderBerlinTemplate,
+    baseClass: "template-berlin"
+  },
+  aurora: {
+    render: renderAuroraTemplate,
+    baseClass: "template-aurora"
+  },
+  atelier: {
+    render: renderAtelierTemplate,
+    baseClass: "template-atelier"
+  },
+  noir: {
+    render: renderBerlinTemplate,
+    baseClass: "template-berlin",
+    variantClass: "variant-noir"
+  },
+  fjord: {
+    render: renderBerlinTemplate,
+    baseClass: "template-berlin",
+    variantClass: "variant-fjord"
+  },
+  summit: {
+    render: renderBerlinTemplate,
+    baseClass: "template-berlin",
+    variantClass: "variant-summit"
+  },
+  solstice: {
+    render: renderAuroraTemplate,
+    baseClass: "template-aurora",
+    variantClass: "variant-solstice"
+  },
+  bastion: {
+    render: renderAuroraTemplate,
+    baseClass: "template-aurora",
+    variantClass: "variant-bastion"
+  },
+  metro: {
+    render: renderAtelierTemplate,
+    baseClass: "template-atelier",
+    variantClass: "variant-metro"
+  },
+  opal: {
+    render: renderAtelierTemplate,
+    baseClass: "template-atelier",
+    variantClass: "variant-opal"
+  },
+  slate: {
+    render: renderBerlinTemplate,
+    baseClass: "template-berlin",
+    variantClass: "variant-slate"
+  },
+  ember: {
+    render: renderAuroraTemplate,
+    baseClass: "template-aurora",
+    variantClass: "variant-ember"
+  },
+  orbit: {
+    render: renderAtelierTemplate,
+    baseClass: "template-atelier",
+    variantClass: "variant-orbit"
+  },
+  cosmos: {
+    render: renderAuroraTemplate,
+    baseClass: "template-aurora",
+    variantClass: "variant-cosmos"
+  },
+  kernel: {
+    render: renderBerlinTemplate,
+    baseClass: "template-berlin",
+    variantClass: "variant-kernel"
+  },
+  glass: {
+    render: renderAtelierTemplate,
+    baseClass: "template-atelier",
+    variantClass: "variant-glass"
+  }
 };
 
 const rawExportConfig = {
@@ -835,7 +948,7 @@ function sanitizeResumeState(rawState) {
     lang: uiLang,
     uiLang,
     cvLang,
-    template: typeof source.template === "string" && templates[source.template] ? source.template : "berlin",
+    template: typeof source.template === "string" && templateCatalog[source.template] ? source.template : "berlin",
     theme: source.theme === "dark" ? "dark" : "light",
     showSkills: Boolean(source.showSkills),
     profile: {
@@ -1240,8 +1353,10 @@ function renderDynamicEditors() {
 }
 
 function renderPreview() {
-  refs.resumePreview.className = `resume-preview template-${state.template}`;
-  refs.resumePreview.innerHTML = templates[state.template]();
+  const templateConfig = templateCatalog[state.template] ?? templateCatalog.berlin;
+  refs.resumePreview.className =
+    `resume-preview ${templateConfig.baseClass}${templateConfig.variantClass ? ` ${templateConfig.variantClass}` : ""}`;
+  refs.resumePreview.innerHTML = templateConfig.render();
   refs.blankPill.hidden = !isResumeBlank();
   saveDraftToLocalStorage();
 }

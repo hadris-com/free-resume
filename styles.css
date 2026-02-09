@@ -753,6 +753,400 @@ body.theme-dark .template-atelier .resume-page {
   margin-top: 0.9rem;
 }
 
+/* Additional Templates */
+.resume-preview.variant-noir {
+  --paper-bg: #15181d;
+  --paper-text: #edf2f7;
+  --paper-muted: #c4ced8;
+  --paper-divider: rgba(232, 237, 244, 0.24);
+}
+
+.resume-preview.variant-noir .resume-page {
+  background: linear-gradient(170deg, #1b2028, #10151b);
+}
+
+.resume-preview.variant-noir .section-label {
+  color: #d9e2ec;
+  letter-spacing: 0.18em;
+}
+
+.resume-preview.variant-noir .skill-chip {
+  background: rgba(245, 248, 255, 0.08);
+}
+
+.resume-preview.variant-fjord {
+  --paper-bg: #f5f9fc;
+  --paper-text: #102a3a;
+  --paper-muted: #3f5c70;
+  --paper-divider: rgba(16, 58, 84, 0.2);
+}
+
+.resume-preview.variant-fjord .resume-page {
+  background: linear-gradient(180deg, #f9fcff, #edf4f9);
+}
+
+.resume-preview.variant-fjord .resume-header {
+  border-bottom-width: 2px;
+}
+
+.resume-preview.variant-fjord aside {
+  border-left: 1px solid var(--paper-divider);
+  padding-left: 1rem;
+}
+
+.resume-preview.variant-summit .resume-name {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+}
+
+.resume-preview.variant-summit .section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+}
+
+.resume-preview.variant-solstice .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(178, 56, 87, 0.95), rgba(240, 130, 68, 0.92)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.24), transparent 45%);
+}
+
+body.theme-dark .resume-preview.variant-solstice .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(190, 78, 108, 0.86), rgba(198, 108, 63, 0.86)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
+}
+
+.resume-preview.variant-solstice .timeline li::before {
+  background: #ffd07a;
+}
+
+.resume-preview.variant-solstice .aurora-side {
+  background: rgba(242, 145, 78, 0.06);
+}
+
+.resume-preview.variant-bastion .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(70, 78, 92, 0.95), rgba(38, 44, 53, 0.92)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
+}
+
+body.theme-dark .resume-preview.variant-bastion .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(94, 104, 120, 0.86), rgba(58, 65, 77, 0.88)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.12), transparent 45%);
+}
+
+.resume-preview.variant-bastion .timeline::before {
+  left: 0.24rem;
+  width: 0;
+  border-left: 1px dashed var(--paper-divider);
+  background: transparent;
+}
+
+.resume-preview.variant-bastion .timeline li::before {
+  background: #8d99a8;
+  box-shadow: 0 0 0 3px rgba(141, 153, 168, 0.2);
+}
+
+.resume-preview.variant-metro .resume-page {
+  background:
+    linear-gradient(160deg, rgba(248, 250, 253, 1), rgba(240, 245, 251, 1));
+}
+
+.resume-preview.variant-metro .atelier-head,
+.resume-preview.variant-metro .card {
+  border-radius: 0;
+  border-width: 2px;
+}
+
+.resume-preview.variant-metro .atelier-name {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.resume-preview.variant-opal {
+  --paper-bg: #fbfdff;
+  --paper-text: #1f2b39;
+  --paper-muted: #5b6774;
+  --paper-divider: rgba(65, 86, 112, 0.2);
+}
+
+.resume-preview.variant-opal .resume-page {
+  background: linear-gradient(160deg, #ffffff, #f2f7fc);
+}
+
+body.theme-dark .resume-preview.variant-opal .resume-page {
+  background: linear-gradient(160deg, #121828, #18253a);
+}
+
+.resume-preview.variant-opal .atelier-head {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.66);
+  box-shadow: 0 12px 24px rgba(35, 56, 84, 0.08);
+}
+
+body.theme-dark .resume-preview.variant-opal .atelier-head {
+  background: rgba(17, 26, 40, 0.72);
+}
+
+.resume-preview.variant-opal .card {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+body.theme-dark .resume-preview.variant-opal .card {
+  background: rgba(15, 22, 34, 0.62);
+}
+
+.resume-preview.variant-slate {
+  --paper-bg: #f6f7f8;
+  --paper-text: #232a30;
+  --paper-muted: #57616b;
+  --paper-divider: rgba(35, 42, 48, 0.2);
+}
+
+.resume-preview.variant-slate .resume-page {
+  background: linear-gradient(180deg, #fbfcfd, #eef1f4);
+}
+
+.resume-preview.variant-slate .resume-name {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.resume-preview.variant-slate .skill-chip-level {
+  letter-spacing: 0.09em;
+}
+
+.resume-preview.variant-ember .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(160, 46, 33, 0.95), rgba(232, 117, 57, 0.92)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.24), transparent 45%);
+}
+
+body.theme-dark .resume-preview.variant-ember .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(170, 66, 53, 0.88), rgba(182, 95, 55, 0.88)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
+}
+
+.resume-preview.variant-ember .timeline li::before {
+  background: #ffb065;
+}
+
+.resume-preview.variant-ember .aurora-side {
+  background: rgba(214, 115, 58, 0.06);
+}
+
+.resume-preview.variant-orbit .resume-page {
+  background:
+    linear-gradient(160deg, rgba(246, 248, 253, 1), rgba(236, 242, 252, 1));
+}
+
+.resume-preview.variant-orbit .atelier-head {
+  border-radius: 12px;
+  border-width: 2px;
+}
+
+.resume-preview.variant-orbit .card {
+  border-radius: 10px;
+  border-style: dashed;
+}
+
+.resume-preview.variant-orbit .atelier-name {
+  letter-spacing: 0.04em;
+}
+
+.resume-preview.variant-cosmos {
+  --paper-bg: #0d1320;
+  --paper-text: #e7eefc;
+  --paper-muted: #b4c2de;
+  --paper-divider: rgba(160, 188, 255, 0.28);
+}
+
+.resume-preview.variant-cosmos .resume-page {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(153, 183, 255, 0.2), transparent 28%),
+    radial-gradient(circle at 83% 12%, rgba(129, 248, 245, 0.16), transparent 24%),
+    radial-gradient(circle at 72% 75%, rgba(145, 131, 250, 0.15), transparent 30%),
+    linear-gradient(160deg, #0f1728, #0a101c);
+}
+
+.resume-preview.variant-cosmos .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(22, 58, 110, 0.95), rgba(59, 35, 126, 0.92)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.22), transparent 45%);
+}
+
+.resume-preview.variant-cosmos .timeline li::before {
+  background: #84f0ff;
+}
+
+.resume-preview.variant-cosmos .section-label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.16em;
+}
+
+.resume-preview.variant-kernel {
+  --paper-bg: #f6f8fb;
+  --paper-text: #19232f;
+  --paper-muted: #52616f;
+  --paper-divider: rgba(24, 47, 69, 0.2);
+}
+
+.resume-preview.variant-kernel .resume-page {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 22px,
+      rgba(18, 46, 73, 0.045) 22px,
+      rgba(18, 46, 73, 0.045) 23px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 22px,
+      rgba(18, 46, 73, 0.045) 22px,
+      rgba(18, 46, 73, 0.045) 23px
+    ),
+    linear-gradient(180deg, #fbfcfd, #eef3f8);
+}
+
+.resume-preview.variant-kernel .resume-name,
+.resume-preview.variant-kernel .section-label {
+  font-family: var(--font-mono);
+}
+
+.resume-preview.variant-kernel .resume-name {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.resume-preview.variant-kernel .section-label {
+  letter-spacing: 0.14em;
+}
+
+.resume-preview.variant-kernel .details-list,
+.resume-preview.variant-kernel .links-list {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.resume-preview.variant-glass {
+  --paper-bg: rgba(242, 249, 255, 0.35);
+  --paper-text: #1c2737;
+  --paper-muted: #4f627c;
+  --paper-divider: rgba(110, 140, 172, 0.32);
+  background:
+    radial-gradient(circle at 12% 16%, rgba(191, 236, 255, 0.45), transparent 34%),
+    radial-gradient(circle at 86% 18%, rgba(221, 229, 255, 0.38), transparent 30%),
+    linear-gradient(145deg, rgba(251, 253, 255, 0.66), rgba(222, 236, 252, 0.5));
+}
+
+.resume-preview.variant-glass .resume-page {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.52), rgba(240, 248, 255, 0.22)),
+    radial-gradient(circle at 14% 9%, rgba(255, 255, 255, 0.72), transparent 34%),
+    radial-gradient(circle at 90% 86%, rgba(144, 188, 255, 0.3), transparent 44%),
+    rgba(225, 238, 255, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  box-shadow:
+    0 24px 45px rgba(28, 45, 74, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  position: relative;
+  overflow: hidden;
+}
+
+.resume-preview.variant-glass .resume-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(110deg, rgba(255, 255, 255, 0.06) 8%, rgba(255, 255, 255, 0.5) 34%, rgba(255, 255, 255, 0.08) 68%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 40%);
+  pointer-events: none;
+}
+
+.resume-preview.variant-glass .resume-page::after {
+  content: "";
+  position: absolute;
+  top: -36%;
+  left: -6%;
+  width: 68%;
+  height: 68%;
+  background: linear-gradient(190deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0));
+  transform: rotate(-16deg);
+  pointer-events: none;
+}
+
+.resume-preview.variant-glass .atelier-head,
+.resume-preview.variant-glass .card {
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    inset 0 -14px 24px rgba(184, 210, 238, 0.24),
+    0 12px 24px rgba(36, 67, 103, 0.15);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+}
+
+.resume-preview.variant-glass .atelier-head {
+  border-radius: 18px;
+}
+
+.resume-preview.variant-glass .card {
+  border-radius: 16px;
+}
+
+.resume-preview.variant-glass .section-label {
+  color: rgba(28, 45, 67, 0.88);
+  letter-spacing: 0.14em;
+}
+
+body.theme-dark .resume-preview.variant-glass .section-label {
+  color: rgba(223, 236, 255, 0.88);
+}
+
+body.theme-dark .resume-preview.variant-glass {
+  --paper-bg: rgba(19, 31, 48, 0.38);
+  --paper-text: #e8f1ff;
+  --paper-muted: #b8c9df;
+  --paper-divider: rgba(166, 193, 223, 0.34);
+  background:
+    radial-gradient(circle at 14% 12%, rgba(100, 146, 224, 0.34), transparent 34%),
+    radial-gradient(circle at 83% 18%, rgba(127, 186, 228, 0.24), transparent 30%),
+    linear-gradient(145deg, rgba(21, 34, 51, 0.72), rgba(32, 46, 66, 0.58));
+}
+
+body.theme-dark .resume-preview.variant-glass .resume-page {
+  background:
+    linear-gradient(145deg, rgba(29, 43, 64, 0.48), rgba(19, 32, 49, 0.3)),
+    radial-gradient(circle at 14% 9%, rgba(213, 228, 255, 0.22), transparent 36%),
+    radial-gradient(circle at 90% 86%, rgba(124, 168, 240, 0.24), transparent 44%),
+    rgba(24, 37, 56, 0.4);
+  border-color: rgba(199, 220, 248, 0.38);
+  box-shadow:
+    0 24px 45px rgba(4, 8, 16, 0.5),
+    inset 0 1px 0 rgba(212, 229, 255, 0.32),
+    inset 0 -1px 0 rgba(199, 221, 252, 0.24);
+}
+
+body.theme-dark .resume-preview.variant-glass .atelier-head,
+body.theme-dark .resume-preview.variant-glass .card {
+  background: rgba(31, 47, 71, 0.28);
+  border-color: rgba(188, 214, 244, 0.36);
+  box-shadow:
+    inset 0 1px 0 rgba(211, 229, 251, 0.28),
+    inset 0 -16px 28px rgba(66, 98, 146, 0.26),
+    0 14px 26px rgba(0, 0, 0, 0.34);
+}
+
 @media screen and (max-width: 1180px) {
   .workspace {
     grid-template-columns: 1fr;
