@@ -45,17 +45,11 @@ const translations = {
     "templates.atelier": "Atelier Grid",
     "templates.noir": "Noir Minimal",
     "templates.fjord": "Fjord Split",
-    "templates.summit": "Summit Modern",
     "templates.solstice": "Solstice Banner",
     "templates.bastion": "Bastion Ledger",
-    "templates.metro": "Metro Frame",
-    "templates.opal": "Opal Soft",
     "templates.slate": "Slate Mono",
-    "templates.ember": "Ember Horizon",
-    "templates.orbit": "Orbit Matrix",
-    "templates.cosmos": "Cosmos Research",
     "templates.kernel": "Kernel Systems",
-    "templates.glass": "Glass Prism",
+    "templates.alpine": "Alpine Classic",
     "preview.live": "Live preview",
     "preview.blank": "Starts blank",
     "sections.summary": "Profile",
@@ -162,17 +156,11 @@ const translations = {
     "templates.atelier": "Cuadricula Atelier",
     "templates.noir": "Noir Minimal",
     "templates.fjord": "Division Fjord",
-    "templates.summit": "Summit Moderno",
     "templates.solstice": "Banner Solstice",
     "templates.bastion": "Registro Bastion",
-    "templates.metro": "Marco Metro",
-    "templates.opal": "Opalo Suave",
     "templates.slate": "Slate Mono",
-    "templates.ember": "Horizonte Ember",
-    "templates.orbit": "Matriz Orbit",
-    "templates.cosmos": "Investigacion Cosmos",
     "templates.kernel": "Sistemas Kernel",
-    "templates.glass": "Prisma de Cristal",
+    "templates.alpine": "Clasica Alpine",
     "preview.live": "Vista previa",
     "preview.blank": "Comienza en blanco",
     "sections.summary": "Perfil",
@@ -279,17 +267,11 @@ const translations = {
     "templates.atelier": "Atelier Raster",
     "templates.noir": "Noir Minimal",
     "templates.fjord": "Fjord Teilung",
-    "templates.summit": "Summit Modern",
     "templates.solstice": "Solstice Banner",
     "templates.bastion": "Bastion Ledger",
-    "templates.metro": "Metro Rahmen",
-    "templates.opal": "Opal Sanft",
     "templates.slate": "Slate Mono",
-    "templates.ember": "Ember Horizont",
-    "templates.orbit": "Orbit Matrix",
-    "templates.cosmos": "Kosmos Forschung",
     "templates.kernel": "Kernel Systeme",
-    "templates.glass": "Glas Prisma",
+    "templates.alpine": "Alpine Klassisch",
     "preview.live": "Live-Vorschau",
     "preview.blank": "Startet leer",
     "sections.summary": "Profil",
@@ -757,6 +739,67 @@ function renderAuroraTemplate() {
   `;
 }
 
+function renderAlpineTemplate() {
+  const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
+  const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
+  const location = state.profile.location;
+  const summaryMarkup = getSummaryMarkup();
+  const experienceMarkup = renderExperienceEntries();
+  const educationMarkup = renderEducationEntries();
+
+  const metaParts = [
+    escapeHtml(title),
+    hasText(location)
+      ? `<span class="alpine-pin"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${escapeHtml(location)}</span>`
+      : ""
+  ].filter(Boolean).join("&nbsp;&nbsp;&nbsp;");
+
+  const detailsList = [
+    state.profile.location ? `<li>${escapeHtml(state.profile.location)}</li>` : "",
+    state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
+    state.profile.phone ? `<li>${buildLink(state.profile.phone)}</li>` : ""
+  ].filter(Boolean).join("");
+
+  const linksList = [state.profile.website, state.profile.linkedin, state.profile.github]
+    .filter(hasText)
+    .map((value) => `<li>${buildLink(value)}</li>`)
+    .join("");
+
+  const skills = getSkillItems();
+  const skillsList = skills.length
+    ? `<ul class="alpine-skills">${skills.map((s) => `<li>${escapeHtml(s.name)}</li>`).join("")}</ul>`
+    : "";
+
+  const sidebarSections = [
+    detailsList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.details")}</h3><ul class="alpine-details">${detailsList}</ul></section>` : "",
+    linksList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.links")}</h3><ul class="alpine-links">${linksList}</ul></section>` : "",
+    skillsList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.skills")}</h3>${skillsList}</section>` : ""
+  ].filter(Boolean).join("");
+
+  const iconProfile = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+  const iconWork = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`;
+  const iconEdu = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></svg>`;
+
+  const mainSections = [
+    summaryMarkup ? `<section><h3 class="alpine-icon-heading">${iconProfile} ${tCV("sections.summary")}</h3>${summaryMarkup}</section>` : "",
+    experienceMarkup ? `<section><h3 class="alpine-icon-heading">${iconWork} ${tCV("sections.experience")}</h3>${experienceMarkup}</section>` : "",
+    educationMarkup ? `<section><h3 class="alpine-icon-heading">${iconEdu} ${tCV("sections.education")}</h3>${educationMarkup}</section>` : ""
+  ].filter(Boolean).join("");
+
+  return `
+    <article class="resume-page">
+      <header class="alpine-header">
+        <h1 class="alpine-name">${escapeHtml(name)}</h1>
+        <p class="alpine-meta">${metaParts}</p>
+      </header>
+      <div class="alpine-body${sidebarSections && mainSections ? "" : " alpine-single"}">
+        ${sidebarSections ? `<aside class="alpine-sidebar">${sidebarSections}</aside>` : ""}
+        ${mainSections ? `<div class="alpine-main">${mainSections}</div>` : ""}
+      </div>
+    </article>
+  `;
+}
+
 function renderAtelierTemplate() {
   const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
   const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
@@ -831,11 +874,6 @@ const templateCatalog = {
     baseClass: "template-berlin",
     variantClass: "variant-fjord"
   },
-  summit: {
-    render: renderBerlinTemplate,
-    baseClass: "template-berlin",
-    variantClass: "variant-summit"
-  },
   solstice: {
     render: renderAuroraTemplate,
     baseClass: "template-aurora",
@@ -846,45 +884,19 @@ const templateCatalog = {
     baseClass: "template-aurora",
     variantClass: "variant-bastion"
   },
-  metro: {
-    render: renderAtelierTemplate,
-    baseClass: "template-atelier",
-    variantClass: "variant-metro"
-  },
-  opal: {
-    render: renderAtelierTemplate,
-    baseClass: "template-atelier",
-    variantClass: "variant-opal"
-  },
   slate: {
     render: renderBerlinTemplate,
     baseClass: "template-berlin",
     variantClass: "variant-slate"
-  },
-  ember: {
-    render: renderAuroraTemplate,
-    baseClass: "template-aurora",
-    variantClass: "variant-ember"
-  },
-  orbit: {
-    render: renderAtelierTemplate,
-    baseClass: "template-atelier",
-    variantClass: "variant-orbit"
-  },
-  cosmos: {
-    render: renderAuroraTemplate,
-    baseClass: "template-aurora",
-    variantClass: "variant-cosmos"
   },
   kernel: {
     render: renderBerlinTemplate,
     baseClass: "template-berlin",
     variantClass: "variant-kernel"
   },
-  glass: {
-    render: renderAtelierTemplate,
-    baseClass: "template-atelier",
-    variantClass: "variant-glass"
+  alpine: {
+    render: renderAlpineTemplate,
+    baseClass: "template-alpine"
   }
 };
 
@@ -1571,9 +1583,6 @@ function init() {
     }
   });
 
-  if (!localStorage.getItem("free-resume:privacy-ack")) {
-    refs.privacyModal?.showModal();
-  }
 }
 
 init();
