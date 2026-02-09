@@ -200,7 +200,7 @@ body.theme-dark .theme-dot {
   display: grid;
   gap: 1rem;
   align-items: start;
-  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
 }
 
 .editor-panel,
