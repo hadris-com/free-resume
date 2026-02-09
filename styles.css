@@ -1404,11 +1404,10 @@ body.theme-dark .resume-preview.variant-glass .card {
   /* ---------- A4 page setup ---------- */
   .resume-page {
     width: 100% !important;
-    min-height: auto !important;
+    min-height: 100vh !important;
     margin: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
-    background: var(--paper-bg) !important;
     color: var(--paper-text) !important;
     overflow: visible !important;
   }
@@ -1417,6 +1416,34 @@ body.theme-dark .resume-preview.variant-glass .card {
   .template-aurora .timeline li {
     page-break-inside: avoid;
     break-inside: avoid;
+  }
+
+  /* ---------- Stretch inner layouts to fill the page ---------- */
+  .template-aurora .resume-page {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .template-aurora .aurora-shell {
+    flex: 1 !important;
+  }
+
+  .template-aurora .aurora-main {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .template-aurora .aurora-main > section:last-child {
+    flex: 1 !important;
+  }
+
+  .template-berlin .resume-page {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .template-berlin .resume-columns {
+    flex: 1 !important;
   }
 
   /* ---------- Force light Aurora banner in print ---------- */
@@ -1431,10 +1458,134 @@ body.theme-dark .resume-preview.variant-glass .card {
     color: rgba(248, 251, 255, 0.86) !important;
   }
 
-  /* ---------- Force light Atelier background in print ---------- */
+  /* ---------- Force light backgrounds per template in print ---------- */
+  .template-berlin .resume-page {
+    background: #fdfdfc !important;
+  }
+
   .template-atelier .resume-page {
     background:
       linear-gradient(160deg, rgba(252, 252, 250, 1), rgba(250, 248, 244, 1)) !important;
+  }
+
+  .variant-noir .resume-page {
+    background: linear-gradient(170deg, #1b2028, #10151b) !important;
+    color: #edf2f7 !important;
+  }
+
+  .variant-fjord .resume-page {
+    background: linear-gradient(180deg, #f9fcff, #edf4f9) !important;
+  }
+
+  .variant-metro .resume-page {
+    background:
+      linear-gradient(160deg, rgba(248, 250, 253, 1), rgba(240, 245, 251, 1)) !important;
+  }
+
+  .variant-opal .resume-page {
+    background: linear-gradient(160deg, #ffffff, #f2f7fc) !important;
+  }
+
+  .variant-opal .atelier-head {
+    background: rgba(255, 255, 255, 0.66) !important;
+  }
+
+  .variant-opal .card {
+    background: rgba(255, 255, 255, 0.62) !important;
+  }
+
+  .variant-slate .resume-page {
+    background: linear-gradient(180deg, #fbfcfd, #eef1f4) !important;
+  }
+
+  .variant-orbit .resume-page {
+    background:
+      linear-gradient(160deg, rgba(246, 248, 253, 1), rgba(236, 242, 252, 1)) !important;
+  }
+
+  .variant-cosmos .resume-page {
+    background:
+      radial-gradient(circle at 16% 18%, rgba(153, 183, 255, 0.2), transparent 28%),
+      radial-gradient(circle at 83% 12%, rgba(129, 248, 245, 0.16), transparent 24%),
+      radial-gradient(circle at 72% 75%, rgba(145, 131, 250, 0.15), transparent 30%),
+      linear-gradient(160deg, #0f1728, #0a101c) !important;
+    color: #e7eefc !important;
+  }
+
+  .variant-cosmos .aurora-banner {
+    background:
+      linear-gradient(120deg, rgba(22, 58, 110, 0.95), rgba(59, 35, 126, 0.92)),
+      radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.22), transparent 45%) !important;
+  }
+
+  .variant-kernel .resume-page {
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 22px,
+        rgba(18, 46, 73, 0.045) 22px,
+        rgba(18, 46, 73, 0.045) 23px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent 22px,
+        rgba(18, 46, 73, 0.045) 22px,
+        rgba(18, 46, 73, 0.045) 23px
+      ),
+      linear-gradient(180deg, #fbfcfd, #eef3f8) !important;
+  }
+
+  /* ---------- Force light Solstice banner in print ---------- */
+  .variant-solstice .aurora-banner {
+    background:
+      linear-gradient(120deg, rgba(178, 56, 87, 0.95), rgba(240, 130, 68, 0.92)),
+      radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.24), transparent 45%) !important;
+  }
+
+  .variant-solstice .aurora-side {
+    background: rgba(242, 145, 78, 0.06) !important;
+  }
+
+  /* ---------- Force light Bastion banner in print ---------- */
+  .variant-bastion .aurora-banner {
+    background:
+      linear-gradient(120deg, rgba(70, 78, 92, 0.95), rgba(38, 44, 53, 0.92)),
+      radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%) !important;
+  }
+
+  /* ---------- Force light Ember banner in print ---------- */
+  .variant-ember .aurora-banner {
+    background:
+      linear-gradient(120deg, rgba(160, 46, 33, 0.95), rgba(232, 117, 57, 0.92)),
+      radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.24), transparent 45%) !important;
+  }
+
+  .variant-ember .aurora-side {
+    background: rgba(214, 115, 58, 0.06) !important;
+  }
+
+  /* ---------- Glass: replace glassmorphism with solid print-safe styles ---------- */
+  .variant-glass .resume-page {
+    background: linear-gradient(145deg, #eef4fc, #dfe9f5) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+  }
+
+  .variant-glass .resume-page::before,
+  .variant-glass .resume-page::after {
+    display: none !important;
+  }
+
+  .variant-glass .atelier-head,
+  .variant-glass .card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(180, 200, 225, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(30, 60, 100, 0.08) !important;
   }
 
   /* ---------- Hide empty-state placeholders ---------- */
