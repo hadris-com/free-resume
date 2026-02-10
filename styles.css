@@ -336,6 +336,11 @@ button:focus-visible {
   gap: 0.5rem;
 }
 
+.repeat-item-grid + label {
+  display: block;
+  margin-top: 0.55rem;
+}
+
 .repeat-item-head {
   display: flex;
   align-items: center;
