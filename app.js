@@ -857,8 +857,16 @@ function renderAlpineTemplate() {
     .join("");
 
   const skills = getSkillItems();
+  const showSkillLevels = toBoolean(state.showSkillLevels, false);
   const skillsList = skills.length
-    ? `<ul class="alpine-skills">${skills.map((s) => `<li>${escapeHtml(s.name)}</li>`).join("")}</ul>`
+    ? `<ul class="alpine-skills">${skills
+        .map((skill) => {
+          const levelMarkup = showSkillLevels
+            ? `<span class="alpine-skill-level">${tCV(`levels.${skill.level}`)}</span>`
+            : "";
+          return `<li>${escapeHtml(skill.name)}${levelMarkup}</li>`;
+        })
+        .join("")}</ul>`
     : "";
 
   const sidebarSections = [

@@ -1400,6 +1400,14 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   font-size: 0.88rem;
 }
 
+.template-alpine .alpine-skill-level {
+  margin-left: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--paper-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .template-alpine .alpine-sidebar a {
   color: var(--paper-text);
   text-decoration: underline;
