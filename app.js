@@ -45,7 +45,7 @@ const translations = {
     "actions.sample": "Sample",
     "actions.uploadRaw": "Upload raw CV",
     "actions.downloadRaw": "Download raw CV",
-    "actions.pdf": "Save PDF",
+    "actions.pdf": "Print PDF",
     "errors.invalidRawFile": "Could not import file. Choose a valid Free Resume JSON file.",
     "templates.berlin": "Berlin Classic",
     "templates.aurora": "Aurora Timeline",
@@ -1578,6 +1578,9 @@ function renderExperienceEditor() {
       }
     )
     .join("");
+
+  const bottomAddBtn = `<button type="button" class="add-btn add-btn-bottom" data-action="add-experience">${t("actions.addExperience")}</button>`;
+  refs.experienceList.innerHTML += bottomAddBtn;
 }
 
 function renderEducationEditor() {
@@ -2093,7 +2096,7 @@ function handleClick(event) {
     return;
   }
 
-  if (trigger.id === "add-experience-btn") {
+  if (trigger.id === "add-experience-btn" || trigger.dataset.action === "add-experience") {
     state.experience.push(createExperience());
     renderDynamicEditors();
     renderPreview();
