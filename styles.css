@@ -507,15 +507,17 @@ button:focus-visible {
 
 .preview-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .preview-actions .ghost-btn {
   width: 100%;
   justify-content: center;
-  min-height: 2.5rem;
+  min-height: 2.2rem;
+  padding: 0.38rem 0.6rem;
+  font-size: 0.78rem;
   white-space: nowrap;
 }
 
