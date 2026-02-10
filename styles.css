@@ -512,6 +512,14 @@ button:focus-visible {
   gap: 0.5rem;
 }
 
+.repeat-item-grid.experience-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.repeat-item-grid .field-span-2 {
+  grid-column: span 2;
+}
+
 .repeat-item.is-collapsed .repeat-item-body {
   display: none;
 }
