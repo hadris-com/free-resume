@@ -1245,6 +1245,12 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   letter-spacing: 0.03em;
 }
 
+.template-alpine .alpine-detail-meta {
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+  letter-spacing: 0.03em;
+}
+
 .template-alpine .alpine-pin {
   display: inline-flex;
   align-items: center;

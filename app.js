@@ -775,15 +775,14 @@ function renderAlpineTemplate() {
   const experienceMarkup = renderExperienceEntries();
   const educationMarkup = renderEducationEntries();
 
-  const metaParts = [
-    escapeHtml(title),
-    hasText(location)
-      ? `<span class="alpine-pin"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${escapeHtml(location)}</span>`
-      : ""
-  ].filter(Boolean).join("&nbsp;&nbsp;&nbsp;");
+  const metaParts = [escapeHtml(title)].filter(Boolean).join("");
+
+  const locationMarkup = hasText(location)
+    ? `<span class="alpine-pin"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${escapeHtml(location)}</span>`
+    : "";
 
   const detailsList = [
-    state.profile.location ? `<li>${escapeHtml(state.profile.location)}</li>` : "",
+    locationMarkup ? `<li class="alpine-detail-meta">${locationMarkup}</li>` : "",
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
     state.profile.phone ? `<li>${buildLink(state.profile.phone)}</li>` : ""
   ].filter(Boolean).join("");
