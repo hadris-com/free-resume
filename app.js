@@ -982,9 +982,9 @@ function renderAlpineTemplate() {
     languagesList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.languages")}</h3>${languagesList}</section>` : ""
   ].filter(Boolean).join("");
 
-  const iconProfile = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
-  const iconWork = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`;
-  const iconEdu = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></svg>`;
+  const iconProfile = `<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"/><path fill="currentColor" d="M4 20a8 8 0 0 1 16 0v1H4z"/></svg>`;
+  const iconWork = `<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10 3h4a2 2 0 0 1 2 2v2h4a2 2 0 0 1 2 2v3H2V9a2 2 0 0 1 2-2h4V5a2 2 0 0 1 2-2zm0 4h4V5h-4z"/><path fill="currentColor" d="M2 13h8v2h4v-2h8v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/></svg>`;
+  const iconEdu = `<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 1 7l11 5 9-4.09V17h2V7L12 2z"/><path fill="currentColor" d="M5 12v5c0 2.21 3.13 4 7 4s7-1.79 7-4v-5l-7 3-7-3z"/></svg>`;
 
   const mainSections = [
     summaryMarkup
