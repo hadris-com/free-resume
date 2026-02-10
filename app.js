@@ -38,6 +38,7 @@ const translations = {
     "actions.addEducation": "Add education",
     "actions.addSkill": "Add skill",
     "actions.remove": "Remove",
+    "labels.at": "at",
     "actions.expand": "Expand",
     "actions.collapse": "Collapse",
     "actions.sample": "Sample",
@@ -154,6 +155,7 @@ const translations = {
     "actions.addEducation": "Agregar educacion",
     "actions.addSkill": "Agregar habilidad",
     "actions.remove": "Eliminar",
+    "labels.at": "en",
     "actions.expand": "Expandir",
     "actions.collapse": "Colapsar",
     "actions.sample": "Ejemplo",
@@ -270,6 +272,7 @@ const translations = {
     "actions.addEducation": "Ausbildung hinzufugen",
     "actions.addSkill": "Skill hinzufugen",
     "actions.remove": "Entfernen",
+    "labels.at": "bei",
     "actions.expand": "Ausklappen",
     "actions.collapse": "Einklappen",
     "actions.sample": "Beispiel",
@@ -1384,11 +1387,16 @@ function renderExperienceEditor() {
       (item, index) => {
         const isCollapsed = toBoolean(item.isCollapsed, false);
         const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
+        const roleLabel = hasText(item.role) ? escapeHtml(item.role) : "";
+        const companyLabel = hasText(item.company) ? escapeHtml(item.company) : "";
+        const titleLabel = roleLabel && companyLabel
+          ? `${roleLabel} ${t("labels.at")} ${companyLabel}`
+          : roleLabel || companyLabel || `${t("fields.experience")} ${index + 1}`;
 
         return `
         <article class="repeat-item">
           <div class="repeat-item-head">
-            <p class="repeat-item-title">${t("fields.experience")} ${index + 1}</p>
+            <p class="repeat-item-title">${titleLabel}</p>
             <div class="repeat-item-actions">
               <button
                 type="button"
