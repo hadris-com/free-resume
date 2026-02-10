@@ -765,21 +765,14 @@ button:focus-visible {
   box-shadow: 0 20px 40px rgba(2, 6, 23, 0.2);
 }
 
-.resume-page::after {
-  content: "";
+.page-break-marker {
   position: absolute;
-  top: 1120px;
   left: 0;
   right: 0;
-  bottom: 0;
+  height: 0;
+  border-top: 1px dashed var(--paper-divider);
   pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent calc(1120px - 1px),
-    var(--paper-divider) calc(1120px - 1px),
-    var(--paper-divider) 1120px
-  );
+  z-index: 1;
 }
 
 .resume-page h1,
@@ -1310,6 +1303,12 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   letter-spacing: 0.03em;
 }
 
+.template-alpine .alpine-detail-meta {
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+  letter-spacing: 0.03em;
+}
+
 .template-alpine .alpine-pin {
   display: inline-flex;
   align-items: center;
@@ -1663,7 +1662,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
     overflow: visible !important;
   }
 
-  .resume-page::after {
+  .page-break-marker {
     display: none !important;
   }
 
