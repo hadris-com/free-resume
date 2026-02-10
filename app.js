@@ -1512,7 +1512,7 @@ function renderSkillsEditor() {
       (item, index) => `
         <article class="repeat-item">
           <div class="repeat-item-head">
-            <p class="repeat-item-title">${t("fields.skillName")} ${index + 1}</p>
+            <div></div>
             <button type="button" class="remove-btn" data-action="remove-skill" data-index="${index}">
               ${t("actions.remove")}
             </button>
