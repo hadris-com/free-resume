@@ -357,6 +357,44 @@ button:focus-visible {
   margin-bottom: 0.4rem;
 }
 
+.repeat-item-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.collapse-btn {
+  border: 1px solid var(--input-border);
+  border-radius: 999px;
+  background: transparent;
+  width: 1.8rem;
+  height: 1.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-soft);
+  transition: transform 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.collapse-btn:hover {
+  color: var(--text-main);
+  border-color: color-mix(in srgb, var(--accent), var(--input-border) 60%);
+}
+
+.collapse-icon {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.18s ease;
+}
+
+.collapse-btn.is-collapsed .collapse-icon {
+  transform: rotate(-45deg);
+}
+
 .repeat-item-title {
   margin: 0;
   font-size: 0.79rem;

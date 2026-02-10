@@ -38,6 +38,8 @@ const translations = {
     "actions.addEducation": "Add education",
     "actions.addSkill": "Add skill",
     "actions.remove": "Remove",
+    "actions.expand": "Expand",
+    "actions.collapse": "Collapse",
     "actions.sample": "Sample",
     "actions.uploadRaw": "Upload raw CV",
     "actions.downloadRaw": "Download raw CV",
@@ -152,6 +154,8 @@ const translations = {
     "actions.addEducation": "Agregar educacion",
     "actions.addSkill": "Agregar habilidad",
     "actions.remove": "Eliminar",
+    "actions.expand": "Expandir",
+    "actions.collapse": "Colapsar",
     "actions.sample": "Ejemplo",
     "actions.uploadRaw": "Subir CV raw",
     "actions.downloadRaw": "Descargar CV raw",
@@ -266,6 +270,8 @@ const translations = {
     "actions.addEducation": "Ausbildung hinzufugen",
     "actions.addSkill": "Skill hinzufugen",
     "actions.remove": "Entfernen",
+    "actions.expand": "Ausklappen",
+    "actions.collapse": "Einklappen",
     "actions.sample": "Beispiel",
     "actions.uploadRaw": "Raw-CV hochladen",
     "actions.downloadRaw": "Raw-CV herunterladen",
@@ -1342,7 +1348,8 @@ function createExperience() {
     location: "",
     start: "",
     end: "",
-    bullets: ""
+    bullets: "",
+    isCollapsed: false
   };
 }
 
@@ -1372,44 +1379,64 @@ function renderExperienceEditor() {
 
   refs.experienceList.innerHTML = state.experience
     .map(
-      (item, index) => `
+      (item, index) => {
+        const isCollapsed = toBoolean(item.isCollapsed, false);
+        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
+
+        return `
         <article class="repeat-item">
           <div class="repeat-item-head">
             <p class="repeat-item-title">${t("fields.experience")} ${index + 1}</p>
-            <button type="button" class="remove-btn" data-action="remove-experience" data-index="${index}">
-              ${t("actions.remove")}
-            </button>
+            <div class="repeat-item-actions">
+              <button
+                type="button"
+                class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
+                data-action="toggle-experience"
+                data-index="${index}"
+                aria-expanded="${!isCollapsed}"
+                aria-label="${toggleLabel}"
+                title="${toggleLabel}"
+              >
+                <span class="collapse-icon" aria-hidden="true"></span>
+              </button>
+              <button type="button" class="remove-btn" data-action="remove-experience" data-index="${index}">
+                ${t("actions.remove")}
+              </button>
+            </div>
           </div>
 
-          <div class="repeat-item-grid">
+          <div class="repeat-item-body"${isCollapsed ? " hidden" : ""}>
+            <div class="repeat-item-grid">
+              <label>
+                <span>${t("fields.jobTitle")}</span>
+                <input type="text" data-list="experience" data-index="${index}" data-key="role" value="${escapeAttr(item.role)}" placeholder="${t("placeholders.jobTitle")}" />
+              </label>
+              <label>
+                <span>${t("fields.company")}</span>
+                <input type="text" data-list="experience" data-index="${index}" data-key="company" value="${escapeAttr(item.company)}" placeholder="${t("placeholders.company")}" />
+              </label>
+              <label>
+                <span>${t("fields.itemLocation")}</span>
+                <input type="text" data-list="experience" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${t("placeholders.location")}" />
+              </label>
+              <label>
+                <span>${t("fields.startDate")}</span>
+                <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2022" />
+              </label>
+              <label>
+                <span>${t("fields.endDate")}</span>
+                <input type="text" data-list="experience" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="${t("placeholders.present")}" />
+              </label>
+            </div>
+
             <label>
-              <span>${t("fields.jobTitle")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="role" value="${escapeAttr(item.role)}" placeholder="${t("placeholders.jobTitle")}" />
-            </label>
-            <label>
-              <span>${t("fields.company")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="company" value="${escapeAttr(item.company)}" placeholder="${t("placeholders.company")}" />
-            </label>
-            <label>
-              <span>${t("fields.itemLocation")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${t("placeholders.location")}" />
-            </label>
-            <label>
-              <span>${t("fields.startDate")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2022" />
-            </label>
-            <label>
-              <span>${t("fields.endDate")}</span>
-              <input type="text" data-list="experience" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="${t("placeholders.present")}" />
+              <span>${t("fields.highlights")}</span>
+              <textarea rows="3" data-list="experience" data-index="${index}" data-key="bullets">${escapeHtml(item.bullets)}</textarea>
             </label>
           </div>
-
-          <label>
-            <span>${t("fields.highlights")}</span>
-            <textarea rows="3" data-list="experience" data-index="${index}" data-key="bullets">${escapeHtml(item.bullets)}</textarea>
-          </label>
         </article>
-      `
+      `;
+      }
     )
     .join("");
 }
@@ -1721,6 +1748,15 @@ function handleClick(event) {
       state.experience.splice(index, 1);
       renderDynamicEditors();
       renderPreview();
+    }
+    return;
+  }
+
+  if (trigger.dataset.action === "toggle-experience") {
+    const index = Number(trigger.dataset.index);
+    if (!Number.isNaN(index) && state.experience[index]) {
+      state.experience[index].isCollapsed = !toBoolean(state.experience[index].isCollapsed, false);
+      renderDynamicEditors();
     }
     return;
   }
