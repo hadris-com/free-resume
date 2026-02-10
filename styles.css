@@ -343,6 +343,15 @@ button:focus-visible {
   padding-top: 1.4rem;
 }
 
+.skill-item-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
 .remove-icon-btn {
   width: 1.6rem;
   height: 1.6rem;
@@ -360,15 +369,15 @@ button:focus-visible {
   color: var(--text-main);
 }
 
-.skill-item .remove-icon-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-}
-
 .remove-icon {
   width: 0.9rem;
   height: 0.9rem;
+}
+
+.skill-collapsed-title {
+  margin: 0.1rem 0 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-main);
 }
 
 .repeat-item-grid {

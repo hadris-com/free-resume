@@ -992,7 +992,8 @@ function sanitizeSkillItem(item) {
   return {
     name: toInputText(source?.name),
     level: normalizeSkillLevel(source?.level),
-    showLevel: toBoolean(source?.showLevel, false)
+    showLevel: toBoolean(source?.showLevel, false),
+    isCollapsed: toBoolean(source?.isCollapsed, false)
   };
 }
 
@@ -1367,7 +1368,8 @@ function createSkill() {
   return {
     name: "",
     level: "intermediate",
-    showLevel: toBoolean(state.showSkillLevels, false)
+    showLevel: toBoolean(state.showSkillLevels, false),
+    isCollapsed: false
   };
 }
 
@@ -1533,45 +1535,68 @@ function renderSkillsEditor() {
 
   const skillsMarkup = state.skills
     .map(
-      (item, index) => `
-        <article class="repeat-item skill-item">
-          <button
-            type="button"
-            class="remove-btn remove-icon-btn"
-            data-action="remove-skill"
-            data-index="${index}"
-            aria-label="${t("actions.remove")}"
-            title="${t("actions.remove")}"
-          >
-            <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path
-                d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
+      (item, index) => {
+        const isCollapsed = toBoolean(item.isCollapsed, false);
+        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
+        const summaryLabel = hasText(item.name) ? escapeHtml(item.name) : t("fields.skillName");
 
-          <div class="repeat-item-grid skill-editor-grid">
-            <label>
-              <span>${t("fields.skillName")}</span>
-              <input type="text" data-list="skills" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" placeholder="${t("placeholders.skill")}" />
-            </label>
-            <label>
-              <span>${t("fields.skillLevel")}</span>
-              <select data-list="skills" data-index="${index}" data-key="level">
-                ${skillLevels
-                  .map(
-                    (level) =>
-                      `<option value="${level}" ${
-                        normalizeSkillLevel(item.level) === level ? "selected" : ""
-                      }>${t(`levels.${level}`)}</option>`
-                  )
-                  .join("")}
-              </select>
-            </label>
+        return `
+        <article class="repeat-item skill-item">
+          <div class="skill-item-actions">
+            <button
+              type="button"
+              class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
+              data-action="toggle-skill"
+              data-index="${index}"
+              aria-expanded="${!isCollapsed}"
+              aria-label="${toggleLabel}"
+              title="${toggleLabel}"
+            >
+              <span class="collapse-icon" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="remove-btn remove-icon-btn"
+              data-action="remove-skill"
+              data-index="${index}"
+              aria-label="${t("actions.remove")}"
+              title="${t("actions.remove")}"
+            >
+              <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+          </div>
+
+          ${isCollapsed ? `<p class="skill-collapsed-title">${summaryLabel}</p>` : ""}
+
+          <div class="repeat-item-body"${isCollapsed ? " hidden" : ""}>
+            <div class="repeat-item-grid skill-editor-grid">
+              <label>
+                <span>${t("fields.skillName")}</span>
+                <input type="text" data-list="skills" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" placeholder="${t("placeholders.skill")}" />
+              </label>
+              <label>
+                <span>${t("fields.skillLevel")}</span>
+                <select data-list="skills" data-index="${index}" data-key="level">
+                  ${skillLevels
+                    .map(
+                      (level) =>
+                        `<option value="${level}" ${
+                          normalizeSkillLevel(item.level) === level ? "selected" : ""
+                        }>${t(`levels.${level}`)}</option>`
+                    )
+                    .join("")}
+                </select>
+              </label>
+            </div>
           </div>
         </article>
-      `
+      `;
+      }
     )
     .join("");
 
@@ -1810,6 +1835,15 @@ function handleClick(event) {
       state.skills.splice(index, 1);
       renderDynamicEditors();
       renderPreview();
+    }
+    return;
+  }
+
+  if (trigger.dataset.action === "toggle-skill") {
+    const index = Number(trigger.dataset.index);
+    if (!Number.isNaN(index) && state.skills[index]) {
+      state.skills[index].isCollapsed = !toBoolean(state.skills[index].isCollapsed, false);
+      renderDynamicEditors();
     }
     return;
   }
