@@ -1412,11 +1412,66 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   font-size: 0.88rem;
 }
 
+.template-alpine .alpine-skill-level {
+  margin-left: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--paper-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .template-alpine .alpine-sidebar a {
   color: var(--paper-text);
   text-decoration: underline;
   text-underline-offset: 2px;
   text-decoration-color: var(--paper-divider);
+}
+
+.resume-preview a.social-icon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.resume-preview .social-link-text {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--paper-divider);
+}
+
+.resume-preview .social-link-icon svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  display: block;
+}
+
+.template-berlin a.social-icon-link {
+  border-bottom: none;
+}
+
+.template-berlin .social-link-text {
+  border-bottom: 1px solid var(--paper-divider);
+  text-decoration: none;
+}
+
+.template-alpine .alpine-sidebar a.social-icon-link {
+  text-decoration: none;
+}
+
+.resume-preview .contact-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+}
+
+.resume-preview .contact-icon svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  display: block;
 }
 
 /* Main: icon headings */
