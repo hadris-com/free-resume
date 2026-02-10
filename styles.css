@@ -1310,7 +1310,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .template-alpine .alpine-header {
   text-align: center;
   padding: 1.8rem 2rem 1.2rem;
-  border-bottom: 1px solid var(--paper-divider);
+  border-bottom: none;
 }
 
 .template-alpine .alpine-name {
