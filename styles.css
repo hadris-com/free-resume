@@ -288,6 +288,85 @@ select {
   padding: 0.54rem 0.66rem;
 }
 
+.custom-select {
+  position: relative;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.86rem;
+  padding: 0.54rem 0.66rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.custom-select-trigger:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent), #ffffff 30%);
+  outline-offset: 2px;
+}
+
+.custom-select-chevron {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.18s ease;
+}
+
+.custom-select.is-open .custom-select-chevron {
+  transform: rotate(-135deg);
+}
+
+.custom-select-menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  border-radius: 12px;
+  border: 1px solid var(--input-border);
+  background: var(--panel-surface);
+  box-shadow: var(--panel-shadow);
+  padding: 0.35rem;
+  display: none;
+}
+
+.custom-select.is-open .custom-select-menu {
+  display: block;
+}
+
+.custom-select-option {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.86rem;
+  text-align: left;
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+}
+
+.custom-select-option:hover,
+.custom-select-option:focus-visible {
+  background: color-mix(in srgb, var(--accent-soft), transparent 40%);
+}
+
+.custom-select-option[aria-selected="true"] {
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+
 textarea {
   resize: vertical;
   min-height: 5.2rem;

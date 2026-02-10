@@ -52,7 +52,7 @@
         <aside class="editor-panel" aria-label="Resume editor">
           <section class="panel-section" data-section="template">
             <div class="section-heading-row">
-              <h2 data-i18n="fields.template">Template</h2>
+              <h2 id="template-section-title" data-i18n="fields.template">Template</h2>
               <button
                 type="button"
                 class="collapse-btn section-toggle"
@@ -65,18 +65,44 @@
             </div>
             <div class="section-body">
               <label class="sr-only" for="template-select" data-i18n="fields.template">Template</label>
-              <select id="template-select">
-                <option value="berlin" data-i18n="templates.berlin">Berlin Classic</option>
-                <option value="aurora" data-i18n="templates.aurora">Aurora Timeline</option>
-                <option value="atelier" data-i18n="templates.atelier">Atelier Grid</option>
-                <option value="noir" data-i18n="templates.noir">Noir Minimal</option>
-                <option value="fjord" data-i18n="templates.fjord">Fjord Split</option>
-                <option value="solstice" data-i18n="templates.solstice">Solstice Banner</option>
-                <option value="bastion" data-i18n="templates.bastion">Bastion Ledger</option>
-                <option value="slate" data-i18n="templates.slate">Slate Mono</option>
-                <option value="kernel" data-i18n="templates.kernel">Kernel Systems</option>
-                <option value="alpine" data-i18n="templates.alpine">Alpine Classic</option>
-              </select>
+              <div class="custom-select" id="template-select-wrapper" data-component="template-select">
+                <button
+                  type="button"
+                  class="custom-select-trigger"
+                  id="template-select-trigger"
+                  data-action="toggle-template-select"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-labelledby="template-section-title template-select-value"
+                >
+                  <span id="template-select-value">Berlin Classic</span>
+                  <span class="custom-select-chevron" aria-hidden="true"></span>
+                </button>
+                <div class="custom-select-menu" id="template-select-menu" role="listbox" aria-labelledby="template-section-title">
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="berlin" aria-selected="true" data-i18n="templates.berlin">Berlin Classic</button>
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="aurora" aria-selected="false" data-i18n="templates.aurora">Aurora Timeline</button>
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="atelier" aria-selected="false" data-i18n="templates.atelier">Atelier Grid</button>
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="noir" aria-selected="false" data-i18n="templates.noir">Noir Minimal</button>
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="fjord" aria-selected="false" data-i18n="templates.fjord">Fjord Split</button>
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="solstice" aria-selected="false" data-i18n="templates.solstice">Solstice Banner</button>
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="bastion" aria-selected="false" data-i18n="templates.bastion">Bastion Ledger</button>
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="slate" aria-selected="false" data-i18n="templates.slate">Slate Mono</button>
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="kernel" aria-selected="false" data-i18n="templates.kernel">Kernel Systems</button>
+                  <button type="button" class="custom-select-option" role="option" data-action="select-template" data-value="alpine" aria-selected="false" data-i18n="templates.alpine">Alpine Classic</button>
+                </div>
+                <select id="template-select" class="sr-only" aria-hidden="true" tabindex="-1">
+                  <option value="berlin" data-i18n="templates.berlin">Berlin Classic</option>
+                  <option value="aurora" data-i18n="templates.aurora">Aurora Timeline</option>
+                  <option value="atelier" data-i18n="templates.atelier">Atelier Grid</option>
+                  <option value="noir" data-i18n="templates.noir">Noir Minimal</option>
+                  <option value="fjord" data-i18n="templates.fjord">Fjord Split</option>
+                  <option value="solstice" data-i18n="templates.solstice">Solstice Banner</option>
+                  <option value="bastion" data-i18n="templates.bastion">Bastion Ledger</option>
+                  <option value="slate" data-i18n="templates.slate">Slate Mono</option>
+                  <option value="kernel" data-i18n="templates.kernel">Kernel Systems</option>
+                  <option value="alpine" data-i18n="templates.alpine">Alpine Classic</option>
+                </select>
+              </div>
             </div>
           </section>
 

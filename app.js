@@ -380,6 +380,10 @@ const state = {
 
 const refs = {
   templateSelect: document.getElementById("template-select"),
+  templateSelectWrapper: document.getElementById("template-select-wrapper"),
+  templateSelectTrigger: document.getElementById("template-select-trigger"),
+  templateSelectValue: document.getElementById("template-select-value"),
+  templateSelectMenu: document.getElementById("template-select-menu"),
   themeToggle: document.getElementById("theme-toggle"),
   downloadRawBtn: document.getElementById("download-raw-btn"),
   uploadRawBtn: document.getElementById("upload-raw-btn"),
@@ -1151,6 +1155,7 @@ function downloadRawResume() {
 
 function syncStaticInputsFromState() {
   refs.templateSelect.value = state.template;
+  syncTemplateSelectUI();
 
   document.querySelectorAll("[data-profile]").forEach((input) => {
     if (!(input instanceof HTMLInputElement)) {
@@ -1686,6 +1691,7 @@ function applyI18n() {
     button.setAttribute("aria-pressed", String(isActive));
   });
 
+  syncTemplateSelectUI();
   syncSectionToggles();
 }
 
@@ -1707,6 +1713,55 @@ function syncSectionToggles() {
       toggle.setAttribute("title", label);
     }
   });
+}
+
+function syncTemplateSelectUI() {
+  if (!refs.templateSelectMenu || !refs.templateSelectValue || !refs.templateSelectTrigger) {
+    return;
+  }
+
+  const options = refs.templateSelectMenu.querySelectorAll("[data-value]");
+  let selectedLabel = "";
+  options.forEach((option) => {
+    const value = option.getAttribute("data-value");
+    const isSelected = value === state.template;
+    option.setAttribute("aria-selected", String(isSelected));
+    if (isSelected) {
+      selectedLabel = option.textContent?.trim() ?? "";
+    }
+  });
+
+  if (!selectedLabel) {
+    const fallback = refs.templateSelectMenu.querySelector(`[data-value="${state.template}"]`);
+    selectedLabel = fallback?.textContent?.trim() ?? "";
+  }
+
+  if (selectedLabel) {
+    refs.templateSelectValue.textContent = selectedLabel;
+  }
+
+  refs.templateSelectTrigger.setAttribute(
+    "aria-expanded",
+    String(refs.templateSelectWrapper?.classList.contains("is-open"))
+  );
+
+  if (refs.templateSelect) {
+    refs.templateSelect.value = state.template;
+  }
+}
+
+function closeTemplateSelect() {
+  refs.templateSelectWrapper?.classList.remove("is-open");
+  refs.templateSelectTrigger?.setAttribute("aria-expanded", "false");
+}
+
+function toggleTemplateSelect() {
+  if (!refs.templateSelectWrapper || !refs.templateSelectTrigger) {
+    return;
+  }
+  const nextOpen = !refs.templateSelectWrapper.classList.contains("is-open");
+  refs.templateSelectWrapper.classList.toggle("is-open", nextOpen);
+  refs.templateSelectTrigger.setAttribute("aria-expanded", String(nextOpen));
 }
 
 function renderDynamicEditors() {
@@ -1778,6 +1833,7 @@ function handleInput(event) {
 
   if (target.id === "template-select") {
     state.template = target.value;
+    syncTemplateSelectUI();
     renderPreview();
     return;
   }
@@ -1785,9 +1841,29 @@ function handleInput(event) {
 }
 
 function handleClick(event) {
+  if (refs.templateSelectWrapper && !refs.templateSelectWrapper.contains(event.target)) {
+    closeTemplateSelect();
+  }
+
   const trigger = event.target.closest("button");
 
   if (!trigger) {
+    return;
+  }
+
+  if (trigger.dataset.action === "toggle-template-select") {
+    toggleTemplateSelect();
+    return;
+  }
+
+  if (trigger.dataset.action === "select-template") {
+    const value = trigger.getAttribute("data-value");
+    if (value && templateCatalog[value]) {
+      state.template = value;
+      syncTemplateSelectUI();
+      renderPreview();
+    }
+    closeTemplateSelect();
     return;
   }
 
@@ -1931,6 +2007,9 @@ function handleClick(event) {
     const nextCollapsed = !toBoolean(state.collapsedSections?.[sectionId], false);
     state.collapsedSections = { ...state.collapsedSections, [sectionId]: nextCollapsed };
     syncSectionToggles();
+    if (sectionId === "template" && nextCollapsed) {
+      closeTemplateSelect();
+    }
     return;
   }
 
