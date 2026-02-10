@@ -1364,11 +1364,15 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 
 .template-alpine .alpine-main {
   padding: 1.4rem 1.6rem;
-  border-left: 1px solid var(--paper-divider);
+  border-left: none;
 }
 
 .template-alpine .alpine-main section + section {
   margin-top: 1.1rem;
+}
+
+.template-alpine .alpine-main-section {
+  position: relative;
 }
 
 /* Sidebar: decorated dot headings */
@@ -1487,14 +1491,30 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   letter-spacing: 0.12em;
   color: var(--paper-text);
   margin-bottom: 0.55rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+  position: relative;
+  padding-left: 1.1rem;
 }
 
 .template-alpine .alpine-icon-heading svg {
-  flex-shrink: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
   color: var(--paper-muted);
+}
+
+.template-alpine .alpine-section-body {
+  position: relative;
+  padding-left: 1.8rem;
+}
+
+.template-alpine .alpine-section-body::before {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--paper-divider);
 }
 
 .template-alpine .alpine-main a {
@@ -1510,7 +1530,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 
 .template-alpine .alpine-main ul {
   margin: 0.3rem 0 0;
-  padding-left: 1.2rem;
+  padding-left: 1.6rem;
   font-size: 0.88rem;
   line-height: 1.5;
 }

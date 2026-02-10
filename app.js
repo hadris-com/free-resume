@@ -983,9 +983,15 @@ function renderAlpineTemplate() {
   const iconEdu = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></svg>`;
 
   const mainSections = [
-    summaryMarkup ? `<section><h3 class="alpine-icon-heading">${iconProfile} ${tCV("sections.summary")}</h3>${summaryMarkup}</section>` : "",
-    experienceMarkup ? `<section><h3 class="alpine-icon-heading">${iconWork} ${tCV("sections.experience")}</h3>${experienceMarkup}</section>` : "",
-    educationMarkup ? `<section><h3 class="alpine-icon-heading">${iconEdu} ${tCV("sections.education")}</h3>${educationMarkup}</section>` : ""
+    summaryMarkup
+      ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconProfile} ${tCV("sections.summary")}</h3><div class="alpine-section-body">${summaryMarkup}</div></section>`
+      : "",
+    experienceMarkup
+      ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconWork} ${tCV("sections.experience")}</h3><div class="alpine-section-body">${experienceMarkup}</div></section>`
+      : "",
+    educationMarkup
+      ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconEdu} ${tCV("sections.education")}</h3><div class="alpine-section-body">${educationMarkup}</div></section>`
+      : ""
   ].filter(Boolean).join("");
 
   return `
