@@ -52,7 +52,7 @@
         <aside class="editor-panel" aria-label="Resume editor">
           <section class="panel-section" data-section="template">
             <div class="section-heading-row">
-              <label for="template-select" data-i18n="fields.template">Template</label>
+              <h2 data-i18n="fields.template">Template</h2>
               <button
                 type="button"
                 class="collapse-btn section-toggle"
@@ -64,6 +64,7 @@
               </button>
             </div>
             <div class="section-body">
+              <label class="sr-only" for="template-select" data-i18n="fields.template">Template</label>
               <select id="template-select">
                 <option value="berlin" data-i18n="templates.berlin">Berlin Classic</option>
                 <option value="aurora" data-i18n="templates.aurora">Aurora Timeline</option>
