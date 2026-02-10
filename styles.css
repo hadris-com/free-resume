@@ -338,6 +338,39 @@ button:focus-visible {
   padding: 0.68rem;
 }
 
+.skill-item {
+  position: relative;
+  padding-top: 1.4rem;
+}
+
+.remove-icon-btn {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-soft);
+}
+
+.remove-icon-btn:hover {
+  color: var(--text-main);
+}
+
+.skill-item .remove-icon-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.remove-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
 .repeat-item-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

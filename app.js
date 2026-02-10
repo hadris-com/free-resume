@@ -1399,8 +1399,20 @@ function renderExperienceEditor() {
               >
                 <span class="collapse-icon" aria-hidden="true"></span>
               </button>
-              <button type="button" class="remove-btn" data-action="remove-experience" data-index="${index}">
-                ${t("actions.remove")}
+              <button
+                type="button"
+                class="remove-icon-btn"
+                data-action="remove-experience"
+                data-index="${index}"
+                aria-label="${t("actions.remove")}"
+                title="${t("actions.remove")}"
+              >
+                <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path
+                    d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
+                    fill="currentColor"
+                  />
+                </svg>
               </button>
             </div>
           </div>
@@ -1453,8 +1465,20 @@ function renderEducationEditor() {
         <article class="repeat-item">
           <div class="repeat-item-head">
             <p class="repeat-item-title">${t("fields.education")} ${index + 1}</p>
-            <button type="button" class="remove-btn" data-action="remove-education" data-index="${index}">
-              ${t("actions.remove")}
+            <button
+              type="button"
+              class="remove-icon-btn"
+              data-action="remove-education"
+              data-index="${index}"
+              aria-label="${t("actions.remove")}"
+              title="${t("actions.remove")}"
+            >
+              <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
+                  fill="currentColor"
+                />
+              </svg>
             </button>
           </div>
 
@@ -1510,13 +1534,22 @@ function renderSkillsEditor() {
   const skillsMarkup = state.skills
     .map(
       (item, index) => `
-        <article class="repeat-item">
-          <div class="repeat-item-head">
-            <div></div>
-            <button type="button" class="remove-btn" data-action="remove-skill" data-index="${index}">
-              ${t("actions.remove")}
-            </button>
-          </div>
+        <article class="repeat-item skill-item">
+          <button
+            type="button"
+            class="remove-btn remove-icon-btn"
+            data-action="remove-skill"
+            data-index="${index}"
+            aria-label="${t("actions.remove")}"
+            title="${t("actions.remove")}"
+          >
+            <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
 
           <div class="repeat-item-grid skill-editor-grid">
             <label>
