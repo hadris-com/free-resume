@@ -32,12 +32,18 @@ const translations = {
     "fields.showSkillLevel": "Show skill level",
     "fields.showSkillLevels": "Show skill levels",
     "fields.hideSkillLevels": "Hide skill levels",
+    "fields.languages": "Languages",
+    "fields.languageName": "Language",
+    "fields.languageLevel": "Level",
+    "fields.showLanguageLevels": "Show language levels",
+    "fields.hideLanguageLevels": "Hide language levels",
     "fields.cvLanguage": "CV language",
     "actions.darkMode": "Dark mode",
     "actions.lightMode": "Light mode",
     "actions.addExperience": "Add experience",
     "actions.addEducation": "Add education",
     "actions.addSkill": "Add skill",
+    "actions.addLanguage": "Add language",
     "actions.remove": "Remove",
     "labels.at": "at",
     "actions.expand": "Expand",
@@ -63,6 +69,7 @@ const translations = {
     "sections.experience": "Employment History",
     "sections.education": "Education",
     "sections.skills": "Skills",
+    "sections.languages": "Languages",
     "sections.details": "Contact",
     "sections.links": "Links",
     "empty.resumeStart": "Your resume starts blank. Add content from the editor.",
@@ -72,6 +79,7 @@ const translations = {
     "empty.experienceEditor": "No experience entries yet.",
     "empty.educationEditor": "No education entries yet.",
     "empty.skillsEditor": "No skills added yet.",
+    "empty.languagesEditor": "No languages added yet.",
     "placeholders.name": "John Doe",
     "placeholders.title": "Your Professional Title",
     "placeholders.email": "name@example.com",
@@ -86,6 +94,7 @@ const translations = {
     "placeholders.degree": "Degree",
     "placeholders.school": "School",
     "placeholders.skill": "Kubernetes",
+    "placeholders.language": "English",
     "placeholders.noName": "Your Name",
     "placeholders.noTitle": "Your Professional Title",
     "placeholders.present": "Present",
@@ -150,12 +159,18 @@ const translations = {
     "fields.showSkillLevel": "Mostrar nivel de habilidad",
     "fields.showSkillLevels": "Mostrar niveles de habilidad",
     "fields.hideSkillLevels": "Ocultar niveles de habilidad",
+    "fields.languages": "Idiomas",
+    "fields.languageName": "Idioma",
+    "fields.languageLevel": "Nivel",
+    "fields.showLanguageLevels": "Mostrar niveles de idioma",
+    "fields.hideLanguageLevels": "Ocultar niveles de idioma",
     "fields.cvLanguage": "Idioma del CV",
     "actions.darkMode": "Modo oscuro",
     "actions.lightMode": "Modo claro",
     "actions.addExperience": "Agregar experiencia",
     "actions.addEducation": "Agregar educacion",
     "actions.addSkill": "Agregar habilidad",
+    "actions.addLanguage": "Agregar idioma",
     "actions.remove": "Eliminar",
     "labels.at": "en",
     "actions.expand": "Expandir",
@@ -181,6 +196,7 @@ const translations = {
     "sections.experience": "Historial laboral",
     "sections.education": "Educacion",
     "sections.skills": "Habilidades",
+    "sections.languages": "Idiomas",
     "sections.details": "Contacto",
     "sections.links": "Enlaces",
     "empty.resumeStart": "Tu curriculum comienza en blanco. Agrega contenido desde el editor.",
@@ -190,6 +206,7 @@ const translations = {
     "empty.experienceEditor": "Aun no hay experiencias.",
     "empty.educationEditor": "Aun no hay educacion.",
     "empty.skillsEditor": "Aun no hay habilidades.",
+    "empty.languagesEditor": "Aun no hay idiomas.",
     "placeholders.name": "Juan Perez",
     "placeholders.title": "Tu Titulo Profesional",
     "placeholders.email": "nombre@ejemplo.com",
@@ -204,6 +221,7 @@ const translations = {
     "placeholders.degree": "Titulo",
     "placeholders.school": "Institucion",
     "placeholders.skill": "Kubernetes",
+    "placeholders.language": "Ingles",
     "placeholders.noName": "Tu Nombre",
     "placeholders.noTitle": "Tu Titulo Profesional",
     "placeholders.present": "Actual",
@@ -268,12 +286,18 @@ const translations = {
     "fields.showSkillLevel": "Skill-Level anzeigen",
     "fields.showSkillLevels": "Skill-Level anzeigen",
     "fields.hideSkillLevels": "Skill-Level ausblenden",
+    "fields.languages": "Sprachen",
+    "fields.languageName": "Sprache",
+    "fields.languageLevel": "Niveau",
+    "fields.showLanguageLevels": "Sprachniveau anzeigen",
+    "fields.hideLanguageLevels": "Sprachniveau ausblenden",
     "fields.cvLanguage": "CV-Sprache",
     "actions.darkMode": "Dunkelmodus",
     "actions.lightMode": "Hellmodus",
     "actions.addExperience": "Erfahrung hinzufugen",
     "actions.addEducation": "Ausbildung hinzufugen",
     "actions.addSkill": "Skill hinzufugen",
+    "actions.addLanguage": "Sprache hinzufugen",
     "actions.remove": "Entfernen",
     "labels.at": "bei",
     "actions.expand": "Ausklappen",
@@ -299,6 +323,7 @@ const translations = {
     "sections.experience": "Berufserfahrung",
     "sections.education": "Ausbildung",
     "sections.skills": "Skills",
+    "sections.languages": "Sprachen",
     "sections.details": "Kontakt",
     "sections.links": "Links",
     "empty.resumeStart": "Dein Lebenslauf startet leer. Inhalte im Editor hinzufugen.",
@@ -308,6 +333,7 @@ const translations = {
     "empty.experienceEditor": "Noch keine Erfahrungseintrage.",
     "empty.educationEditor": "Noch keine Ausbildungseintrage.",
     "empty.skillsEditor": "Noch keine Skills hinzugefugt.",
+    "empty.languagesEditor": "Noch keine Sprachen hinzugefugt.",
     "placeholders.name": "Max Mustermann",
     "placeholders.title": "Deine Berufsbezeichnung",
     "placeholders.email": "name@beispiel.de",
@@ -322,6 +348,7 @@ const translations = {
     "placeholders.degree": "Abschluss",
     "placeholders.school": "Institution",
     "placeholders.skill": "Kubernetes",
+    "placeholders.language": "Englisch",
     "placeholders.noName": "Dein Name",
     "placeholders.noTitle": "Deine Berufsbezeichnung",
     "placeholders.present": "Heute",
@@ -364,6 +391,7 @@ const state = {
   theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
   showSkills: false,
   showSkillLevels: false,
+  showLanguageLevels: false,
   nameFontSize: 100,
   collapsedSections: {},
   profile: {
@@ -379,7 +407,8 @@ const state = {
   summary: "",
   experience: [],
   education: [],
-  skills: []
+  skills: [],
+  languages: []
 };
 
 const refs = {
@@ -398,6 +427,7 @@ const refs = {
   experienceList: document.getElementById("experience-list"),
   educationList: document.getElementById("education-list"),
   skillsList: document.getElementById("skills-list"),
+  languagesList: document.getElementById("languages-list"),
   blankPill: document.getElementById("blank-pill"),
   editorPanel: document.querySelector(".editor-panel"),
   nameSizeSlider: document.getElementById("name-size-slider"),
@@ -610,6 +640,15 @@ function getSkillItems() {
     .filter((item) => hasText(item.name));
 }
 
+function getLanguageItems() {
+  return state.languages
+    .map((item) => ({
+      name: String(item.name ?? "").trim(),
+      level: normalizeSkillLevel(item.level)
+    }))
+    .filter((item) => hasText(item.name));
+}
+
 function renderExperienceEntries() {
   const entries = getExperienceItems();
 
@@ -688,6 +727,29 @@ function renderSkillsMarkup() {
   `;
 }
 
+function renderLanguagesMarkup() {
+  const languages = getLanguageItems();
+  const showLevels = toBoolean(state.showLanguageLevels, false);
+
+  if (!languages.length) {
+    return "";
+  }
+
+  return `
+    <div class="skill-cloud">
+      ${languages
+        .map((lang) => {
+          const levelMarkup = showLevels
+            ? `<span class="skill-chip-level">${tCV(`levels.${lang.level}`)}</span>`
+            : "";
+
+          return `<span class="skill-chip"><span>${escapeHtml(lang.name)}</span>${levelMarkup}</span>`;
+        })
+        .join("")}
+    </div>
+  `;
+}
+
 function renderBerlinTemplate() {
   const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
   const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
@@ -695,6 +757,7 @@ function renderBerlinTemplate() {
   const experienceMarkup = renderExperienceEntries();
   const educationMarkup = renderEducationEntries();
   const skillsMarkup = renderSkillsMarkup();
+  const languagesMarkup = renderLanguagesMarkup();
 
   const detailsList = [
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
@@ -725,7 +788,8 @@ function renderBerlinTemplate() {
   const sidebarSections = [
     detailsList ? `<section><h3 class="section-label">${tCV("sections.details")}</h3><ul class="details-list">${detailsList}</ul></section>` : "",
     linksList ? `<section><h3 class="section-label">${tCV("sections.links")}</h3><ul class="links-list">${linksList}</ul></section>` : "",
-    skillsMarkup ? `<section><h3 class="section-label">${tCV("sections.skills")}</h3>${skillsMarkup}</section>` : ""
+    skillsMarkup ? `<section><h3 class="section-label">${tCV("sections.skills")}</h3>${skillsMarkup}</section>` : "",
+    languagesMarkup ? `<section><h3 class="section-label">${tCV("sections.languages")}</h3>${languagesMarkup}</section>` : ""
   ]
     .filter(Boolean)
     .join("");
@@ -750,6 +814,7 @@ function renderAuroraTemplate() {
   const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
   const summaryMarkup = getSummaryMarkup();
   const skillsMarkup = renderSkillsMarkup();
+  const languagesMarkup = renderLanguagesMarkup();
 
   const details = [
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
@@ -774,7 +839,8 @@ function renderAuroraTemplate() {
     summaryMarkup ? `<section><h3 class="section-label">${tCV("sections.summary")}</h3>${summaryMarkup}</section>` : "",
     details ? `<section><h3 class="section-label">${tCV("sections.details")}</h3><ul>${details}</ul></section>` : "",
     links ? `<section><h3 class="section-label">${tCV("sections.links")}</h3><ul>${links}</ul></section>` : "",
-    skillsMarkup ? `<section><h3 class="section-label">${tCV("sections.skills")}</h3>${skillsMarkup}</section>` : ""
+    skillsMarkup ? `<section><h3 class="section-label">${tCV("sections.skills")}</h3>${skillsMarkup}</section>` : "",
+    languagesMarkup ? `<section><h3 class="section-label">${tCV("sections.languages")}</h3>${languagesMarkup}</section>` : ""
   ]
     .filter(Boolean)
     .join("");
@@ -892,10 +958,24 @@ function renderAlpineTemplate() {
         .join("")}</ul>`
     : "";
 
+  const languages = getLanguageItems();
+  const showLanguageLevels = toBoolean(state.showLanguageLevels, false);
+  const languagesList = languages.length
+    ? `<ul class="alpine-skills">${languages
+        .map((lang) => {
+          const levelMarkup = showLanguageLevels
+            ? `<span class="alpine-skill-level">${tCV(`levels.${lang.level}`)}</span>`
+            : "";
+          return `<li>${escapeHtml(lang.name)}${levelMarkup}</li>`;
+        })
+        .join("")}</ul>`
+    : "";
+
   const sidebarSections = [
     detailsList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.details")}</h3><ul class="alpine-details">${detailsList}</ul></section>` : "",
     linksList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.links")}</h3><ul class="alpine-links">${linksList}</ul></section>` : "",
-    skillsList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.skills")}</h3>${skillsList}</section>` : ""
+    skillsList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.skills")}</h3>${skillsList}</section>` : "",
+    languagesList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.languages")}</h3>${languagesList}</section>` : ""
   ].filter(Boolean).join("");
 
   const iconProfile = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
@@ -929,6 +1009,7 @@ function renderAtelierTemplate() {
   const experienceMarkup = renderExperienceEntries();
   const educationMarkup = renderEducationEntries();
   const skillsMarkup = renderSkillsMarkup();
+  const languagesMarkup = renderLanguagesMarkup();
 
   const links = [
     state.profile.website ? `<li>${buildLink(state.profile.website)}</li>` : "",
@@ -959,7 +1040,8 @@ function renderAtelierTemplate() {
   const sideCards = [
     details ? `<section class="card"><h3 class="section-label">${tCV("sections.details")}</h3><ul>${details}</ul></section>` : "",
     links ? `<section class="card"><h3 class="section-label">${tCV("sections.links")}</h3><ul>${links}</ul></section>` : "",
-    skillsMarkup ? `<section class="card"><h3 class="section-label">${tCV("sections.skills")}</h3>${skillsMarkup}</section>` : ""
+    skillsMarkup ? `<section class="card"><h3 class="section-label">${tCV("sections.skills")}</h3>${skillsMarkup}</section>` : "",
+    languagesMarkup ? `<section class="card"><h3 class="section-label">${tCV("sections.languages")}</h3>${languagesMarkup}</section>` : ""
   ]
     .filter(Boolean)
     .join("");
@@ -1106,6 +1188,17 @@ function sanitizeSkillItem(item) {
   };
 }
 
+function sanitizeLanguageItem(item) {
+  const source = item && typeof item === "object" ? item : { name: item };
+
+  return {
+    name: toInputText(source?.name),
+    level: normalizeSkillLevel(source?.level),
+    showLevel: toBoolean(source?.showLevel, false),
+    isCollapsed: toBoolean(source?.isCollapsed, false)
+  };
+}
+
 function sanitizeResumeState(rawState) {
   const source = rawState && typeof rawState === "object" ? rawState : {};
   const profileSource = source.profile && typeof source.profile === "object" ? source.profile : {};
@@ -1125,6 +1218,7 @@ function sanitizeResumeState(rawState) {
     theme: source.theme === "dark" ? "dark" : "light",
     showSkills: Boolean(source.showSkills),
     showSkillLevels,
+    showLanguageLevels: toBoolean(source.showLanguageLevels, false),
     nameFontSize: Math.max(60, Math.min(140, Number(source.nameFontSize) || 100)),
     profile: {
       name: toInputText(profileSource.name),
@@ -1139,7 +1233,8 @@ function sanitizeResumeState(rawState) {
     summary: toInputText(source.summary),
     experience: Array.isArray(source.experience) ? source.experience.map((item) => sanitizeExperienceItem(item)) : [],
     education: Array.isArray(source.education) ? source.education.map((item) => sanitizeEducationItem(item)) : [],
-    skills: Array.isArray(source.skills) ? source.skills.map((item) => sanitizeSkillItem(item)) : []
+    skills: Array.isArray(source.skills) ? source.skills.map((item) => sanitizeSkillItem(item)) : [],
+    languages: Array.isArray(source.languages) ? source.languages.map((item) => sanitizeLanguageItem(item)) : []
   };
 }
 
@@ -1180,18 +1275,21 @@ function buildRawResumePayload() {
 }
 
 function resetSkillLevelVisibility(resumeState) {
-  if (!resumeState || !Array.isArray(resumeState.skills)) {
+  if (!resumeState) {
     return resumeState;
   }
 
-  return {
-    ...resumeState,
-    showSkillLevels: false,
-    skills: resumeState.skills.map((item) => ({
-      ...item,
-      showLevel: false
-    }))
-  };
+  const result = { ...resumeState, showSkillLevels: false, showLanguageLevels: false };
+
+  if (Array.isArray(result.skills)) {
+    result.skills = result.skills.map((item) => ({ ...item, showLevel: false }));
+  }
+
+  if (Array.isArray(result.languages)) {
+    result.languages = result.languages.map((item) => ({ ...item, showLevel: false }));
+  }
+
+  return result;
 }
 
 function loadDraftFromLocalStorage() {
@@ -1291,6 +1389,7 @@ function applyImportedState(nextState) {
   state.theme = nextState.theme;
   state.showSkills = nextState.showSkills || nextState.skills.length > 0;
   state.showSkillLevels = toBoolean(nextState.showSkillLevels, false);
+  state.showLanguageLevels = toBoolean(nextState.showLanguageLevels, false);
   state.nameFontSize = nextState.nameFontSize ?? 100;
   state.profile = nextState.profile;
   state.summary = nextState.summary;
@@ -1299,6 +1398,10 @@ function applyImportedState(nextState) {
   state.skills = nextState.skills.map((item) => ({
     ...item,
     showLevel: state.showSkillLevels
+  }));
+  state.languages = (nextState.languages || []).map((item) => ({
+    ...item,
+    showLevel: state.showLanguageLevels
   }));
 }
 
@@ -1387,6 +1490,11 @@ function buildSampleResumeState() {
       { name: "Prototyping", level: "advanced", showLevel: false },
       { name: "Accessibility", level: "advanced", showLevel: false },
       { name: "HTML/CSS", level: "intermediate", showLevel: false }
+    ],
+    languages: [
+      { name: "German", level: "expert", showLevel: false },
+      { name: "English", level: "advanced", showLevel: false },
+      { name: "Spanish", level: "intermediate", showLevel: false }
     ]
   });
 }
@@ -1399,6 +1507,7 @@ function buildEmptyResumeState() {
     theme: state.theme,
     showSkills: false,
     showSkillLevels: false,
+    showLanguageLevels: false,
     profile: {
       name: "",
       title: "",
@@ -1412,7 +1521,8 @@ function buildEmptyResumeState() {
     summary: "",
     experience: [],
     education: [],
-    skills: []
+    skills: [],
+    languages: []
   });
 }
 
@@ -1489,6 +1599,15 @@ function createSkill() {
     name: "",
     level: "intermediate",
     showLevel: toBoolean(state.showSkillLevels, false),
+    isCollapsed: false
+  };
+}
+
+function createLanguage() {
+  return {
+    name: "",
+    level: "intermediate",
+    showLevel: toBoolean(state.showLanguageLevels, false),
     isCollapsed: false
   };
 }
@@ -1771,14 +1890,121 @@ function renderSkillsEditor() {
   refs.skillsList.innerHTML = `${toggleMarkup}${skillsMarkup}${bottomAddBtn}`;
 }
 
+function renderLanguagesEditor() {
+  if (!state.languages.length) {
+    refs.languagesList.innerHTML = `<p class="empty-list">${t("empty.languagesEditor")}</p>`;
+    return;
+  }
+
+  const showLanguageLevels = toBoolean(state.showLanguageLevels, false);
+  const toggleLabel = showLanguageLevels ? t("fields.hideLanguageLevels") : t("fields.showLanguageLevels");
+  const toggleMarkup = `
+    <div class="skills-toolbar">
+      <button
+        type="button"
+        class="skill-level-toggle${showLanguageLevels ? " is-active" : ""}"
+        data-action="toggle-language-levels"
+        aria-pressed="${showLanguageLevels}"
+      >
+        ${toggleLabel}
+      </button>
+    </div>
+  `;
+
+  const languagesMarkup = state.languages
+    .map(
+      (item, index) => {
+        const isCollapsed = toBoolean(item.isCollapsed, false);
+        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
+        const summaryLabel = hasText(item.name) ? escapeHtml(item.name) : t("fields.languageName");
+        const selectedLevel = normalizeSkillLevel(item.level);
+
+        return `
+        <article class="repeat-item skill-item${isCollapsed ? " is-collapsed" : ""}">
+          <div class="skill-item-actions">
+            <button
+              type="button"
+              class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
+              data-action="toggle-language"
+              data-index="${index}"
+              aria-expanded="${!isCollapsed}"
+              aria-label="${toggleLabel}"
+              title="${toggleLabel}"
+            >
+              <span class="collapse-icon" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              class="remove-btn remove-icon-btn"
+              data-action="remove-language"
+              data-index="${index}"
+              aria-label="${t("actions.remove")}"
+              title="${t("actions.remove")}"
+            >
+              <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+          </div>
+
+          ${isCollapsed ? `<p class="skill-collapsed-title">${summaryLabel}</p>` : ""}
+
+          <div class="repeat-item-body"${isCollapsed ? " hidden" : ""}>
+            <div class="repeat-item-grid skill-editor-grid">
+              <label>
+                <span>${t("fields.languageName")}</span>
+                <input type="text" data-list="languages" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" placeholder="${t("placeholders.language")}" />
+              </label>
+              <label>
+                <span>${t("fields.languageLevel")}</span>
+                <div class="custom-select language-level-select" data-index="${index}">
+                  <button
+                    type="button"
+                    class="custom-select-trigger"
+                    data-action="toggle-language-level-select"
+                    data-index="${index}"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                  >
+                    <span class="custom-select-value">${t(`levels.${selectedLevel}`)}</span>
+                    <span class="custom-select-chevron" aria-hidden="true"></span>
+                  </button>
+                  <div class="custom-select-menu" role="listbox">
+                    ${skillLevels
+                      .map(
+                        (level) =>
+                          `<button type="button" class="custom-select-option" role="option" data-action="select-language-level" data-index="${index}" data-value="${level}" aria-selected="${selectedLevel === level}">${t(
+                            `levels.${level}`
+                          )}</button>`
+                      )
+                      .join("")}
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </article>
+      `;
+      }
+    )
+    .join("");
+
+  const bottomAddBtn = `<button type="button" class="add-btn add-btn-bottom" data-action="add-language">${t("actions.addLanguage")}</button>`;
+  refs.languagesList.innerHTML = `${toggleMarkup}${languagesMarkup}${bottomAddBtn}`;
+}
+
 function isResumeBlank() {
   const profileHasContent = Object.values(state.profile).some(hasText);
   const summaryHasContent = hasText(state.summary);
   const experienceHasContent = getExperienceItems().length > 0;
   const educationHasContent = getEducationItems().length > 0;
   const skillsHasContent = getSkillItems().length > 0;
+  const languagesHasContent = getLanguageItems().length > 0;
 
-  return !(profileHasContent || summaryHasContent || experienceHasContent || educationHasContent || skillsHasContent);
+  return !(profileHasContent || summaryHasContent || experienceHasContent || educationHasContent || skillsHasContent || languagesHasContent);
 }
 
 function applyTheme() {
@@ -1908,10 +2134,28 @@ function closeSkillLevelSelects(exceptWrapper = null) {
   });
 }
 
+function setLanguageLevelSelectOpen(wrapper, open) {
+  wrapper.classList.toggle("is-open", open);
+  const trigger = wrapper.querySelector(".custom-select-trigger");
+  if (trigger instanceof HTMLButtonElement) {
+    trigger.setAttribute("aria-expanded", String(open));
+  }
+}
+
+function closeLanguageLevelSelects(exceptWrapper = null) {
+  document.querySelectorAll(".language-level-select.is-open").forEach((wrapper) => {
+    if (exceptWrapper && wrapper === exceptWrapper) {
+      return;
+    }
+    setLanguageLevelSelectOpen(wrapper, false);
+  });
+}
+
 function renderDynamicEditors() {
   renderExperienceEditor();
   renderEducationEditor();
   renderSkillsEditor();
+  renderLanguagesEditor();
 }
 
 function syncEditorPanelHeight() {
@@ -1953,17 +2197,16 @@ function insertPageBreakMarkers() {
   page.style.minHeight = "";
 
   const pageHeight = 1123;
-  const gapHeight = 16;
   const totalHeight = page.scrollHeight;
   if (totalHeight <= pageHeight) return;
 
   const pageCount = Math.ceil(totalHeight / pageHeight);
-  page.style.minHeight = `${pageCount * pageHeight + (pageCount - 1) * gapHeight}px`;
+  page.style.minHeight = `${pageCount * pageHeight}px`;
 
   for (let i = 1; i < pageCount; i++) {
     const line = document.createElement("div");
     line.className = "page-break-line";
-    line.style.top = `${i * pageHeight + (i - 1) * gapHeight}px`;
+    line.style.top = `${i * pageHeight}px`;
     line.dataset.label = `page ${i + 1}`;
     page.appendChild(line);
   }
@@ -2028,6 +2271,10 @@ function handleClick(event) {
     closeSkillLevelSelects();
   }
 
+  if (!event.target.closest(".language-level-select")) {
+    closeLanguageLevelSelects();
+  }
+
   const trigger = event.target.closest("button");
 
   if (!trigger) {
@@ -2070,6 +2317,29 @@ function handleClick(event) {
       renderPreview();
     }
     closeSkillLevelSelects();
+    return;
+  }
+
+  if (trigger.dataset.action === "toggle-language-level-select") {
+    const wrapper = trigger.closest(".language-level-select");
+    if (!wrapper) {
+      return;
+    }
+    const nextOpen = !wrapper.classList.contains("is-open");
+    closeLanguageLevelSelects(wrapper);
+    setLanguageLevelSelectOpen(wrapper, nextOpen);
+    return;
+  }
+
+  if (trigger.dataset.action === "select-language-level") {
+    const index = Number(trigger.getAttribute("data-index"));
+    const value = trigger.getAttribute("data-value");
+    if (!Number.isNaN(index) && value && state.languages[index]) {
+      state.languages[index].level = value;
+      renderDynamicEditors();
+      renderPreview();
+    }
+    closeLanguageLevelSelects();
     return;
   }
 
@@ -2200,6 +2470,40 @@ function handleClick(event) {
   if (trigger.dataset.action === "toggle-skill-levels") {
     state.showSkillLevels = !toBoolean(state.showSkillLevels, false);
     state.skills = state.skills.map((item) => ({ ...item, showLevel: state.showSkillLevels }));
+    renderDynamicEditors();
+    renderPreview();
+    return;
+  }
+
+  if (trigger.id === "add-language-btn" || trigger.dataset.action === "add-language") {
+    state.languages.push(createLanguage());
+    renderDynamicEditors();
+    renderPreview();
+    return;
+  }
+
+  if (trigger.dataset.action === "remove-language") {
+    const index = Number(trigger.dataset.index);
+    if (!Number.isNaN(index)) {
+      state.languages.splice(index, 1);
+      renderDynamicEditors();
+      renderPreview();
+    }
+    return;
+  }
+
+  if (trigger.dataset.action === "toggle-language") {
+    const index = Number(trigger.dataset.index);
+    if (!Number.isNaN(index) && state.languages[index]) {
+      state.languages[index].isCollapsed = !toBoolean(state.languages[index].isCollapsed, false);
+      renderDynamicEditors();
+    }
+    return;
+  }
+
+  if (trigger.dataset.action === "toggle-language-levels") {
+    state.showLanguageLevels = !toBoolean(state.showLanguageLevels, false);
+    state.languages = state.languages.map((item) => ({ ...item, showLevel: state.showLanguageLevels }));
     renderDynamicEditors();
     renderPreview();
     return;
