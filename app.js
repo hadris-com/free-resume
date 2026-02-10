@@ -1580,6 +1580,7 @@ function renderSkillsEditor() {
         const isCollapsed = toBoolean(item.isCollapsed, false);
         const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
         const summaryLabel = hasText(item.name) ? escapeHtml(item.name) : t("fields.skillName");
+        const selectedLevel = normalizeSkillLevel(item.level);
 
         return `
         <article class="repeat-item skill-item${isCollapsed ? " is-collapsed" : ""}">
@@ -1622,16 +1623,29 @@ function renderSkillsEditor() {
               </label>
               <label>
                 <span>${t("fields.skillLevel")}</span>
-                <select data-list="skills" data-index="${index}" data-key="level">
-                  ${skillLevels
-                    .map(
-                      (level) =>
-                        `<option value="${level}" ${
-                          normalizeSkillLevel(item.level) === level ? "selected" : ""
-                        }>${t(`levels.${level}`)}</option>`
-                    )
-                    .join("")}
-                </select>
+                <div class="custom-select skill-level-select" data-index="${index}">
+                  <button
+                    type="button"
+                    class="custom-select-trigger"
+                    data-action="toggle-skill-level-select"
+                    data-index="${index}"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                  >
+                    <span class="custom-select-value">${t(`levels.${selectedLevel}`)}</span>
+                    <span class="custom-select-chevron" aria-hidden="true"></span>
+                  </button>
+                  <div class="custom-select-menu" role="listbox">
+                    ${skillLevels
+                      .map(
+                        (level) =>
+                          `<button type="button" class="custom-select-option" role="option" data-action="select-skill-level" data-index="${index}" data-value="${level}" aria-selected="${selectedLevel === level}">${t(
+                            `levels.${level}`
+                          )}</button>`
+                      )
+                      .join("")}
+                  </div>
+                </div>
               </label>
             </div>
           </div>
@@ -1764,6 +1778,23 @@ function toggleTemplateSelect() {
   refs.templateSelectTrigger.setAttribute("aria-expanded", String(nextOpen));
 }
 
+function setSkillLevelSelectOpen(wrapper, open) {
+  wrapper.classList.toggle("is-open", open);
+  const trigger = wrapper.querySelector(".custom-select-trigger");
+  if (trigger instanceof HTMLButtonElement) {
+    trigger.setAttribute("aria-expanded", String(open));
+  }
+}
+
+function closeSkillLevelSelects(exceptWrapper = null) {
+  document.querySelectorAll(".skill-level-select.is-open").forEach((wrapper) => {
+    if (exceptWrapper && wrapper === exceptWrapper) {
+      return;
+    }
+    setSkillLevelSelectOpen(wrapper, false);
+  });
+}
+
 function renderDynamicEditors() {
   renderExperienceEditor();
   renderEducationEditor();
@@ -1845,6 +1876,10 @@ function handleClick(event) {
     closeTemplateSelect();
   }
 
+  if (!event.target.closest(".skill-level-select")) {
+    closeSkillLevelSelects();
+  }
+
   const trigger = event.target.closest("button");
 
   if (!trigger) {
@@ -1864,6 +1899,29 @@ function handleClick(event) {
       renderPreview();
     }
     closeTemplateSelect();
+    return;
+  }
+
+  if (trigger.dataset.action === "toggle-skill-level-select") {
+    const wrapper = trigger.closest(".skill-level-select");
+    if (!wrapper) {
+      return;
+    }
+    const nextOpen = !wrapper.classList.contains("is-open");
+    closeSkillLevelSelects(wrapper);
+    setSkillLevelSelectOpen(wrapper, nextOpen);
+    return;
+  }
+
+  if (trigger.dataset.action === "select-skill-level") {
+    const index = Number(trigger.getAttribute("data-index"));
+    const value = trigger.getAttribute("data-value");
+    if (!Number.isNaN(index) && value && state.skills[index]) {
+      state.skills[index].level = value;
+      renderDynamicEditors();
+      renderPreview();
+    }
+    closeSkillLevelSelects();
     return;
   }
 
