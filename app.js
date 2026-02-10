@@ -461,9 +461,14 @@ function createResumeFilename() {
 function openPdfDialog() {
   const previousTitle = document.title;
   document.title = createResumeFilename();
+  fillPrintPages();
   window.print();
   document.title = previousTitle;
+  restorePrintPages();
 }
+
+function fillPrintPages() {}
+function restorePrintPages() {}
 
 function normalizeUrl(raw) {
   const value = String(raw ?? "").trim();
@@ -1848,14 +1853,22 @@ function renderPreview() {
 function insertPageBreakMarkers() {
   const page = refs.resumePreview.querySelector(".resume-page");
   if (!page) return;
-  page.querySelectorAll(".page-break-marker").forEach((el) => el.remove());
-  const pageHeight = 1120;
+
+  page.querySelectorAll(".page-break-line").forEach((el) => el.remove());
+
+  const pageHeight = 1123;
   const totalHeight = page.scrollHeight;
-  for (let y = pageHeight; y < totalHeight; y += pageHeight) {
-    const marker = document.createElement("div");
-    marker.className = "page-break-marker";
-    marker.style.top = `${y}px`;
-    page.appendChild(marker);
+  if (totalHeight <= pageHeight) return;
+
+  const pageCount = Math.ceil(totalHeight / pageHeight);
+  page.style.minHeight = `${pageCount * pageHeight}px`;
+
+  for (let i = 1; i < pageCount; i++) {
+    const line = document.createElement("div");
+    line.className = "page-break-line";
+    line.style.top = `${i * pageHeight}px`;
+    line.dataset.label = `page ${i + 1}`;
+    page.appendChild(line);
   }
 }
 
@@ -2145,6 +2158,8 @@ function init() {
   refs.editorPanel.addEventListener("input", handleInput);
   refs.editorPanel.addEventListener("change", handleInput);
   window.addEventListener("resize", syncEditorPanelHeight);
+  window.addEventListener("beforeprint", fillPrintPages);
+  window.addEventListener("afterprint", restorePrintPages);
   document.addEventListener("click", handleClick);
 
   if ("ResizeObserver" in window && refs.previewPanel) {

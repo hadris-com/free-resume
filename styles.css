@@ -769,7 +769,7 @@ button:focus-visible {
 .resume-page {
   position: relative;
   width: min(860px, 100%);
-  min-height: 1120px;
+  min-height: 1123px;
   padding: 2rem;
   border-radius: 18px;
   background: var(--paper-bg);
@@ -777,14 +777,26 @@ button:focus-visible {
   box-shadow: 0 20px 40px rgba(2, 6, 23, 0.2);
 }
 
-.page-break-marker {
+.page-break-line {
   position: absolute;
   left: 0;
   right: 0;
   height: 0;
-  border-top: 1px dashed var(--paper-divider);
   pointer-events: none;
-  z-index: 1;
+  z-index: 2;
+  border-top: 2px dashed rgba(128, 128, 128, 0.4);
+}
+
+.page-break-line::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 0.6rem;
+  top: 0.3rem;
+  font-size: 0.55rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(128, 128, 128, 0.5);
 }
 
 .resume-page h1,
@@ -1584,18 +1596,6 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   margin: 0;
 }
 
-@page :left {
-  margin-top: 1.5cm;
-}
-
-@page :right {
-  margin-top: 1.5cm;
-}
-
-@page :first {
-  margin-top: 0;
-}
-
 @media print {
   /* ---------- Force light palette regardless of theme ---------- */
   :root,
@@ -1614,10 +1614,6 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
     padding: 0 !important;
   }
 
-  body,
-  body.theme-dark {
-    background: transparent !important;
-  }
 
   /* ---------- Force exact color printing on resume ---------- */
   .resume-page,
@@ -1634,7 +1630,8 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   .editor-panel,
   .preview-toolbar,
   .app-footer,
-  .privacy-modal {
+  .privacy-modal,
+  .page-break-line {
     display: none !important;
   }
 
@@ -1666,7 +1663,6 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   /* ---------- A4 page setup ---------- */
   .resume-page {
     width: 100% !important;
-    min-height: 100vh !important;
     margin: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
@@ -1674,15 +1670,13 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
     overflow: visible !important;
   }
 
-  .page-break-marker {
-    display: none !important;
-  }
 
   .entry,
   .template-aurora .timeline li {
     page-break-inside: avoid;
     break-inside: avoid;
   }
+
 
   /* ---------- Stretch inner layouts to fill the page ---------- */
   .template-aurora .resume-page {
