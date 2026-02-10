@@ -29,6 +29,8 @@ const translations = {
     "fields.skillName": "Skill",
     "fields.skillLevel": "Level",
     "fields.showSkillLevel": "Show skill level",
+    "fields.showSkillLevels": "Show skill levels",
+    "fields.hideSkillLevels": "Hide skill levels",
     "fields.cvLanguage": "CV language",
     "actions.darkMode": "Dark mode",
     "actions.lightMode": "Light mode",
@@ -140,6 +142,8 @@ const translations = {
     "fields.skillName": "Habilidad",
     "fields.skillLevel": "Nivel",
     "fields.showSkillLevel": "Mostrar nivel de habilidad",
+    "fields.showSkillLevels": "Mostrar niveles de habilidad",
+    "fields.hideSkillLevels": "Ocultar niveles de habilidad",
     "fields.cvLanguage": "Idioma del CV",
     "actions.darkMode": "Modo oscuro",
     "actions.lightMode": "Modo claro",
@@ -251,6 +255,8 @@ const translations = {
     "fields.skillName": "Skill",
     "fields.skillLevel": "Level",
     "fields.showSkillLevel": "Skill-Level anzeigen",
+    "fields.showSkillLevels": "Skill-Level anzeigen",
+    "fields.hideSkillLevels": "Skill-Level ausblenden",
     "fields.cvLanguage": "CV-Sprache",
     "actions.darkMode": "Dunkelmodus",
     "actions.lightMode": "Hellmodus",
@@ -342,6 +348,7 @@ const state = {
   template: "berlin",
   theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
   showSkills: false,
+  showSkillLevels: false,
   profile: {
     name: "",
     title: "",
@@ -511,8 +518,7 @@ function getSkillItems() {
   return state.skills
     .map((item) => ({
       name: String(item.name ?? "").trim(),
-      level: normalizeSkillLevel(item.level),
-      showLevel: toBoolean(item.showLevel, false)
+      level: normalizeSkillLevel(item.level)
     }))
     .filter((item) => hasText(item.name));
 }
@@ -574,6 +580,7 @@ function renderEducationEntries() {
 
 function renderSkillsMarkup() {
   const skills = getSkillItems();
+  const showLevels = toBoolean(state.showSkillLevels, false);
 
   if (!skills.length) {
     return "";
@@ -583,7 +590,7 @@ function renderSkillsMarkup() {
     <div class="skill-cloud">
       ${skills
         .map((skill) => {
-          const levelMarkup = skill.showLevel
+          const levelMarkup = showLevels
             ? `<span class="skill-chip-level">${tCV(`levels.${skill.level}`)}</span>`
             : "";
 
@@ -986,6 +993,10 @@ function sanitizeResumeState(rawState) {
   const fallbackLang = Object.prototype.hasOwnProperty.call(translations, source.lang) ? source.lang : "en";
   const uiLang = Object.prototype.hasOwnProperty.call(translations, source.uiLang) ? source.uiLang : fallbackLang;
   const cvLang = Object.prototype.hasOwnProperty.call(translations, source.cvLang) ? source.cvLang : fallbackLang;
+  const legacyShowLevels = Array.isArray(source.skills)
+    ? source.skills.some((item) => toBoolean(item?.showLevel, false))
+    : false;
+  const showSkillLevels = toBoolean(source.showSkillLevels, legacyShowLevels);
 
   return {
     lang: uiLang,
@@ -994,6 +1005,7 @@ function sanitizeResumeState(rawState) {
     template: typeof source.template === "string" && templateCatalog[source.template] ? source.template : "berlin",
     theme: source.theme === "dark" ? "dark" : "light",
     showSkills: Boolean(source.showSkills),
+    showSkillLevels,
     profile: {
       name: toInputText(profileSource.name),
       title: toInputText(profileSource.title),
@@ -1054,6 +1066,7 @@ function resetSkillLevelVisibility(resumeState) {
 
   return {
     ...resumeState,
+    showSkillLevels: false,
     skills: resumeState.skills.map((item) => ({
       ...item,
       showLevel: false
@@ -1149,11 +1162,15 @@ function applyImportedState(nextState) {
   state.template = nextState.template;
   state.theme = nextState.theme;
   state.showSkills = nextState.showSkills || nextState.skills.length > 0;
+  state.showSkillLevels = toBoolean(nextState.showSkillLevels, false);
   state.profile = nextState.profile;
   state.summary = nextState.summary;
   state.experience = nextState.experience;
   state.education = nextState.education;
-  state.skills = nextState.skills;
+  state.skills = nextState.skills.map((item) => ({
+    ...item,
+    showLevel: state.showSkillLevels
+  }));
 }
 
 function buildSampleResumeState() {
@@ -1163,6 +1180,7 @@ function buildSampleResumeState() {
     template: state.template,
     theme: state.theme,
     showSkills: true,
+    showSkillLevels: false,
     profile: {
       name: "Lena Hoffmann",
       title: "Senior Product Designer",
@@ -1251,6 +1269,7 @@ function buildEmptyResumeState() {
     template: state.template,
     theme: state.theme,
     showSkills: false,
+    showSkillLevels: false,
     profile: {
       name: "",
       title: "",
@@ -1338,7 +1357,7 @@ function createSkill() {
   return {
     name: "",
     level: "intermediate",
-    showLevel: false
+    showLevel: toBoolean(state.showSkillLevels, false)
   };
 }
 
@@ -1443,7 +1462,22 @@ function renderSkillsEditor() {
     return;
   }
 
-  refs.skillsList.innerHTML = state.skills
+  const showSkillLevels = toBoolean(state.showSkillLevels, false);
+  const toggleLabel = showSkillLevels ? t("fields.hideSkillLevels") : t("fields.showSkillLevels");
+  const toggleMarkup = `
+    <div class="skills-toolbar">
+      <button
+        type="button"
+        class="skill-level-toggle${showSkillLevels ? " is-active" : ""}"
+        data-action="toggle-skill-levels"
+        aria-pressed="${showSkillLevels}"
+      >
+        ${toggleLabel}
+      </button>
+    </div>
+  `;
+
+  const skillsMarkup = state.skills
     .map(
       (item, index) => `
         <article class="repeat-item">
@@ -1473,19 +1507,12 @@ function renderSkillsEditor() {
               </select>
             </label>
           </div>
-          <button
-            type="button"
-            class="skill-level-toggle${toBoolean(item.showLevel, false) ? " is-active" : ""}"
-            data-action="toggle-skill-level"
-            data-index="${index}"
-            aria-pressed="${toBoolean(item.showLevel, false)}"
-          >
-            ${t("fields.showSkillLevel")}
-          </button>
         </article>
       `
     )
     .join("");
+
+  refs.skillsList.innerHTML = `${toggleMarkup}${skillsMarkup}`;
 }
 
 function isResumeBlank() {
@@ -1657,7 +1684,6 @@ function handleClick(event) {
 
   if (trigger.id === "add-skill-btn") {
     state.skills.push(createSkill());
-    state.skills[state.skills.length - 1].showLevel = false;
     renderDynamicEditors();
     renderPreview();
     return;
@@ -1716,13 +1742,11 @@ function handleClick(event) {
     return;
   }
 
-  if (trigger.dataset.action === "toggle-skill-level") {
-    const index = Number(trigger.dataset.index);
-    if (!Number.isNaN(index) && state.skills[index]) {
-      state.skills[index].showLevel = !toBoolean(state.skills[index].showLevel, false);
-      renderDynamicEditors();
-      renderPreview();
-    }
+  if (trigger.dataset.action === "toggle-skill-levels") {
+    state.showSkillLevels = !toBoolean(state.showSkillLevels, false);
+    state.skills = state.skills.map((item) => ({ ...item, showLevel: state.showSkillLevels }));
+    renderDynamicEditors();
+    renderPreview();
     return;
   }
 
