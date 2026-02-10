@@ -1471,10 +1471,17 @@ function renderEducationEditor() {
 
   refs.educationList.innerHTML = state.education
     .map(
-      (item, index) => `
+      (item, index) => {
+        const degreeLabel = hasText(item.degree) ? escapeHtml(item.degree) : "";
+        const schoolLabel = hasText(item.school) ? escapeHtml(item.school) : "";
+        const titleLabel = degreeLabel && schoolLabel
+          ? `${degreeLabel} ${t("labels.at")} ${schoolLabel}`
+          : degreeLabel || schoolLabel || `${t("fields.education")} ${index + 1}`;
+
+        return `
         <article class="repeat-item">
           <div class="repeat-item-head">
-            <p class="repeat-item-title">${t("fields.education")} ${index + 1}</p>
+            <p class="repeat-item-title">${titleLabel}</p>
             <button
               type="button"
               class="remove-icon-btn"
@@ -1515,7 +1522,8 @@ function renderEducationEditor() {
             </label>
           </div>
         </article>
-      `
+      `;
+      }
     )
     .join("");
 }
