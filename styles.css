@@ -334,6 +334,10 @@ button:focus-visible {
   display: none;
 }
 
+.panel-section.is-collapsed .section-heading-actions .add-btn {
+  display: none;
+}
+
 .add-btn,
 .remove-btn {
   border: 1px solid transparent;
