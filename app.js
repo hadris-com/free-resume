@@ -1460,7 +1460,7 @@ function renderExperienceEditor() {
 
             <label>
               <span>${t("fields.highlights")}</span>
-              <textarea rows="3" data-list="experience" data-index="${index}" data-key="bullets">${escapeHtml(item.bullets)}</textarea>
+            <textarea rows="3" class="highlights-textarea" data-list="experience" data-index="${index}" data-key="bullets">${escapeHtml(item.bullets)}</textarea>
             </label>
           </div>
         </article>

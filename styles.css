@@ -384,6 +384,10 @@ textarea {
   min-height: 5.2rem;
 }
 
+.highlights-textarea {
+  min-height: 10.4rem;
+}
+
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
