@@ -656,6 +656,8 @@ function renderExperienceEntries() {
     return "";
   }
 
+  const entryClass = state.template === "alpine" ? "entry entry-marked" : "entry";
+
   return entries
     .map((item) => {
       const role = hasText(item.role) ? item.role : tCV("placeholders.jobTitle");
@@ -666,7 +668,7 @@ function renderExperienceEntries() {
         .filter(Boolean);
 
       return `
-        <article class="entry">
+        <article class="${entryClass}">
           <div class="entry-topline">
             <h4 class="entry-title">${escapeHtml(role)}</h4>
             <span class="entry-meta">${escapeHtml(formatRange(item.start, item.end))}</span>
@@ -686,13 +688,15 @@ function renderEducationEntries() {
     return "";
   }
 
+  const entryClass = state.template === "alpine" ? "entry entry-marked" : "entry";
+
   return entries
     .map((item) => {
       const degree = hasText(item.degree) ? item.degree : tCV("placeholders.degree");
       const schoolLocation = [item.school, item.location].filter(hasText).join(" · ");
 
       return `
-        <article class="entry">
+        <article class="${entryClass}">
           <div class="entry-topline">
             <h4 class="entry-title">${escapeHtml(degree)}</h4>
             <span class="entry-meta">${escapeHtml(formatRange(item.start, item.end))}</span>
