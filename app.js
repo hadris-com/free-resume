@@ -506,6 +506,17 @@ function buildLink(value) {
   return `<a href="${escapeAttr(href)}" target="_blank" rel="noreferrer">${escapeHtml(cleaned)}</a>`;
 }
 
+function buildPhoneMarkup(value) {
+  const cleaned = String(value ?? "").trim();
+  if (!cleaned) {
+    return "";
+  }
+
+  const phoneIcon = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5.11 3h3a2 2 0 0 1 2 1.72c.12.86.32 1.7.59 2.5a2 2 0 0 1-.45 2.11L9 10.91a16 16 0 0 0 4.09 4.09l1.58-1.25a2 2 0 0 1 2.11-.45c.8.27 1.64.47 2.5.59A2 2 0 0 1 22 16.92z"/></svg>`;
+
+  return `<span class="contact-meta contact-phone"><span class="contact-icon">${phoneIcon}</span><span>${escapeHtml(cleaned)}</span></span>`;
+}
+
 function extractSocialHandle(url, type) {
   try {
     const parsed = new URL(url);
@@ -682,7 +693,7 @@ function renderBerlinTemplate() {
 
   const detailsList = [
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
-    state.profile.phone ? `<li>${buildLink(state.profile.phone)}</li>` : "",
+    state.profile.phone ? `<li>${buildPhoneMarkup(state.profile.phone)}</li>` : "",
     state.profile.location ? `<li>${escapeHtml(state.profile.location)}</li>` : ""
   ]
     .filter(Boolean)
@@ -735,9 +746,12 @@ function renderAuroraTemplate() {
   const summaryMarkup = getSummaryMarkup();
   const skillsMarkup = renderSkillsMarkup();
 
-  const details = [state.profile.email, state.profile.phone, state.profile.location]
-    .filter(hasText)
-    .map((value) => `<li>${buildLink(value)}</li>`)
+  const details = [
+    state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
+    state.profile.phone ? `<li>${buildPhoneMarkup(state.profile.phone)}</li>` : "",
+    state.profile.location ? `<li>${escapeHtml(state.profile.location)}</li>` : ""
+  ]
+    .filter(Boolean)
     .join("");
 
   const links = [
@@ -838,14 +852,18 @@ function renderAlpineTemplate() {
   const metaParts = [escapeHtml(title)].filter(Boolean).join("");
 
   const locationIcon = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+  const phoneIcon = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5.11 3h3a2 2 0 0 1 2 1.72c.12.86.32 1.7.59 2.5a2 2 0 0 1-.45 2.11L9 10.91a16 16 0 0 0 4.09 4.09l1.58-1.25a2 2 0 0 1 2.11-.45c.8.27 1.64.47 2.5.59A2 2 0 0 1 22 16.92z"/></svg>`;
   const locationMarkup = hasText(location)
     ? `<span class="alpine-pin">${locationIcon}<span class="alpine-detail-meta">${escapeHtml(location)}</span></span>`
+    : "";
+  const phoneMarkup = hasText(state.profile.phone)
+    ? `<span class="alpine-pin alpine-phone">${phoneIcon}<span class="alpine-detail-meta">${escapeHtml(state.profile.phone)}</span></span>`
     : "";
 
   const detailsList = [
     locationMarkup ? `<li>${locationMarkup}</li>` : "",
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
-    state.profile.phone ? `<li>${buildLink(state.profile.phone)}</li>` : ""
+    phoneMarkup ? `<li>${phoneMarkup}</li>` : ""
   ].filter(Boolean).join("");
 
   const linksList = [
@@ -915,9 +933,12 @@ function renderAtelierTemplate() {
     .filter(Boolean)
     .join("");
 
-  const details = [state.profile.email, state.profile.phone, state.profile.location]
-    .filter(hasText)
-    .map((value) => `<li>${buildLink(value)}</li>`)
+  const details = [
+    state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
+    state.profile.phone ? `<li>${buildPhoneMarkup(state.profile.phone)}</li>` : "",
+    state.profile.location ? `<li>${escapeHtml(state.profile.location)}</li>` : ""
+  ]
+    .filter(Boolean)
     .join("");
 
   const mainCards = [

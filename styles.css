@@ -1448,6 +1448,20 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   text-decoration: none;
 }
 
+.resume-preview .contact-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+}
+
+.resume-preview .contact-icon svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  display: block;
+}
+
 /* Main: icon headings */
 .template-alpine .alpine-icon-heading {
   font-family: var(--font-mono);
