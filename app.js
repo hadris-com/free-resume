@@ -985,7 +985,8 @@ function sanitizeEducationItem(item) {
     school: toInputText(item?.school),
     location: toInputText(item?.location),
     start: toInputText(item?.start),
-    end: toInputText(item?.end)
+    end: toInputText(item?.end),
+    isCollapsed: toBoolean(item?.isCollapsed, false)
   };
 }
 
@@ -1363,7 +1364,8 @@ function createEducation() {
     school: "",
     location: "",
     start: "",
-    end: ""
+    end: "",
+    isCollapsed: false
   };
 }
 
@@ -1394,7 +1396,7 @@ function renderExperienceEditor() {
           : roleLabel || companyLabel || `${t("fields.experience")} ${index + 1}`;
 
         return `
-        <article class="repeat-item">
+        <article class="repeat-item${isCollapsed ? " is-collapsed" : ""}">
           <div class="repeat-item-head">
             <p class="repeat-item-title">${titleLabel}</p>
             <div class="repeat-item-actions">
@@ -1472,6 +1474,8 @@ function renderEducationEditor() {
   refs.educationList.innerHTML = state.education
     .map(
       (item, index) => {
+        const isCollapsed = toBoolean(item.isCollapsed, false);
+        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
         const degreeLabel = hasText(item.degree) ? escapeHtml(item.degree) : "";
         const schoolLabel = hasText(item.school) ? escapeHtml(item.school) : "";
         const titleLabel = degreeLabel && schoolLabel
@@ -1479,47 +1483,62 @@ function renderEducationEditor() {
           : degreeLabel || schoolLabel || `${t("fields.education")} ${index + 1}`;
 
         return `
-        <article class="repeat-item">
+        <article class="repeat-item${isCollapsed ? " is-collapsed" : ""}">
           <div class="repeat-item-head">
             <p class="repeat-item-title">${titleLabel}</p>
-            <button
-              type="button"
-              class="remove-icon-btn"
-              data-action="remove-education"
-              data-index="${index}"
-              aria-label="${t("actions.remove")}"
-              title="${t("actions.remove")}"
-            >
-              <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                  fill="currentColor"
-                />
-              </svg>
-            </button>
+            <div class="repeat-item-actions">
+              <button
+                type="button"
+                class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
+                data-action="toggle-education"
+                data-index="${index}"
+                aria-expanded="${!isCollapsed}"
+                aria-label="${toggleLabel}"
+                title="${toggleLabel}"
+              >
+                <span class="collapse-icon" aria-hidden="true"></span>
+              </button>
+              <button
+                type="button"
+                class="remove-icon-btn"
+                data-action="remove-education"
+                data-index="${index}"
+                aria-label="${t("actions.remove")}"
+                title="${t("actions.remove")}"
+              >
+                <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path
+                    d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
 
-          <div class="repeat-item-grid">
-            <label>
-              <span>${t("fields.degree")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="degree" value="${escapeAttr(item.degree)}" placeholder="${t("placeholders.degree")}" />
-            </label>
-            <label>
-              <span>${t("fields.school")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="school" value="${escapeAttr(item.school)}" placeholder="${t("placeholders.school")}" />
-            </label>
-            <label>
-              <span>${t("fields.itemLocation")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${t("placeholders.location")}" />
-            </label>
-            <label>
-              <span>${t("fields.startDate")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2018" />
-            </label>
-            <label>
-              <span>${t("fields.endDate")}</span>
-              <input type="text" data-list="education" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="2022" />
-            </label>
+          <div class="repeat-item-body"${isCollapsed ? " hidden" : ""}>
+            <div class="repeat-item-grid">
+              <label>
+                <span>${t("fields.degree")}</span>
+                <input type="text" data-list="education" data-index="${index}" data-key="degree" value="${escapeAttr(item.degree)}" placeholder="${t("placeholders.degree")}" />
+              </label>
+              <label>
+                <span>${t("fields.school")}</span>
+                <input type="text" data-list="education" data-index="${index}" data-key="school" value="${escapeAttr(item.school)}" placeholder="${t("placeholders.school")}" />
+              </label>
+              <label>
+                <span>${t("fields.itemLocation")}</span>
+                <input type="text" data-list="education" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${t("placeholders.location")}" />
+              </label>
+              <label>
+                <span>${t("fields.startDate")}</span>
+                <input type="text" data-list="education" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2018" />
+              </label>
+              <label>
+                <span>${t("fields.endDate")}</span>
+                <input type="text" data-list="education" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="2022" />
+              </label>
+            </div>
           </div>
         </article>
       `;
@@ -1557,7 +1576,7 @@ function renderSkillsEditor() {
         const summaryLabel = hasText(item.name) ? escapeHtml(item.name) : t("fields.skillName");
 
         return `
-        <article class="repeat-item skill-item">
+        <article class="repeat-item skill-item${isCollapsed ? " is-collapsed" : ""}">
           <div class="skill-item-actions">
             <button
               type="button"
@@ -1841,6 +1860,15 @@ function handleClick(event) {
       state.education.splice(index, 1);
       renderDynamicEditors();
       renderPreview();
+    }
+    return;
+  }
+
+  if (trigger.dataset.action === "toggle-education") {
+    const index = Number(trigger.dataset.index);
+    if (!Number.isNaN(index) && state.education[index]) {
+      state.education[index].isCollapsed = !toBoolean(state.education[index].isCollapsed, false);
+      renderDynamicEditors();
     }
     return;
   }

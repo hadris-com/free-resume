@@ -386,6 +386,10 @@ button:focus-visible {
   gap: 0.5rem;
 }
 
+.repeat-item.is-collapsed .repeat-item-body {
+  display: none;
+}
+
 .repeat-item-grid + label {
   display: block;
   margin-top: 0.55rem;
