@@ -357,7 +357,7 @@ const skillLevels = ["beginner", "intermediate", "advanced", "expert"];
 const state = {
   uiLang: "en",
   cvLang: "en",
-  template: "berlin",
+  template: "alpine",
   theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
   showSkills: false,
   showSkillLevels: false,
@@ -1020,7 +1020,7 @@ function sanitizeResumeState(rawState) {
     lang: uiLang,
     uiLang,
     cvLang,
-    template: typeof source.template === "string" && templateCatalog[source.template] ? source.template : "berlin",
+    template: typeof source.template === "string" && templateCatalog[source.template] ? source.template : "alpine",
     theme: source.theme === "dark" ? "dark" : "light",
     showSkills: Boolean(source.showSkills),
     showSkillLevels,
@@ -1820,7 +1820,7 @@ function syncEditorPanelHeight() {
 }
 
 function renderPreview() {
-  const templateConfig = templateCatalog[state.template] ?? templateCatalog.berlin;
+  const templateConfig = templateCatalog[state.template] ?? templateCatalog.alpine;
   refs.resumePreview.className =
     `resume-preview ${templateConfig.baseClass}${templateConfig.variantClass ? ` ${templateConfig.variantClass}` : ""}`;
   refs.resumePreview.innerHTML = templateConfig.render();
