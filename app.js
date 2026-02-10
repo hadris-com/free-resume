@@ -1448,16 +1448,16 @@ function renderExperienceEditor() {
           </div>
 
           <div class="repeat-item-body"${isCollapsed ? " hidden" : ""}>
-            <div class="repeat-item-grid">
-              <label>
+            <div class="repeat-item-grid experience-grid">
+              <label class="field-span-2">
                 <span>${t("fields.jobTitle")}</span>
                 <input type="text" data-list="experience" data-index="${index}" data-key="role" value="${escapeAttr(item.role)}" placeholder="${t("placeholders.jobTitle")}" />
               </label>
-              <label>
+              <label class="field-span-2">
                 <span>${t("fields.company")}</span>
                 <input type="text" data-list="experience" data-index="${index}" data-key="company" value="${escapeAttr(item.company)}" placeholder="${t("placeholders.company")}" />
               </label>
-              <label>
+              <label class="field-span-2">
                 <span>${t("fields.itemLocation")}</span>
                 <input type="text" data-list="experience" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${t("placeholders.location")}" />
               </label>
@@ -1473,7 +1473,7 @@ function renderExperienceEditor() {
 
             <label>
               <span>${t("fields.highlights")}</span>
-              <textarea rows="3" data-list="experience" data-index="${index}" data-key="bullets">${escapeHtml(item.bullets)}</textarea>
+            <textarea rows="3" class="highlights-textarea" data-list="experience" data-index="${index}" data-key="bullets">${escapeHtml(item.bullets)}</textarea>
             </label>
           </div>
         </article>

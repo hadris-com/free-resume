@@ -384,6 +384,10 @@ textarea {
   min-height: 5.2rem;
 }
 
+.highlights-textarea {
+  min-height: 10.4rem;
+}
+
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
@@ -547,6 +551,14 @@ button:focus-visible {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.5rem;
+}
+
+.repeat-item-grid.experience-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.repeat-item-grid .field-span-2 {
+  grid-column: span 2;
 }
 
 .repeat-item.is-collapsed .repeat-item-body {
