@@ -303,6 +303,25 @@ button:focus-visible {
   margin-bottom: 0.45rem;
 }
 
+.section-heading-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.section-heading-row > label {
+  margin-bottom: 0;
+}
+
+.section-toggle {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.panel-section.is-collapsed .section-body {
+  display: none;
+}
+
 .add-btn,
 .remove-btn {
   border: 1px solid transparent;

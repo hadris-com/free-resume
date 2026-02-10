@@ -361,6 +361,7 @@ const state = {
   theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
   showSkills: false,
   showSkillLevels: false,
+  collapsedSections: {},
   profile: {
     name: "",
     title: "",
@@ -1684,6 +1685,28 @@ function applyI18n() {
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
   });
+
+  syncSectionToggles();
+}
+
+function syncSectionToggles() {
+  document.querySelectorAll(".panel-section[data-section]").forEach((section) => {
+    const sectionId = section.getAttribute("data-section");
+    if (!sectionId) {
+      return;
+    }
+    const isCollapsed = toBoolean(state.collapsedSections?.[sectionId], false);
+    section.classList.toggle("is-collapsed", isCollapsed);
+
+    const toggle = section.querySelector(".section-toggle");
+    if (toggle instanceof HTMLButtonElement) {
+      const label = isCollapsed ? t("actions.expand") : t("actions.collapse");
+      toggle.classList.toggle("is-collapsed", isCollapsed);
+      toggle.setAttribute("aria-expanded", String(!isCollapsed));
+      toggle.setAttribute("aria-label", label);
+      toggle.setAttribute("title", label);
+    }
+  });
 }
 
 function renderDynamicEditors() {
@@ -1900,6 +1923,17 @@ function handleClick(event) {
     return;
   }
 
+  if (trigger.dataset.action === "toggle-section") {
+    const sectionId = trigger.getAttribute("data-section");
+    if (!sectionId) {
+      return;
+    }
+    const nextCollapsed = !toBoolean(state.collapsedSections?.[sectionId], false);
+    state.collapsedSections = { ...state.collapsedSections, [sectionId]: nextCollapsed };
+    syncSectionToggles();
+    return;
+  }
+
   if (trigger.id === "pdf-btn") {
     openPdfDialog();
     return;
@@ -1930,6 +1964,7 @@ function init() {
   renderDynamicEditors();
   renderPreview();
   syncSampleButtonState();
+  syncSectionToggles();
 
   refs.rawFileInput?.addEventListener("change", handleRawFileChange);
   refs.editorPanel.addEventListener("input", handleInput);

@@ -50,96 +50,174 @@
 
       <main class="workspace">
         <aside class="editor-panel" aria-label="Resume editor">
-          <section class="panel-section">
-            <label for="template-select" data-i18n="fields.template">Template</label>
-            <select id="template-select">
-              <option value="berlin" data-i18n="templates.berlin">Berlin Classic</option>
-              <option value="aurora" data-i18n="templates.aurora">Aurora Timeline</option>
-              <option value="atelier" data-i18n="templates.atelier">Atelier Grid</option>
-              <option value="noir" data-i18n="templates.noir">Noir Minimal</option>
-              <option value="fjord" data-i18n="templates.fjord">Fjord Split</option>
-              <option value="solstice" data-i18n="templates.solstice">Solstice Banner</option>
-              <option value="bastion" data-i18n="templates.bastion">Bastion Ledger</option>
-              <option value="slate" data-i18n="templates.slate">Slate Mono</option>
-              <option value="kernel" data-i18n="templates.kernel">Kernel Systems</option>
-              <option value="alpine" data-i18n="templates.alpine">Alpine Classic</option>
-            </select>
+          <section class="panel-section" data-section="template">
+            <div class="section-heading-row">
+              <label for="template-select" data-i18n="fields.template">Template</label>
+              <button
+                type="button"
+                class="collapse-btn section-toggle"
+                data-action="toggle-section"
+                data-section="template"
+                aria-expanded="true"
+              >
+                <span class="collapse-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="section-body">
+              <select id="template-select">
+                <option value="berlin" data-i18n="templates.berlin">Berlin Classic</option>
+                <option value="aurora" data-i18n="templates.aurora">Aurora Timeline</option>
+                <option value="atelier" data-i18n="templates.atelier">Atelier Grid</option>
+                <option value="noir" data-i18n="templates.noir">Noir Minimal</option>
+                <option value="fjord" data-i18n="templates.fjord">Fjord Split</option>
+                <option value="solstice" data-i18n="templates.solstice">Solstice Banner</option>
+                <option value="bastion" data-i18n="templates.bastion">Bastion Ledger</option>
+                <option value="slate" data-i18n="templates.slate">Slate Mono</option>
+                <option value="kernel" data-i18n="templates.kernel">Kernel Systems</option>
+                <option value="alpine" data-i18n="templates.alpine">Alpine Classic</option>
+              </select>
+            </div>
           </section>
 
-          <section class="panel-section">
-            <h2 data-i18n="fields.identity">Identity</h2>
-            <div class="field-grid">
+          <section class="panel-section" data-section="identity">
+            <div class="section-heading-row">
+              <h2 data-i18n="fields.identity">Identity</h2>
+              <button
+                type="button"
+                class="collapse-btn section-toggle"
+                data-action="toggle-section"
+                data-section="identity"
+                aria-expanded="true"
+              >
+                <span class="collapse-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="section-body">
+              <div class="field-grid">
+                <label>
+                  <span data-i18n="fields.fullName">Full name</span>
+                  <input type="text" data-profile="name" data-i18n-placeholder="placeholders.name" />
+                </label>
+                <label>
+                  <span data-i18n="fields.headline">Professional title</span>
+                  <input type="text" data-profile="title" data-i18n-placeholder="placeholders.title" />
+                </label>
+                <label>
+                  <span data-i18n="fields.email">Email</span>
+                  <input type="email" data-profile="email" data-i18n-placeholder="placeholders.email" />
+                </label>
+                <label>
+                  <span data-i18n="fields.phone">Phone</span>
+                  <input type="text" data-profile="phone" data-i18n-placeholder="placeholders.phone" />
+                </label>
+                <label>
+                  <span data-i18n="fields.location">Location</span>
+                  <input type="text" data-profile="location" data-i18n-placeholder="placeholders.location" />
+                </label>
+                <label>
+                  <span data-i18n="fields.website">Website</span>
+                  <input type="text" data-profile="website" data-i18n-placeholder="placeholders.website" />
+                </label>
+                <label>
+                  <span data-i18n="fields.linkedin">LinkedIn</span>
+                  <input type="text" data-profile="linkedin" data-i18n-placeholder="placeholders.linkedin" />
+                </label>
+                <label>
+                  <span data-i18n="fields.github">GitHub</span>
+                  <input type="text" data-profile="github" data-i18n-placeholder="placeholders.github" />
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel-section" data-section="summary">
+            <div class="section-heading-row">
+              <h2 data-i18n="fields.summary">Summary</h2>
+              <button
+                type="button"
+                class="collapse-btn section-toggle"
+                data-action="toggle-section"
+                data-section="summary"
+                aria-expanded="true"
+              >
+                <span class="collapse-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="section-body">
               <label>
-                <span data-i18n="fields.fullName">Full name</span>
-                <input type="text" data-profile="name" data-i18n-placeholder="placeholders.name" />
-              </label>
-              <label>
-                <span data-i18n="fields.headline">Professional title</span>
-                <input type="text" data-profile="title" data-i18n-placeholder="placeholders.title" />
-              </label>
-              <label>
-                <span data-i18n="fields.email">Email</span>
-                <input type="email" data-profile="email" data-i18n-placeholder="placeholders.email" />
-              </label>
-              <label>
-                <span data-i18n="fields.phone">Phone</span>
-                <input type="text" data-profile="phone" data-i18n-placeholder="placeholders.phone" />
-              </label>
-              <label>
-                <span data-i18n="fields.location">Location</span>
-                <input type="text" data-profile="location" data-i18n-placeholder="placeholders.location" />
-              </label>
-              <label>
-                <span data-i18n="fields.website">Website</span>
-                <input type="text" data-profile="website" data-i18n-placeholder="placeholders.website" />
-              </label>
-              <label>
-                <span data-i18n="fields.linkedin">LinkedIn</span>
-                <input type="text" data-profile="linkedin" data-i18n-placeholder="placeholders.linkedin" />
-              </label>
-              <label>
-                <span data-i18n="fields.github">GitHub</span>
-                <input type="text" data-profile="github" data-i18n-placeholder="placeholders.github" />
+                <span data-i18n="fields.summaryHint">Write a short professional overview.</span>
+                <textarea rows="4" data-field="summary" data-i18n-placeholder="placeholders.summary"></textarea>
               </label>
             </div>
           </section>
 
-          <section class="panel-section">
-            <h2 data-i18n="fields.summary">Summary</h2>
-            <label>
-              <span data-i18n="fields.summaryHint">Write a short professional overview.</span>
-              <textarea rows="4" data-field="summary" data-i18n-placeholder="placeholders.summary"></textarea>
-            </label>
-          </section>
-
-          <section class="panel-section">
+          <section class="panel-section" data-section="experience">
             <div class="section-heading-row">
               <h2 data-i18n="fields.experience">Experience</h2>
-              <button id="add-experience-btn" type="button" class="add-btn" data-i18n="actions.addExperience">
-                Add experience
-              </button>
+              <div class="section-heading-actions">
+                <button id="add-experience-btn" type="button" class="add-btn" data-i18n="actions.addExperience">
+                  Add experience
+                </button>
+                <button
+                  type="button"
+                  class="collapse-btn section-toggle"
+                  data-action="toggle-section"
+                  data-section="experience"
+                  aria-expanded="true"
+                >
+                  <span class="collapse-icon" aria-hidden="true"></span>
+                </button>
+              </div>
             </div>
-            <div id="experience-list" class="repeat-list"></div>
+            <div class="section-body">
+              <div id="experience-list" class="repeat-list"></div>
+            </div>
           </section>
 
-          <section class="panel-section">
+          <section class="panel-section" data-section="education">
             <div class="section-heading-row">
               <h2 data-i18n="fields.education">Education</h2>
-              <button id="add-education-btn" type="button" class="add-btn" data-i18n="actions.addEducation">
-                Add education
-              </button>
+              <div class="section-heading-actions">
+                <button id="add-education-btn" type="button" class="add-btn" data-i18n="actions.addEducation">
+                  Add education
+                </button>
+                <button
+                  type="button"
+                  class="collapse-btn section-toggle"
+                  data-action="toggle-section"
+                  data-section="education"
+                  aria-expanded="true"
+                >
+                  <span class="collapse-icon" aria-hidden="true"></span>
+                </button>
+              </div>
             </div>
-            <div id="education-list" class="repeat-list"></div>
+            <div class="section-body">
+              <div id="education-list" class="repeat-list"></div>
+            </div>
           </section>
 
-          <section class="panel-section" id="skills-editor-section">
+          <section class="panel-section" id="skills-editor-section" data-section="skills">
             <div class="section-heading-row">
               <h2 data-i18n="fields.skills">Skills</h2>
-              <button id="add-skill-btn" type="button" class="add-btn" data-i18n="actions.addSkill">
-                Add skill
-              </button>
+              <div class="section-heading-actions">
+                <button id="add-skill-btn" type="button" class="add-btn" data-i18n="actions.addSkill">
+                  Add skill
+                </button>
+                <button
+                  type="button"
+                  class="collapse-btn section-toggle"
+                  data-action="toggle-section"
+                  data-section="skills"
+                  aria-expanded="true"
+                >
+                  <span class="collapse-icon" aria-hidden="true"></span>
+                </button>
+              </div>
             </div>
-            <div id="skills-list" class="repeat-list"></div>
+            <div class="section-body">
+              <div id="skills-list" class="repeat-list"></div>
+            </div>
           </section>
         </aside>
 
