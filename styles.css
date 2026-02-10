@@ -1407,6 +1407,39 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   text-decoration-color: var(--paper-divider);
 }
 
+.resume-preview a.social-icon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.resume-preview .social-link-text {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--paper-divider);
+}
+
+.resume-preview .social-link-icon svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  display: block;
+}
+
+.template-berlin a.social-icon-link {
+  border-bottom: none;
+}
+
+.template-berlin .social-link-text {
+  border-bottom: 1px solid var(--paper-divider);
+  text-decoration: none;
+}
+
+.template-alpine .alpine-sidebar a.social-icon-link {
+  text-decoration: none;
+}
+
 /* Main: icon headings */
 .template-alpine .alpine-icon-heading {
   font-family: var(--font-mono);
