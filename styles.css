@@ -781,10 +781,11 @@ button:focus-visible {
   position: absolute;
   left: 0;
   right: 0;
-  height: 0;
+  height: 1rem;
   pointer-events: none;
   z-index: 2;
   border-top: 2px dashed rgba(128, 128, 128, 0.4);
+  background: var(--paper-bg, #fdfdfc);
 }
 
 .page-break-line::after {
@@ -1648,6 +1649,10 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 
 @page {
   size: A4;
+  margin: 8mm 0 0 0;
+}
+
+@page :first {
   margin: 0;
 }
 
@@ -1718,6 +1723,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   /* ---------- A4 page setup ---------- */
   .resume-page {
     width: 100% !important;
+    min-height: auto !important;
     margin: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;

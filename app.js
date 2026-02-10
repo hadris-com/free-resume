@@ -1947,18 +1947,20 @@ function insertPageBreakMarkers() {
   if (!page) return;
 
   page.querySelectorAll(".page-break-line").forEach((el) => el.remove());
+  page.style.minHeight = "";
 
   const pageHeight = 1123;
+  const gapHeight = 16;
   const totalHeight = page.scrollHeight;
   if (totalHeight <= pageHeight) return;
 
   const pageCount = Math.ceil(totalHeight / pageHeight);
-  page.style.minHeight = `${pageCount * pageHeight}px`;
+  page.style.minHeight = `${pageCount * pageHeight + (pageCount - 1) * gapHeight}px`;
 
   for (let i = 1; i < pageCount; i++) {
     const line = document.createElement("div");
     line.className = "page-break-line";
-    line.style.top = `${i * pageHeight}px`;
+    line.style.top = `${i * pageHeight + (i - 1) * gapHeight}px`;
     line.dataset.label = `page ${i + 1}`;
     page.appendChild(line);
   }
