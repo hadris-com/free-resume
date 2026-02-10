@@ -18,6 +18,7 @@
   --panel-shadow: 0 20px 60px rgba(3, 16, 46, 0.14);
   --text-main: #171717;
   --text-soft: #50545f;
+  --text-muted: color-mix(in srgb, var(--text-soft), var(--panel-surface) 40%);
   --accent: #0e637a;
   --accent-soft: rgba(14, 99, 122, 0.14);
   --input-bg: rgba(255, 255, 255, 0.95);
@@ -44,6 +45,7 @@ body.theme-dark {
   --panel-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
   --text-main: #f8fafc;
   --text-soft: #b1bccd;
+  --text-muted: color-mix(in srgb, var(--text-soft), var(--panel-surface) 20%);
   --accent: #64d2f2;
   --accent-soft: rgba(100, 210, 242, 0.18);
   --input-bg: rgba(2, 6, 16, 0.6);
@@ -234,13 +236,19 @@ body.theme-dark .theme-dot {
   margin-top: 0.8rem;
 }
 
-.panel-section h2,
-.panel-section label > span,
-.panel-section > label {
+.panel-section h2 {
   display: block;
   margin-bottom: 0.4rem;
   color: var(--text-main);
   font-weight: 600;
+}
+
+.panel-section label > span,
+.panel-section > label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .panel-section h2 {
