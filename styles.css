@@ -290,6 +290,18 @@ select {
 
 .custom-select {
   position: relative;
+  margin-top: 0.34rem;
+}
+
+.skill-editor-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.34rem;
+}
+
+.skill-editor-grid input,
+.skill-editor-grid .custom-select {
+  margin-top: 0;
 }
 
 .custom-select-trigger {
