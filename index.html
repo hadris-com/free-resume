@@ -121,10 +121,16 @@
             </div>
             <div class="section-body">
               <div class="field-grid">
-                <label>
-                  <span data-i18n="fields.fullName">Full name</span>
-                  <input type="text" data-profile="name" data-i18n-placeholder="placeholders.name" />
-                </label>
+                <div class="name-field-group">
+                  <label class="name-field-label">
+                    <span data-i18n="fields.fullName">Full name</span>
+                    <input type="text" data-profile="name" data-i18n-placeholder="placeholders.name" />
+                  </label>
+                  <div class="name-size-inline">
+                    <input id="name-size-slider" type="range" min="60" max="140" step="5" value="100" />
+                    <output id="name-size-output" for="name-size-slider">100%</output>
+                  </div>
+                </div>
                 <label>
                   <span data-i18n="fields.headline">Professional title</span>
                   <input type="text" data-profile="title" data-i18n-placeholder="placeholders.title" />

@@ -398,6 +398,39 @@ button:focus-visible {
   gap: 0.6rem;
 }
 
+.name-field-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4rem;
+  grid-column: 1 / -1;
+}
+
+.name-field-label {
+  flex: 65;
+  min-width: 0;
+}
+
+.name-size-inline {
+  flex: 35;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.name-size-inline input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.name-size-inline output {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--muted);
+  min-width: 3.5ch;
+}
+
 .section-heading-row {
   display: flex;
   align-items: center;
@@ -444,6 +477,10 @@ button:focus-visible {
 .remove-btn {
   background: transparent;
   border-color: var(--input-border);
+}
+
+.add-btn-bottom {
+  margin-top: 0.4rem;
 }
 
 .repeat-list {
@@ -718,6 +755,7 @@ button:focus-visible {
 }
 
 .resume-page {
+  position: relative;
   width: min(860px, 100%);
   min-height: 1120px;
   padding: 2rem;
@@ -725,6 +763,23 @@ button:focus-visible {
   background: var(--paper-bg);
   color: var(--paper-text);
   box-shadow: 0 20px 40px rgba(2, 6, 23, 0.2);
+}
+
+.resume-page::after {
+  content: "";
+  position: absolute;
+  top: 1120px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent calc(1120px - 1px),
+    var(--paper-divider) calc(1120px - 1px),
+    var(--paper-divider) 1120px
+  );
 }
 
 .resume-page h1,
@@ -818,6 +873,11 @@ button:focus-visible {
 }
 
 /* Template 1: Berlin Classic */
+.template-berlin .resume-page {
+  display: flex;
+  flex-direction: column;
+}
+
 .template-berlin .resume-header {
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--paper-divider);
@@ -825,7 +885,7 @@ button:focus-visible {
 
 .template-berlin .resume-name {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 3.7vw, 2.75rem);
+  font-size: calc(clamp(2rem, 3.7vw, 2.75rem) * var(--name-font-scale, 1));
   letter-spacing: -0.02em;
 }
 
@@ -839,6 +899,7 @@ button:focus-visible {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 1.15rem;
+  flex: 1;
 }
 
 .template-berlin .resume-columns.single-column {
@@ -871,6 +932,8 @@ button:focus-visible {
 .template-aurora .resume-page {
   padding: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .template-aurora .aurora-banner {
@@ -889,7 +952,7 @@ body.theme-dark .template-aurora .aurora-banner {
 
 .template-aurora .aurora-name {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 3vw, 2.6rem);
+  font-size: calc(clamp(2rem, 3vw, 2.6rem) * var(--name-font-scale, 1));
   letter-spacing: -0.02em;
 }
 
@@ -902,7 +965,7 @@ body.theme-dark .template-aurora .aurora-banner {
   display: grid;
   grid-template-columns: 1.1fr 1.8fr;
   gap: 0;
-  min-height: 920px;
+  flex: 1;
 }
 
 .template-aurora .aurora-shell.single-pane {
@@ -977,7 +1040,7 @@ body.theme-dark .template-atelier .resume-page {
 .template-atelier .atelier-name {
   font-family: var(--font-display);
   letter-spacing: -0.02em;
-  font-size: clamp(1.8rem, 3vw, 2.45rem);
+  font-size: calc(clamp(1.8rem, 3vw, 2.45rem) * var(--name-font-scale, 1));
 }
 
 .template-atelier .atelier-role {
@@ -1223,6 +1286,8 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 /* Template 4: Alpine Classic */
 .template-alpine .resume-page {
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .template-alpine .alpine-header {
@@ -1233,7 +1298,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 
 .template-alpine .alpine-name {
   font-family: var(--font-display);
-  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+  font-size: calc(clamp(1.8rem, 3.2vw, 2.4rem) * var(--name-font-scale, 1));
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -1258,7 +1323,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .template-alpine .alpine-body {
   display: grid;
   grid-template-columns: 1fr 2.2fr;
-  min-height: 920px;
+  flex: 1;
 }
 
 .template-alpine .alpine-body.alpine-single {
@@ -1508,6 +1573,18 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   margin: 0;
 }
 
+@page :left {
+  margin-top: 1.5cm;
+}
+
+@page :right {
+  margin-top: 1.5cm;
+}
+
+@page :first {
+  margin-top: 0;
+}
+
 @media print {
   /* ---------- Force light palette regardless of theme ---------- */
   :root,
@@ -1584,6 +1661,10 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
     box-shadow: none !important;
     color: var(--paper-text) !important;
     overflow: visible !important;
+  }
+
+  .resume-page::after {
+    display: none !important;
   }
 
   .entry,

@@ -13,6 +13,7 @@ const translations = {
     "fields.website": "Website",
     "fields.linkedin": "LinkedIn",
     "fields.github": "GitHub",
+    "fields.nameSize": "Name size",
     "fields.summary": "Summary",
     "fields.summaryHint": "Write a short professional overview.",
     "fields.experience": "Experience",
@@ -62,7 +63,7 @@ const translations = {
     "sections.experience": "Employment History",
     "sections.education": "Education",
     "sections.skills": "Skills",
-    "sections.details": "Details",
+    "sections.details": "Contact",
     "sections.links": "Links",
     "empty.resumeStart": "Your resume starts blank. Add content from the editor.",
     "empty.experience": "Add your first experience entry.",
@@ -130,6 +131,7 @@ const translations = {
     "fields.website": "Sitio web",
     "fields.linkedin": "LinkedIn",
     "fields.github": "GitHub",
+    "fields.nameSize": "Tamano del nombre",
     "fields.summary": "Resumen",
     "fields.summaryHint": "Escribe una breve presentacion profesional.",
     "fields.experience": "Experiencia",
@@ -179,7 +181,7 @@ const translations = {
     "sections.experience": "Historial laboral",
     "sections.education": "Educacion",
     "sections.skills": "Habilidades",
-    "sections.details": "Detalles",
+    "sections.details": "Contacto",
     "sections.links": "Enlaces",
     "empty.resumeStart": "Tu curriculum comienza en blanco. Agrega contenido desde el editor.",
     "empty.experience": "Agrega tu primera experiencia.",
@@ -247,6 +249,7 @@ const translations = {
     "fields.website": "Webseite",
     "fields.linkedin": "LinkedIn",
     "fields.github": "GitHub",
+    "fields.nameSize": "Namengrosse",
     "fields.summary": "Zusammenfassung",
     "fields.summaryHint": "Schreibe eine kurze professionelle Zusammenfassung.",
     "fields.experience": "Erfahrung",
@@ -296,7 +299,7 @@ const translations = {
     "sections.experience": "Berufserfahrung",
     "sections.education": "Ausbildung",
     "sections.skills": "Skills",
-    "sections.details": "Details",
+    "sections.details": "Kontakt",
     "sections.links": "Links",
     "empty.resumeStart": "Dein Lebenslauf startet leer. Inhalte im Editor hinzufugen.",
     "empty.experience": "Fuge deinen ersten Erfahrungs-Eintrag hinzu.",
@@ -361,6 +364,7 @@ const state = {
   theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
   showSkills: false,
   showSkillLevels: false,
+  nameFontSize: 100,
   collapsedSections: {},
   profile: {
     name: "",
@@ -396,6 +400,8 @@ const refs = {
   skillsList: document.getElementById("skills-list"),
   blankPill: document.getElementById("blank-pill"),
   editorPanel: document.querySelector(".editor-panel"),
+  nameSizeSlider: document.getElementById("name-size-slider"),
+  nameSizeOutput: document.getElementById("name-size-output"),
   privacyModal: document.getElementById("privacy-modal")
 };
 
@@ -775,15 +781,12 @@ function renderAlpineTemplate() {
   const experienceMarkup = renderExperienceEntries();
   const educationMarkup = renderEducationEntries();
 
-  const metaParts = [
-    escapeHtml(title),
-    hasText(location)
-      ? `<span class="alpine-pin"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> ${escapeHtml(location)}</span>`
-      : ""
-  ].filter(Boolean).join("&nbsp;&nbsp;&nbsp;");
+  const metaParts = [escapeHtml(title)].filter(Boolean).join("");
+
+  const locationIcon = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
 
   const detailsList = [
-    state.profile.location ? `<li>${escapeHtml(state.profile.location)}</li>` : "",
+    state.profile.location ? `<li><span class="alpine-pin">${locationIcon} <span style="font-size:0.84rem">${escapeHtml(state.profile.location)}</span></span></li>` : "",
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
     state.profile.phone ? `<li>${buildLink(state.profile.phone)}</li>` : ""
   ].filter(Boolean).join("");
@@ -1025,6 +1028,7 @@ function sanitizeResumeState(rawState) {
     theme: source.theme === "dark" ? "dark" : "light",
     showSkills: Boolean(source.showSkills),
     showSkillLevels,
+    nameFontSize: Math.max(60, Math.min(140, Number(source.nameFontSize) || 100)),
     profile: {
       name: toInputText(profileSource.name),
       title: toInputText(profileSource.title),
@@ -1170,6 +1174,13 @@ function syncStaticInputsFromState() {
     input.value = state.profile[key] ?? "";
   });
 
+  if (refs.nameSizeSlider) {
+    refs.nameSizeSlider.value = String(state.nameFontSize);
+  }
+  if (refs.nameSizeOutput) {
+    refs.nameSizeOutput.textContent = `${state.nameFontSize}%`;
+  }
+
   const summaryField = refs.editorPanel.querySelector("[data-field='summary']");
   if (summaryField instanceof HTMLTextAreaElement) {
     summaryField.value = state.summary;
@@ -1183,6 +1194,7 @@ function applyImportedState(nextState) {
   state.theme = nextState.theme;
   state.showSkills = nextState.showSkills || nextState.skills.length > 0;
   state.showSkillLevels = toBoolean(nextState.showSkillLevels, false);
+  state.nameFontSize = nextState.nameFontSize ?? 100;
   state.profile = nextState.profile;
   state.summary = nextState.summary;
   state.experience = nextState.experience;
@@ -1655,7 +1667,8 @@ function renderSkillsEditor() {
     )
     .join("");
 
-  refs.skillsList.innerHTML = `${toggleMarkup}${skillsMarkup}`;
+  const bottomAddBtn = `<button type="button" class="add-btn add-btn-bottom" data-action="add-skill">${t("actions.addSkill")}</button>`;
+  refs.skillsList.innerHTML = `${toggleMarkup}${skillsMarkup}${bottomAddBtn}`;
 }
 
 function isResumeBlank() {
@@ -1825,6 +1838,7 @@ function renderPreview() {
   refs.resumePreview.className =
     `resume-preview ${templateConfig.baseClass}${templateConfig.variantClass ? ` ${templateConfig.variantClass}` : ""}`;
   refs.resumePreview.innerHTML = templateConfig.render();
+  refs.resumePreview.style.setProperty("--name-font-scale", state.nameFontSize / 100);
   refs.blankPill.hidden = !isResumeBlank();
   syncEditorPanelHeight();
   saveDraftToLocalStorage();
@@ -1834,6 +1848,15 @@ function handleInput(event) {
   const target = event.target;
 
   if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement)) {
+    return;
+  }
+
+  if (target.id === "name-size-slider") {
+    state.nameFontSize = Number(target.value) || 100;
+    if (refs.nameSizeOutput) {
+      refs.nameSizeOutput.textContent = `${state.nameFontSize}%`;
+    }
+    renderPreview();
     return;
   }
 
@@ -1962,7 +1985,7 @@ function handleClick(event) {
     return;
   }
 
-  if (trigger.id === "add-skill-btn") {
+  if (trigger.id === "add-skill-btn" || trigger.dataset.action === "add-skill") {
     state.skills.push(createSkill());
     renderDynamicEditors();
     renderPreview();
