@@ -1325,6 +1325,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   padding: 0;
   display: flex;
   flex-direction: column;
+  font-family: "Source Sans Pro", "Segoe UI", sans-serif;
 }
 
 .template-alpine .alpine-header {
@@ -1334,10 +1335,15 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .template-alpine .alpine-name {
-  font-family: var(--font-display);
+  font-family: "Oswald", "Arial Narrow", sans-serif;
   font-size: calc(clamp(1.8rem, 3.2vw, 2.4rem) * var(--name-font-scale, 1));
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.template-alpine .alpine-dot-heading,
+.template-alpine .alpine-icon-heading {
+  font-family: "Oswald", "Arial Narrow", sans-serif;
 }
 
 .template-alpine .alpine-meta {
