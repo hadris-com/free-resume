@@ -1603,6 +1603,10 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .template-alpine .entry-title {
   font-size: 0.9rem;
   font-weight: 600;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.25rem;
 }
 
 .template-alpine .entry-role {
@@ -1611,6 +1615,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 
 .template-alpine .entry-meta-inline {
   font-size: 0.82rem;
+  margin-left: 0;
 }
 
 .template-alpine .entry-meta.entry-meta-block {
