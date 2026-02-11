@@ -661,7 +661,12 @@ function renderExperienceEntries() {
   return entries
     .map((item) => {
       const role = hasText(item.role) ? item.role : tCV("placeholders.jobTitle");
-      const companyLocation = [item.company, item.location].filter(hasText).join(" · ");
+      const company = hasText(item.company) ? item.company : "";
+      const location = hasText(item.location) ? item.location : "";
+      const metaInline = company
+        ? `${tCV("labels.at")} ${company}${location ? ` · ${location}` : ""}`
+        : location;
+      const dateRange = formatRange(item.start, item.end);
       const bullets = String(item.bullets ?? "")
         .split("\n")
         .map((line) => line.trim())
@@ -669,11 +674,11 @@ function renderExperienceEntries() {
 
       return `
         <article class="${entryClass}">
-          <div class="entry-topline">
-            <h4 class="entry-title">${escapeHtml(role)}</h4>
-            <span class="entry-meta">${escapeHtml(formatRange(item.start, item.end))}</span>
-          </div>
-          ${companyLocation ? `<p class="entry-company">${escapeHtml(companyLocation)}</p>` : ""}
+          <h4 class="entry-title">
+            <span class="entry-role">${escapeHtml(role)}</span>
+            ${metaInline ? `<span class="entry-meta-inline">${escapeHtml(metaInline)}</span>` : ""}
+          </h4>
+          ${dateRange ? `<p class="entry-meta entry-meta-block">${escapeHtml(dateRange)}</p>` : ""}
           ${bullets.length ? `<ul>${bullets.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}</ul>` : ""}
         </article>
       `;
@@ -856,7 +861,12 @@ function renderAuroraTemplate() {
             <ul class="timeline">${experienceEntries
               .map((item) => {
                 const role = hasText(item.role) ? item.role : tCV("placeholders.jobTitle");
-                const meta = [item.company, item.location].filter(hasText).join(" · ");
+                const company = hasText(item.company) ? item.company : "";
+                const location = hasText(item.location) ? item.location : "";
+                const metaInline = company
+                  ? `${tCV("labels.at")} ${company}${location ? ` · ${location}` : ""}`
+                  : location;
+                const dateRange = formatRange(item.start, item.end);
                 const bullets = String(item.bullets ?? "")
                   .split("\n")
                   .map((line) => line.trim())
@@ -864,11 +874,11 @@ function renderAuroraTemplate() {
 
                 return `
                         <li>
-                          <div class="entry-topline">
-                            <h4 class="entry-title">${escapeHtml(role)}</h4>
-                            <span class="entry-meta">${escapeHtml(formatRange(item.start, item.end))}</span>
-                          </div>
-                          ${meta ? `<p class="entry-company">${escapeHtml(meta)}</p>` : ""}
+                          <h4 class="entry-title">
+                            <span class="entry-role">${escapeHtml(role)}</span>
+                            ${metaInline ? `<span class="entry-meta-inline">${escapeHtml(metaInline)}</span>` : ""}
+                          </h4>
+                          ${dateRange ? `<p class="entry-meta entry-meta-block">${escapeHtml(dateRange)}</p>` : ""}
                           ${bullets.length ? `<ul>${bullets.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>` : ""}
                         </li>
                       `;

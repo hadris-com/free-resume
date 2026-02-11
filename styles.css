@@ -851,6 +851,21 @@ button:focus-visible {
   color: var(--paper-text);
 }
 
+.entry-role {
+  font-weight: 700;
+}
+
+.entry-meta-inline {
+  margin-left: 0.4rem;
+  font-weight: 500;
+  color: var(--paper-muted);
+  font-size: 0.88rem;
+}
+
+.entry-meta-block {
+  margin: 0.08rem 0 0;
+}
+
 .entry-company {
   margin: 0.1rem 0 0;
   color: var(--paper-muted);
@@ -862,6 +877,11 @@ button:focus-visible {
   letter-spacing: 0.03em;
   color: var(--paper-muted);
   white-space: nowrap;
+}
+
+.entry-meta.entry-meta-block {
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
 }
 
 .skill-cloud {
@@ -1578,6 +1598,25 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 
 .template-alpine .entry-meta {
   font-size: 0.76rem;
+}
+
+.template-alpine .entry-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.template-alpine .entry-role {
+  font-weight: 600;
+}
+
+.template-alpine .entry-meta-inline {
+  font-size: 0.82rem;
+}
+
+.template-alpine .entry-meta.entry-meta-block {
+  color: var(--paper-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
 }
 
 /* ---- Footer ---- */
