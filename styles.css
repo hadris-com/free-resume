@@ -292,26 +292,6 @@ select {
   padding: 0.54rem 0.66rem;
 }
 
-.date-picker-wrapper {
-  display: flex;
-  gap: 0.4rem;
-  margin-block-start: 0.34rem;
-}
-
-.date-picker-wrapper select {
-  margin-block-start: 0;
-  flex: 1;
-}
-
-.date-picker-month {
-  flex: 0 0 5.5rem;
-}
-
-.date-picker-year {
-  flex: 1;
-  min-width: 5rem;
-}
-
 .custom-select {
   position: relative;
   margin-block-start: 0.34rem;
