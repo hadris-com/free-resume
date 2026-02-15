@@ -1448,7 +1448,7 @@ function buildSampleResumeState() {
         role: "Senior Product Designer",
         company: "Nordlicht Cloud",
         location: "Berlin, Germany",
-        start: "2022",
+        start: "Jan 2022",
         end: "Present",
         bullets:
           "Led redesign of onboarding flow, reducing drop-off by 29%.\nBuilt a component library with design tokens used across 4 product teams.\nPartnered with PM and engineering to ship roadmap features every sprint."
@@ -1457,8 +1457,8 @@ function buildSampleResumeState() {
         role: "Product Designer",
         company: "Blueframe Labs",
         location: "Berlin, Germany",
-        start: "2018",
-        end: "2022",
+        start: "Mar 2018",
+        end: "Dec 2021",
         bullets:
           "Created responsive UX patterns for dashboard, billing, and analytics modules.\nRan usability tests and converted findings into prioritized product improvements.\nDefined interaction specs and states to speed up implementation handoff."
       },
@@ -1466,8 +1466,8 @@ function buildSampleResumeState() {
         role: "UX Designer",
         company: "Helio Commerce",
         location: "Berlin, Germany",
-        start: "2016",
-        end: "2018",
+        start: "Jun 2016",
+        end: "Feb 2018",
         bullets:
           "Redesigned checkout and account flows, improving conversion and repeat purchases.\nCollaborated with engineers to implement a reusable UI kit across web surfaces.\nMapped customer journeys and identified friction points across the funnel."
       },
@@ -1475,8 +1475,8 @@ function buildSampleResumeState() {
         role: "Visual Designer",
         company: "Brightside Agency",
         location: "Berlin, Germany",
-        start: "2014",
-        end: "2016",
+        start: "Sep 2014",
+        end: "May 2016",
         bullets:
           "Delivered brand and digital design systems for early-stage technology clients.\nProduced high-fidelity web and marketing assets with clear design rationale.\nSupported stakeholder workshops to align design direction and business goals."
       },
@@ -1484,8 +1484,8 @@ function buildSampleResumeState() {
         role: "Design Intern",
         company: "Studio Mitte",
         location: "Berlin, Germany",
-        start: "2013",
-        end: "2014",
+        start: "Jun 2013",
+        end: "Aug 2014",
         bullets:
           "Assisted with wireframes, prototypes, and visual explorations for client projects.\nPrepared design specs and asset exports for front-end implementation.\nContributed to user interviews and synthesized notes into actionable insights."
       }
@@ -1495,8 +1495,8 @@ function buildSampleResumeState() {
         degree: "B.A. in Interaction Design",
         school: "Berlin University of the Arts",
         location: "Berlin, Germany",
-        start: "2012",
-        end: "2016"
+        start: "Sep 2012",
+        end: "Jun 2016"
       }
     ],
     skills: [
@@ -1695,7 +1695,7 @@ function renderExperienceEditor() {
               </label>
               <label>
                 <span>${t("fields.startDate")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2022" />
+                <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="Jan 2025" />
               </label>
               <label>
                 <span>${t("fields.endDate")}</span>
