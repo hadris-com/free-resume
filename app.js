@@ -619,6 +619,68 @@ function formatRange(start, end) {
   return cleanEnd;
 }
 
+function parseDateString(dateStr) {
+  if (!dateStr || dateStr.trim() === "") {
+    return { month: "", year: "" };
+  }
+
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const parts = dateStr.trim().split(/\s+/);
+  
+  if (parts.length === 1) {
+    // Just a year
+    return { month: "", year: parts[0] };
+  } else if (parts.length === 2) {
+    // Month Year format
+    const monthPart = parts[0];
+    const yearPart = parts[1];
+    return { month: monthPart, year: yearPart };
+  }
+  
+  return { month: "", year: "" };
+}
+
+function formatDateFromParts(month, year) {
+  if (month && year) {
+    return `${month} ${year}`;
+  } else if (year) {
+    return year;
+  } else if (month) {
+    return month;
+  }
+  return "";
+}
+
+function renderDatePicker(listName, index, key, value, allowPresent = false) {
+  const { month, year } = parseDateString(value);
+  const currentYear = new Date().getFullYear();
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  const monthOptions = ['<option value="">-</option>']
+    .concat(months.map(m => `<option value="${m}"${month === m ? ' selected' : ''}>${m}</option>`))
+    .join('');
+  
+  const yearOptions = ['<option value="">-</option>']
+    .concat(allowPresent ? ['<option value="Present"' + (value === "Present" ? ' selected' : '') + '>Present</option>'] : [])
+    .concat(
+      Array.from({ length: 60 }, (_, i) => currentYear + 5 - i).map(
+        y => `<option value="${y}"${year == y ? ' selected' : ''}>${y}</option>`
+      )
+    )
+    .join('');
+  
+  return `
+    <div class="date-picker-wrapper">
+      <select class="date-picker-month" data-list="${listName}" data-index="${index}" data-key="${key}" data-date-part="month" aria-label="Month">
+        ${monthOptions}
+      </select>
+      <select class="date-picker-year" data-list="${listName}" data-index="${index}" data-key="${key}" data-date-part="year" aria-label="Year">
+        ${yearOptions}
+      </select>
+    </div>
+  `;
+}
+
 function getSummaryMarkup() {
   return hasText(state.summary) ? `<p>${formatTextBlock(state.summary)}</p>` : "";
 }
@@ -1699,11 +1761,11 @@ function renderExperienceEditor() {
               </label>
               <label>
                 <span>${t("fields.startDate")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="Jan 2025" />
+                ${renderDatePicker("experience", index, "start", item.start, false)}
               </label>
               <label>
                 <span>${t("fields.endDate")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="${t("placeholders.present")}" />
+                ${renderDatePicker("experience", index, "end", item.end, true)}
               </label>
             </div>
 
@@ -1789,11 +1851,11 @@ function renderEducationEditor() {
               </label>
               <label>
                 <span>${t("fields.startDate")}</span>
-                <input type="text" data-list="education" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2018" />
+                ${renderDatePicker("education", index, "start", item.start, false)}
               </label>
               <label>
                 <span>${t("fields.endDate")}</span>
-                <input type="text" data-list="education" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="2022" />
+                ${renderDatePicker("education", index, "end", item.end, false)}
               </label>
             </div>
           </div>
@@ -2266,9 +2328,32 @@ function handleInput(event) {
     const key = target.dataset.key;
 
     if (!Number.isNaN(index) && state[listName]?.[index]) {
-      state[listName][index][key] =
-        target instanceof HTMLInputElement && target.type === "checkbox" ? target.checked : target.value;
-      renderPreview();
+      // Handle date picker parts specially
+      if (target.dataset.datePart) {
+        const datePart = target.dataset.datePart; // "month" or "year"
+        const wrapper = target.closest('.date-picker-wrapper');
+        if (wrapper) {
+          const monthSelect = wrapper.querySelector('[data-date-part="month"]');
+          const yearSelect = wrapper.querySelector('[data-date-part="year"]');
+          
+          if (monthSelect && yearSelect) {
+            const monthValue = monthSelect.value;
+            const yearValue = yearSelect.value;
+            
+            // Special case: if year is "Present", set the entire value to "Present"
+            if (yearValue === "Present") {
+              state[listName][index][key] = "Present";
+            } else {
+              state[listName][index][key] = formatDateFromParts(monthValue, yearValue);
+            }
+            renderPreview();
+          }
+        }
+      } else {
+        state[listName][index][key] =
+          target instanceof HTMLInputElement && target.type === "checkbox" ? target.checked : target.value;
+        renderPreview();
+      }
     }
     return;
   }
