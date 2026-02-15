@@ -2557,6 +2557,9 @@ function handleClick(event) {
     if (!sectionId) {
       return;
     }
+    if (sectionId === "template") {
+      return;
+    }
     const nextCollapsed = !toBoolean(state.collapsedSections?.[sectionId], false);
     state.collapsedSections = { ...state.collapsedSections, [sectionId]: nextCollapsed };
     syncSectionToggles();
