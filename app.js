@@ -52,6 +52,8 @@ const translations = {
     "actions.uploadRaw": "Upload raw CV",
     "actions.downloadRaw": "Download raw CV",
     "actions.pdf": "Print PDF",
+    "actions.moveLocationToHeader": "Move location to header",
+    "actions.moveLocationToDetails": "Move location to contact",
     "errors.invalidRawFile": "Could not import file. Choose a valid Free Resume JSON file.",
     "templates.berlin": "Berlin Classic",
     "templates.aurora": "Aurora Timeline",
@@ -179,6 +181,8 @@ const translations = {
     "actions.uploadRaw": "Subir CV raw",
     "actions.downloadRaw": "Descargar CV raw",
     "actions.pdf": "Guardar PDF",
+    "actions.moveLocationToHeader": "Mover ubicación al encabezado",
+    "actions.moveLocationToDetails": "Mover ubicación a contacto",
     "errors.invalidRawFile": "No se pudo importar el archivo. Elige un JSON valido de Free Resume.",
     "templates.berlin": "Clasica Berlin",
     "templates.aurora": "Linea de tiempo Aurora",
@@ -306,6 +310,8 @@ const translations = {
     "actions.uploadRaw": "Raw-CV hochladen",
     "actions.downloadRaw": "Raw-CV herunterladen",
     "actions.pdf": "Als PDF speichern",
+    "actions.moveLocationToHeader": "Ort in die Kopfzeile verschieben",
+    "actions.moveLocationToDetails": "Ort zu Kontakt verschieben",
     "errors.invalidRawFile": "Datei konnte nicht importiert werden. Bitte eine gultige Free Resume JSON-Datei auswahlen.",
     "templates.berlin": "Berlin Klassisch",
     "templates.aurora": "Aurora Zeitleiste",
@@ -393,6 +399,7 @@ const state = {
   showSkillLevels: false,
   showLanguageLevels: false,
   nameFontSize: 100,
+  alpineLocationInHeader: false,
   collapsedSections: {},
   profile: {
     name: "",
@@ -933,20 +940,24 @@ function renderAlpineTemplate() {
   const summaryMarkup = getSummaryMarkup();
   const experienceMarkup = renderExperienceEntries();
   const educationMarkup = renderEducationEntries();
+  const locationInHeader = toBoolean(state.alpineLocationInHeader, false);
 
   const metaParts = [escapeHtml(title)].filter(Boolean).join("");
 
   const locationIcon = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
   const phoneIcon = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5.11 3h3a2 2 0 0 1 2 1.72c.12.86.32 1.7.59 2.5a2 2 0 0 1-.45 2.11L9 10.91a16 16 0 0 0 4.09 4.09l1.58-1.25a2 2 0 0 1 2.11-.45c.8.27 1.64.47 2.5.59A2 2 0 0 1 22 16.92z"/></svg>`;
-  const locationMarkup = hasText(location)
-    ? `<span class="alpine-pin">${locationIcon}<span class="alpine-detail-meta">${escapeHtml(location)}</span></span>`
+  const locationToggleLabel = locationInHeader
+    ? t("actions.moveLocationToDetails")
+    : t("actions.moveLocationToHeader");
+  const locationButton = hasText(location)
+    ? `<button type="button" class="alpine-pin alpine-location-toggle has-tooltip${locationInHeader ? " is-header" : ""}" data-action="toggle-location-placement" data-tooltip="${escapeAttr(locationToggleLabel)}" aria-label="${escapeAttr(locationToggleLabel)}">${locationIcon}<span class="alpine-detail-meta">${escapeHtml(location)}</span></button>`
     : "";
   const phoneMarkup = hasText(state.profile.phone)
     ? `<span class="alpine-pin alpine-phone">${phoneIcon}<span class="alpine-detail-meta">${escapeHtml(state.profile.phone)}</span></span>`
     : "";
 
   const detailsList = [
-    locationMarkup ? `<li>${locationMarkup}</li>` : "",
+    !locationInHeader && locationButton ? `<li>${locationButton}</li>` : "",
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
     phoneMarkup ? `<li>${phoneMarkup}</li>` : ""
   ].filter(Boolean).join("");
@@ -1013,6 +1024,7 @@ function renderAlpineTemplate() {
       <header class="alpine-header">
         <h1 class="alpine-name">${escapeHtml(name)}</h1>
         <p class="alpine-meta">${metaParts}</p>
+        ${locationInHeader && locationButton ? `<p class="alpine-meta alpine-meta-location">${locationButton}</p>` : ""}
       </header>
       <div class="alpine-body${sidebarSections && mainSections ? "" : " alpine-single"}">
         ${sidebarSections ? `<aside class="alpine-sidebar">${sidebarSections}</aside>` : ""}
@@ -1238,6 +1250,7 @@ function sanitizeResumeState(rawState) {
     showSkillLevels,
     showLanguageLevels: toBoolean(source.showLanguageLevels, false),
     nameFontSize: Math.max(60, Math.min(140, Number(source.nameFontSize) || 100)),
+    alpineLocationInHeader: toBoolean(source.alpineLocationInHeader, false),
     profile: {
       name: toInputText(profileSource.name),
       title: toInputText(profileSource.title),
@@ -1409,6 +1422,7 @@ function applyImportedState(nextState) {
   state.showSkillLevels = toBoolean(nextState.showSkillLevels, false);
   state.showLanguageLevels = toBoolean(nextState.showLanguageLevels, false);
   state.nameFontSize = nextState.nameFontSize ?? 100;
+  state.alpineLocationInHeader = toBoolean(nextState.alpineLocationInHeader, false);
   state.profile = nextState.profile;
   state.summary = nextState.summary;
   state.experience = nextState.experience;
@@ -1431,6 +1445,7 @@ function buildSampleResumeState() {
     theme: state.theme,
     showSkills: true,
     showSkillLevels: false,
+    alpineLocationInHeader: state.alpineLocationInHeader,
     profile: {
       name: "Lena Hoffmann",
       title: "Senior Product Designer",
@@ -1526,6 +1541,7 @@ function buildEmptyResumeState() {
     showSkills: false,
     showSkillLevels: false,
     showLanguageLevels: false,
+    alpineLocationInHeader: state.alpineLocationInHeader,
     profile: {
       name: "",
       title: "",
@@ -2516,6 +2532,12 @@ function handleClick(event) {
       renderDynamicEditors();
       renderPreview();
     }
+    return;
+  }
+
+  if (trigger.dataset.action === "toggle-location-placement") {
+    state.alpineLocationInHeader = !toBoolean(state.alpineLocationInHeader, false);
+    renderPreview();
     return;
   }
 

@@ -1423,7 +1423,8 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .template-alpine .alpine-meta {
-  margin-block-start: 0.3rem;
+  margin: 0;
+  margin-block-start: 0.1rem;
   font-size: 0.82rem;
   color: var(--paper-muted);
   letter-spacing: 0.03em;
@@ -1441,8 +1442,82 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   gap: 0.2rem;
 }
 
+.template-alpine .alpine-location-toggle {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.template-alpine .alpine-location-toggle.has-tooltip {
+  position: relative;
+}
+
+.template-alpine .alpine-location-toggle.has-tooltip::before,
+.template-alpine .alpine-location-toggle.has-tooltip::after {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  position: absolute;
+  left: 50%;
+  z-index: 5;
+}
+
+.template-alpine .alpine-location-toggle.has-tooltip::before {
+  content: "";
+  top: calc(100% + 0.1rem);
+  transform: translateX(-50%) translateY(-2px);
+  border: 6px solid transparent;
+  border-bottom-color: rgba(15, 23, 42, 0.92);
+}
+
+.template-alpine .alpine-location-toggle.has-tooltip::after {
+  content: attr(data-tooltip);
+  top: calc(100% + 0.35rem);
+  transform: translateX(-50%) translateY(-2px);
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  padding: 0.28rem 0.5rem;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.22);
+  white-space: nowrap;
+}
+
+.template-alpine .alpine-location-toggle.has-tooltip:hover::before,
+.template-alpine .alpine-location-toggle.has-tooltip:hover::after,
+.template-alpine .alpine-location-toggle.has-tooltip:focus-visible::before,
+.template-alpine .alpine-location-toggle.has-tooltip:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.template-alpine .alpine-location-toggle:focus-visible {
+  outline: 2px solid var(--paper-divider);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+
+.template-alpine .alpine-meta-location {
+  margin: 0;
+  margin-block-start: 0.02rem;
+  font-size: 0.69rem;
+}
+
 .template-alpine .alpine-pin svg {
   vertical-align: -0.1em;
+}
+
+.template-alpine .alpine-meta-location .alpine-detail-meta {
+  font-size: 0.69rem;
+}
+
+.template-alpine .alpine-meta-location .alpine-pin svg {
+  width: 8px;
+  height: 8px;
 }
 
 .template-alpine .alpine-body {
