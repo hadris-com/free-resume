@@ -559,6 +559,19 @@ function buildPhoneMarkup(value) {
   return `<span class="contact-meta contact-phone"><span class="contact-icon">${phoneIcon}</span><span>${escapeHtml(cleaned)}</span></span>`;
 }
 
+const locationIconSvg = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+
+function buildLocationToggle(location, isInHeader, extraClass = "", textClass = "location-text") {
+  if (!hasText(location)) {
+    return "";
+  }
+
+  const toggleLabel = isInHeader ? t("actions.moveLocationToDetails") : t("actions.moveLocationToHeader");
+  const classes = ["location-toggle", "has-tooltip", extraClass].filter(Boolean).join(" ");
+
+  return `<button type="button" class="${classes}" data-action="toggle-location-placement" data-tooltip="${escapeAttr(toggleLabel)}" aria-label="${escapeAttr(toggleLabel)}">${locationIconSvg}<span class="${textClass}">${escapeHtml(location)}</span></button>`;
+}
+
 function extractSocialHandle(url, type) {
   try {
     const parsed = new URL(url);
@@ -769,16 +782,18 @@ function renderLanguagesMarkup() {
 function renderBerlinTemplate() {
   const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
   const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
+  const locationInHeader = toBoolean(state.alpineLocationInHeader, false);
   const summaryMarkup = getSummaryMarkup();
   const experienceMarkup = renderExperienceEntries();
   const educationMarkup = renderEducationEntries();
   const skillsMarkup = renderSkillsMarkup();
   const languagesMarkup = renderLanguagesMarkup();
+  const locationButton = buildLocationToggle(state.profile.location, locationInHeader, "resume-location-toggle");
 
   const detailsList = [
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
     state.profile.phone ? `<li>${buildPhoneMarkup(state.profile.phone)}</li>` : "",
-    state.profile.location ? `<li>${escapeHtml(state.profile.location)}</li>` : ""
+    !locationInHeader && locationButton ? `<li>${locationButton}</li>` : ""
   ]
     .filter(Boolean)
     .join("");
@@ -815,6 +830,7 @@ function renderBerlinTemplate() {
       <header class="resume-header">
         <h1 class="resume-name">${escapeHtml(name)}</h1>
         <p class="resume-role">${escapeHtml(title)}</p>
+        ${locationInHeader && locationButton ? `<p class="resume-location">${locationButton}</p>` : ""}
       </header>
 
       <div class="resume-columns${mainSections && sidebarSections ? "" : " single-column"}">
@@ -828,14 +844,16 @@ function renderBerlinTemplate() {
 function renderAuroraTemplate() {
   const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
   const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
+  const locationInHeader = toBoolean(state.alpineLocationInHeader, false);
   const summaryMarkup = getSummaryMarkup();
   const skillsMarkup = renderSkillsMarkup();
   const languagesMarkup = renderLanguagesMarkup();
+  const locationButton = buildLocationToggle(state.profile.location, locationInHeader, "aurora-location-toggle");
 
   const details = [
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
     state.profile.phone ? `<li>${buildPhoneMarkup(state.profile.phone)}</li>` : "",
-    state.profile.location ? `<li>${escapeHtml(state.profile.location)}</li>` : ""
+    !locationInHeader && locationButton ? `<li>${locationButton}</li>` : ""
   ]
     .filter(Boolean)
     .join("");
@@ -923,6 +941,7 @@ function renderAuroraTemplate() {
       <header class="aurora-banner">
         <h1 class="aurora-name">${escapeHtml(name)}</h1>
         <p class="aurora-role">${escapeHtml(title)}</p>
+        ${locationInHeader && locationButton ? `<p class="aurora-location">${locationButton}</p>` : ""}
       </header>
 
       <div class="aurora-shell${sideSections && mainSections ? "" : " single-pane"}">
@@ -944,14 +963,13 @@ function renderAlpineTemplate() {
 
   const metaParts = [escapeHtml(title)].filter(Boolean).join("");
 
-  const locationIcon = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
   const phoneIcon = `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5.11 3h3a2 2 0 0 1 2 1.72c.12.86.32 1.7.59 2.5a2 2 0 0 1-.45 2.11L9 10.91a16 16 0 0 0 4.09 4.09l1.58-1.25a2 2 0 0 1 2.11-.45c.8.27 1.64.47 2.5.59A2 2 0 0 1 22 16.92z"/></svg>`;
-  const locationToggleLabel = locationInHeader
-    ? t("actions.moveLocationToDetails")
-    : t("actions.moveLocationToHeader");
-  const locationButton = hasText(location)
-    ? `<button type="button" class="alpine-pin alpine-location-toggle has-tooltip${locationInHeader ? " is-header" : ""}" data-action="toggle-location-placement" data-tooltip="${escapeAttr(locationToggleLabel)}" aria-label="${escapeAttr(locationToggleLabel)}">${locationIcon}<span class="alpine-detail-meta">${escapeHtml(location)}</span></button>`
-    : "";
+  const locationButton = buildLocationToggle(
+    location,
+    locationInHeader,
+    "alpine-pin alpine-location-toggle",
+    "alpine-detail-meta"
+  );
   const phoneMarkup = hasText(state.profile.phone)
     ? `<span class="alpine-pin alpine-phone">${phoneIcon}<span class="alpine-detail-meta">${escapeHtml(state.profile.phone)}</span></span>`
     : "";
@@ -1037,11 +1055,13 @@ function renderAlpineTemplate() {
 function renderAtelierTemplate() {
   const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
   const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
+  const locationInHeader = toBoolean(state.alpineLocationInHeader, false);
   const summaryMarkup = getSummaryMarkup();
   const experienceMarkup = renderExperienceEntries();
   const educationMarkup = renderEducationEntries();
   const skillsMarkup = renderSkillsMarkup();
   const languagesMarkup = renderLanguagesMarkup();
+  const locationButton = buildLocationToggle(state.profile.location, locationInHeader, "atelier-location-toggle");
 
   const links = [
     state.profile.website ? `<li>${buildLink(state.profile.website)}</li>` : "",
@@ -1054,7 +1074,7 @@ function renderAtelierTemplate() {
   const details = [
     state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
     state.profile.phone ? `<li>${buildPhoneMarkup(state.profile.phone)}</li>` : "",
-    state.profile.location ? `<li>${escapeHtml(state.profile.location)}</li>` : ""
+    !locationInHeader && locationButton ? `<li>${locationButton}</li>` : ""
   ]
     .filter(Boolean)
     .join("");
@@ -1083,6 +1103,7 @@ function renderAtelierTemplate() {
       <header class="atelier-head">
         <h1 class="atelier-name">${escapeHtml(name)}</h1>
         <p class="atelier-role">${escapeHtml(title)}</p>
+        ${locationInHeader && locationButton ? `<p class="atelier-location">${locationButton}</p>` : ""}
       </header>
 
       <div class="atelier-grid${mainCards && sideCards ? "" : " single-column"}">
