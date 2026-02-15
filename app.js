@@ -1203,8 +1203,7 @@ function sanitizeSkillItem(item) {
   return {
     name: toInputText(source?.name),
     level: normalizeSkillLevel(source?.level),
-    showLevel: toBoolean(source?.showLevel, false),
-    isCollapsed: toBoolean(source?.isCollapsed, false)
+    showLevel: toBoolean(source?.showLevel, false)
   };
 }
 
@@ -1618,8 +1617,7 @@ function createSkill() {
   return {
     name: "",
     level: "intermediate",
-    showLevel: toBoolean(state.showSkillLevels, false),
-    isCollapsed: false
+    showLevel: toBoolean(state.showSkillLevels, false)
   };
 }
 
@@ -1828,25 +1826,11 @@ function renderSkillsEditor() {
   const skillsMarkup = state.skills
     .map(
       (item, index) => {
-        const isCollapsed = toBoolean(item.isCollapsed, false);
-        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
-        const summaryLabel = hasText(item.name) ? escapeHtml(item.name) : t("fields.skillName");
         const selectedLevel = normalizeSkillLevel(item.level);
 
         return `
-        <article class="repeat-item skill-item${isCollapsed ? " is-collapsed" : ""}">
+        <article class="repeat-item skill-item">
           <div class="skill-item-actions">
-            <button
-              type="button"
-              class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
-              data-action="toggle-skill"
-              data-index="${index}"
-              aria-expanded="${!isCollapsed}"
-              aria-label="${toggleLabel}"
-              title="${toggleLabel}"
-            >
-              <span class="collapse-icon" aria-hidden="true"></span>
-            </button>
             <button
               type="button"
               class="remove-btn remove-icon-btn"
@@ -1864,9 +1848,7 @@ function renderSkillsEditor() {
             </button>
           </div>
 
-          <p class="skill-collapsed-title" aria-hidden="${!isCollapsed}">${summaryLabel}</p>
-
-          <div class="repeat-item-body is-collapsable" aria-hidden="${isCollapsed}">
+          <div class="repeat-item-body">
             <div class="repeat-item-grid skill-editor-grid">
               <label>
                 <span>${t("fields.skillName")}</span>
@@ -2506,19 +2488,6 @@ function handleClick(event) {
       state.skills.splice(index, 1);
       renderDynamicEditors();
       renderPreview();
-    }
-    return;
-  }
-
-  if (trigger.dataset.action === "toggle-skill") {
-    const index = Number(trigger.dataset.index);
-    if (!Number.isNaN(index) && state.skills[index]) {
-      const nextCollapsed = !toBoolean(state.skills[index].isCollapsed, false);
-      const rawName = String(state.skills[index].name ?? "").trim();
-      const collapsedLabel = hasText(rawName) ? rawName : t("fields.skillName");
-      state.skills[index].isCollapsed = nextCollapsed;
-      setRepeatItemCollapsed(trigger, nextCollapsed, collapsedLabel);
-      saveDraftToLocalStorage();
     }
     return;
   }

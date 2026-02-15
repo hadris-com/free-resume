@@ -565,22 +565,6 @@ button:focus-visible {
   height: 0.9rem;
 }
 
-.skill-collapsed-title {
-  margin: 0;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  font-size: 0.85rem;
-  color: var(--text-main);
-  transition: max-height 0.2s ease, opacity 0.2s ease, margin 0.2s ease;
-}
-
-.repeat-item.is-collapsed .skill-collapsed-title {
-  margin: 0.1rem 0 0.4rem;
-  max-height: 2.4rem;
-  opacity: 1;
-}
-
 .repeat-item-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
