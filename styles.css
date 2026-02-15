@@ -234,6 +234,8 @@ body.theme-dark .theme-dot {
 }
 
 .editor-panel {
+  position: relative;
+  z-index: 5;
   min-height: 0;
   height: auto;
   max-height: none;
@@ -241,11 +243,21 @@ body.theme-dark .theme-dot {
   padding: 1rem;
 }
 
+.preview-panel {
+  position: relative;
+  z-index: 1;
+}
+
 .panel-section {
+  position: relative;
   padding: 0.95rem;
   border-radius: 16px;
   border: 1px solid var(--panel-border);
   background: var(--panel-surface);
+}
+
+.panel-section:focus-within {
+  z-index: 3;
 }
 
 .panel-section + .panel-section {
@@ -355,6 +367,11 @@ select {
   display: none;
 }
 
+.custom-select.open-up .custom-select-menu {
+  top: auto;
+  bottom: calc(100% + 0.35rem);
+}
+
 .custom-select.is-open .custom-select-menu {
   display: block;
 }
@@ -461,8 +478,22 @@ button:focus-visible {
   height: 1.8rem;
 }
 
+.is-collapsable {
+  opacity: 1;
+  transform: translateY(0);
+  transition: max-height 0.28s ease-in-out, opacity 0.2s ease-in-out, transform 0.22s ease-in-out;
+}
+
+.section-body {
+  max-height: 2000px;
+}
+
 .panel-section.is-collapsed .section-body {
-  display: none;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .panel-section.is-collapsed .section-heading-actions .add-btn {
@@ -502,10 +533,15 @@ button:focus-visible {
 }
 
 .repeat-item {
+  position: relative;
   border: 1px solid var(--input-border);
   border-radius: 14px;
   background: var(--panel-surface);
   padding: 0.68rem;
+}
+
+.repeat-item:focus-within {
+  z-index: 2;
 }
 
 .skill-item {
@@ -566,8 +602,20 @@ button:focus-visible {
   grid-column: span 2;
 }
 
+.repeat-item-body {
+  max-height: 1600px;
+}
+
+.repeat-item-body.is-collapsable {
+  overflow: visible;
+}
+
 .repeat-item.is-collapsed .repeat-item-body {
-  display: none;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .repeat-item-grid + label {
@@ -621,6 +669,12 @@ button:focus-visible {
   transform: rotate(-45deg);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .is-collapsable {
+    transition: none;
+  }
+}
+
 .repeat-item-title {
   margin: 0;
   font-size: 0.79rem;
@@ -653,6 +707,8 @@ button:focus-visible {
 }
 
 .empty-list {
+  position: relative;
+  z-index: 0;
   margin: 0;
   border: 1px dashed var(--input-border);
   border-radius: 12px;

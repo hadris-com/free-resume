@@ -1203,8 +1203,7 @@ function sanitizeSkillItem(item) {
   return {
     name: toInputText(source?.name),
     level: normalizeSkillLevel(source?.level),
-    showLevel: toBoolean(source?.showLevel, false),
-    isCollapsed: toBoolean(source?.isCollapsed, false)
+    showLevel: toBoolean(source?.showLevel, false)
   };
 }
 
@@ -1214,8 +1213,7 @@ function sanitizeLanguageItem(item) {
   return {
     name: toInputText(source?.name),
     level: normalizeSkillLevel(source?.level),
-    showLevel: toBoolean(source?.showLevel, false),
-    isCollapsed: toBoolean(source?.isCollapsed, false)
+    showLevel: toBoolean(source?.showLevel, false)
   };
 }
 
@@ -1618,8 +1616,7 @@ function createSkill() {
   return {
     name: "",
     level: "intermediate",
-    showLevel: toBoolean(state.showSkillLevels, false),
-    isCollapsed: false
+    showLevel: toBoolean(state.showSkillLevels, false)
   };
 }
 
@@ -1627,8 +1624,7 @@ function createLanguage() {
   return {
     name: "",
     level: "intermediate",
-    showLevel: toBoolean(state.showLanguageLevels, false),
-    isCollapsed: false
+    showLevel: toBoolean(state.showLanguageLevels, false)
   };
 }
 
@@ -1683,7 +1679,7 @@ function renderExperienceEditor() {
             </div>
           </div>
 
-          <div class="repeat-item-body"${isCollapsed ? " hidden" : ""}>
+          <div class="repeat-item-body is-collapsable" aria-hidden="${isCollapsed}">
             <div class="repeat-item-grid experience-grid">
               <label class="field-span-2">
                 <span>${t("fields.jobTitle")}</span>
@@ -1773,7 +1769,7 @@ function renderEducationEditor() {
             </div>
           </div>
 
-          <div class="repeat-item-body"${isCollapsed ? " hidden" : ""}>
+          <div class="repeat-item-body is-collapsable" aria-hidden="${isCollapsed}">
             <div class="repeat-item-grid">
               <label>
                 <span>${t("fields.degree")}</span>
@@ -1828,25 +1824,11 @@ function renderSkillsEditor() {
   const skillsMarkup = state.skills
     .map(
       (item, index) => {
-        const isCollapsed = toBoolean(item.isCollapsed, false);
-        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
-        const summaryLabel = hasText(item.name) ? escapeHtml(item.name) : t("fields.skillName");
         const selectedLevel = normalizeSkillLevel(item.level);
 
         return `
-        <article class="repeat-item skill-item${isCollapsed ? " is-collapsed" : ""}">
+        <article class="repeat-item skill-item">
           <div class="skill-item-actions">
-            <button
-              type="button"
-              class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
-              data-action="toggle-skill"
-              data-index="${index}"
-              aria-expanded="${!isCollapsed}"
-              aria-label="${toggleLabel}"
-              title="${toggleLabel}"
-            >
-              <span class="collapse-icon" aria-hidden="true"></span>
-            </button>
             <button
               type="button"
               class="remove-btn remove-icon-btn"
@@ -1864,9 +1846,7 @@ function renderSkillsEditor() {
             </button>
           </div>
 
-          ${isCollapsed ? `<p class="skill-collapsed-title">${summaryLabel}</p>` : ""}
-
-          <div class="repeat-item-body"${isCollapsed ? " hidden" : ""}>
+          <div class="repeat-item-body">
             <div class="repeat-item-grid skill-editor-grid">
               <label>
                 <span>${t("fields.skillName")}</span>
@@ -1934,25 +1914,11 @@ function renderLanguagesEditor() {
   const languagesMarkup = state.languages
     .map(
       (item, index) => {
-        const isCollapsed = toBoolean(item.isCollapsed, false);
-        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
-        const summaryLabel = hasText(item.name) ? escapeHtml(item.name) : t("fields.languageName");
         const selectedLevel = normalizeSkillLevel(item.level);
 
         return `
-        <article class="repeat-item skill-item${isCollapsed ? " is-collapsed" : ""}">
+        <article class="repeat-item skill-item">
           <div class="skill-item-actions">
-            <button
-              type="button"
-              class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
-              data-action="toggle-language"
-              data-index="${index}"
-              aria-expanded="${!isCollapsed}"
-              aria-label="${toggleLabel}"
-              title="${toggleLabel}"
-            >
-              <span class="collapse-icon" aria-hidden="true"></span>
-            </button>
             <button
               type="button"
               class="remove-btn remove-icon-btn"
@@ -1970,9 +1936,7 @@ function renderLanguagesEditor() {
             </button>
           </div>
 
-          ${isCollapsed ? `<p class="skill-collapsed-title">${summaryLabel}</p>` : ""}
-
-          <div class="repeat-item-body"${isCollapsed ? " hidden" : ""}>
+          <div class="repeat-item-body">
             <div class="repeat-item-grid skill-editor-grid">
               <label>
                 <span>${t("fields.languageName")}</span>
@@ -2137,11 +2101,51 @@ function toggleTemplateSelect() {
   refs.templateSelectTrigger.setAttribute("aria-expanded", String(nextOpen));
 }
 
+function updateSelectMenuPlacement(wrapper) {
+  if (!wrapper) {
+    return;
+  }
+
+  const menu = wrapper.querySelector(".custom-select-menu");
+  if (!menu) {
+    return;
+  }
+
+  const editorRect = refs.editorPanel?.getBoundingClientRect();
+  const previewRect = refs.previewPanel?.getBoundingClientRect();
+  const hasOverlap = editorRect && previewRect
+    ? editorRect.top < previewRect.bottom && editorRect.bottom > previewRect.top
+    : false;
+  const isSideBySide = Boolean(hasOverlap);
+  if (!isSideBySide) {
+    wrapper.classList.remove("open-up");
+    return;
+  }
+
+  const trigger = wrapper.querySelector(".custom-select-trigger") || wrapper;
+  const triggerRect = trigger.getBoundingClientRect();
+  const bounds = editorRect && editorRect.height > 0
+    ? editorRect
+    : { top: 0, bottom: window.innerHeight };
+
+  const menuHeight = menu.scrollHeight;
+  const spaceBelow = bounds.bottom - triggerRect.bottom;
+  const spaceAbove = triggerRect.top - bounds.top;
+  const shouldOpenUp = menuHeight > spaceBelow && spaceAbove > spaceBelow;
+
+  wrapper.classList.toggle("open-up", shouldOpenUp);
+}
+
 function setSkillLevelSelectOpen(wrapper, open) {
   wrapper.classList.toggle("is-open", open);
   const trigger = wrapper.querySelector(".custom-select-trigger");
   if (trigger instanceof HTMLButtonElement) {
     trigger.setAttribute("aria-expanded", String(open));
+  }
+  if (open) {
+    requestAnimationFrame(() => updateSelectMenuPlacement(wrapper));
+  } else {
+    wrapper.classList.remove("open-up");
   }
 }
 
@@ -2159,6 +2163,11 @@ function setLanguageLevelSelectOpen(wrapper, open) {
   const trigger = wrapper.querySelector(".custom-select-trigger");
   if (trigger instanceof HTMLButtonElement) {
     trigger.setAttribute("aria-expanded", String(open));
+  }
+  if (open) {
+    requestAnimationFrame(() => updateSelectMenuPlacement(wrapper));
+  } else {
+    wrapper.classList.remove("open-up");
   }
 }
 
@@ -2280,6 +2289,34 @@ function handleInput(event) {
     return;
   }
 
+}
+
+function setRepeatItemCollapsed(trigger, isCollapsed, collapsedTitleText = "") {
+  const repeatItem = trigger.closest(".repeat-item");
+  if (!repeatItem) {
+    return;
+  }
+
+  repeatItem.classList.toggle("is-collapsed", isCollapsed);
+  trigger.classList.toggle("is-collapsed", isCollapsed);
+  trigger.setAttribute("aria-expanded", String(!isCollapsed));
+
+  const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
+  trigger.setAttribute("aria-label", toggleLabel);
+  trigger.setAttribute("title", toggleLabel);
+
+  const body = repeatItem.querySelector(".repeat-item-body");
+  if (body) {
+    body.setAttribute("aria-hidden", String(isCollapsed));
+  }
+
+  const collapsedTitle = repeatItem.querySelector(".skill-collapsed-title");
+  if (collapsedTitle) {
+    if (collapsedTitleText) {
+      collapsedTitle.textContent = collapsedTitleText;
+    }
+    collapsedTitle.setAttribute("aria-hidden", String(!isCollapsed));
+  }
 }
 
 function handleClick(event) {
@@ -2443,8 +2480,10 @@ function handleClick(event) {
   if (trigger.dataset.action === "toggle-experience") {
     const index = Number(trigger.dataset.index);
     if (!Number.isNaN(index) && state.experience[index]) {
-      state.experience[index].isCollapsed = !toBoolean(state.experience[index].isCollapsed, false);
-      renderDynamicEditors();
+      const nextCollapsed = !toBoolean(state.experience[index].isCollapsed, false);
+      state.experience[index].isCollapsed = nextCollapsed;
+      setRepeatItemCollapsed(trigger, nextCollapsed);
+      saveDraftToLocalStorage();
     }
     return;
   }
@@ -2462,8 +2501,10 @@ function handleClick(event) {
   if (trigger.dataset.action === "toggle-education") {
     const index = Number(trigger.dataset.index);
     if (!Number.isNaN(index) && state.education[index]) {
-      state.education[index].isCollapsed = !toBoolean(state.education[index].isCollapsed, false);
-      renderDynamicEditors();
+      const nextCollapsed = !toBoolean(state.education[index].isCollapsed, false);
+      state.education[index].isCollapsed = nextCollapsed;
+      setRepeatItemCollapsed(trigger, nextCollapsed);
+      saveDraftToLocalStorage();
     }
     return;
   }
@@ -2474,15 +2515,6 @@ function handleClick(event) {
       state.skills.splice(index, 1);
       renderDynamicEditors();
       renderPreview();
-    }
-    return;
-  }
-
-  if (trigger.dataset.action === "toggle-skill") {
-    const index = Number(trigger.dataset.index);
-    if (!Number.isNaN(index) && state.skills[index]) {
-      state.skills[index].isCollapsed = !toBoolean(state.skills[index].isCollapsed, false);
-      renderDynamicEditors();
     }
     return;
   }
@@ -2512,15 +2544,6 @@ function handleClick(event) {
     return;
   }
 
-  if (trigger.dataset.action === "toggle-language") {
-    const index = Number(trigger.dataset.index);
-    if (!Number.isNaN(index) && state.languages[index]) {
-      state.languages[index].isCollapsed = !toBoolean(state.languages[index].isCollapsed, false);
-      renderDynamicEditors();
-    }
-    return;
-  }
-
   if (trigger.dataset.action === "toggle-language-levels") {
     state.showLanguageLevels = !toBoolean(state.showLanguageLevels, false);
     state.languages = state.languages.map((item) => ({ ...item, showLevel: state.showLanguageLevels }));
@@ -2532,6 +2555,9 @@ function handleClick(event) {
   if (trigger.dataset.action === "toggle-section") {
     const sectionId = trigger.getAttribute("data-section");
     if (!sectionId) {
+      return;
+    }
+    if (sectionId === "template") {
       return;
     }
     const nextCollapsed = !toBoolean(state.collapsedSections?.[sectionId], false);
