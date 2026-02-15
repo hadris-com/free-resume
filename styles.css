@@ -1941,6 +1941,20 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
     break-inside: avoid;
   }
 
+  .section-label,
+  .alpine-icon-heading,
+  .alpine-dot-heading {
+    page-break-after: avoid;
+    break-after: avoid-page;
+  }
+
+  .section-label + *,
+  .alpine-icon-heading + *,
+  .alpine-dot-heading + * {
+    page-break-before: avoid;
+    break-before: avoid-page;
+  }
+
 
   /* ---------- Stretch inner layouts to fill the page ---------- */
   .template-aurora .resume-page {
