@@ -1,3 +1,5 @@
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 const translations = {
   en: {
     "brand.title": "Free Resume",
@@ -624,7 +626,6 @@ function parseDateString(dateStr) {
     return { month: "", year: "" };
   }
 
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const parts = dateStr.trim().split(/\s+/);
   
   if (parts.length === 1) {
@@ -654,17 +655,17 @@ function formatDateFromParts(month, year) {
 function renderDatePicker(listName, index, key, value, allowPresent = false) {
   const { month, year } = parseDateString(value);
   const currentYear = new Date().getFullYear();
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   
   const monthOptions = ['<option value="">-</option>']
-    .concat(months.map(m => `<option value="${m}"${month === m ? ' selected' : ''}>${m}</option>`))
+    .concat(MONTH_NAMES.map(m => `<option value="${m}"${month === m ? ' selected' : ''}>${m}</option>`))
     .join('');
   
+  const presentOption = value === "Present" ? ' selected' : '';
   const yearOptions = ['<option value="">-</option>']
-    .concat(allowPresent ? ['<option value="Present"' + (value === "Present" ? ' selected' : '') + '>Present</option>'] : [])
+    .concat(allowPresent ? [`<option value="Present"${presentOption}>Present</option>`] : [])
     .concat(
       Array.from({ length: 60 }, (_, i) => currentYear + 5 - i).map(
-        y => `<option value="${y}"${year == y ? ' selected' : ''}>${y}</option>`
+        y => `<option value="${y}"${String(year) === String(y) ? ' selected' : ''}>${y}</option>`
       )
     )
     .join('');
