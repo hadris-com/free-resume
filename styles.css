@@ -581,9 +581,6 @@ button:focus-visible {
 
 .repeat-item-body {
   max-height: 1600px;
-}
-
-.repeat-item-body.is-collapsable {
   overflow: visible;
 }
 

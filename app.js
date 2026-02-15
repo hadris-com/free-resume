@@ -1213,8 +1213,7 @@ function sanitizeLanguageItem(item) {
   return {
     name: toInputText(source?.name),
     level: normalizeSkillLevel(source?.level),
-    showLevel: toBoolean(source?.showLevel, false),
-    isCollapsed: toBoolean(source?.isCollapsed, false)
+    showLevel: toBoolean(source?.showLevel, false)
   };
 }
 
@@ -1625,8 +1624,7 @@ function createLanguage() {
   return {
     name: "",
     level: "intermediate",
-    showLevel: toBoolean(state.showLanguageLevels, false),
-    isCollapsed: false
+    showLevel: toBoolean(state.showLanguageLevels, false)
   };
 }
 
@@ -1916,25 +1914,11 @@ function renderLanguagesEditor() {
   const languagesMarkup = state.languages
     .map(
       (item, index) => {
-        const isCollapsed = toBoolean(item.isCollapsed, false);
-        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
-        const summaryLabel = hasText(item.name) ? escapeHtml(item.name) : t("fields.languageName");
         const selectedLevel = normalizeSkillLevel(item.level);
 
         return `
-        <article class="repeat-item skill-item${isCollapsed ? " is-collapsed" : ""}">
+        <article class="repeat-item skill-item">
           <div class="skill-item-actions">
-            <button
-              type="button"
-              class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
-              data-action="toggle-language"
-              data-index="${index}"
-              aria-expanded="${!isCollapsed}"
-              aria-label="${toggleLabel}"
-              title="${toggleLabel}"
-            >
-              <span class="collapse-icon" aria-hidden="true"></span>
-            </button>
             <button
               type="button"
               class="remove-btn remove-icon-btn"
@@ -1952,9 +1936,7 @@ function renderLanguagesEditor() {
             </button>
           </div>
 
-          ${isCollapsed ? `<p class="skill-collapsed-title">${summaryLabel}</p>` : ""}
-
-          <div class="repeat-item-body is-collapsable" aria-hidden="${isCollapsed}">
+          <div class="repeat-item-body">
             <div class="repeat-item-grid skill-editor-grid">
               <label>
                 <span>${t("fields.languageName")}</span>
@@ -2513,17 +2495,6 @@ function handleClick(event) {
       state.languages.splice(index, 1);
       renderDynamicEditors();
       renderPreview();
-    }
-    return;
-  }
-
-  if (trigger.dataset.action === "toggle-language") {
-    const index = Number(trigger.dataset.index);
-    if (!Number.isNaN(index) && state.languages[index]) {
-      const nextCollapsed = !toBoolean(state.languages[index].isCollapsed, false);
-      state.languages[index].isCollapsed = nextCollapsed;
-      setRepeatItemCollapsed(trigger, nextCollapsed);
-      saveDraftToLocalStorage();
     }
     return;
   }
