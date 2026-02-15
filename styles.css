@@ -230,11 +230,18 @@ body.theme-dark .theme-dot {
 }
 
 .editor-panel {
+  position: relative;
+  z-index: 5;
   min-height: 0;
   height: auto;
   max-height: none;
   overflow: auto;
   padding: 1rem;
+}
+
+.preview-panel {
+  position: relative;
+  z-index: 1;
 }
 
 .panel-section {
@@ -355,6 +362,11 @@ select {
   box-shadow: var(--panel-shadow);
   padding: 0.35rem;
   display: none;
+}
+
+.custom-select.open-up .custom-select-menu {
+  top: auto;
+  bottom: calc(100% + 0.35rem);
 }
 
 .custom-select.is-open .custom-select-menu {
@@ -581,6 +593,9 @@ button:focus-visible {
 
 .repeat-item-body {
   max-height: 1600px;
+}
+
+.repeat-item-body.is-collapsable {
   overflow: visible;
 }
 
@@ -645,10 +660,6 @@ button:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .is-collapsable {
-    transition: none;
-  }
-
-  .skill-collapsed-title {
     transition: none;
   }
 }

@@ -2101,11 +2101,51 @@ function toggleTemplateSelect() {
   refs.templateSelectTrigger.setAttribute("aria-expanded", String(nextOpen));
 }
 
+function updateSelectMenuPlacement(wrapper) {
+  if (!wrapper) {
+    return;
+  }
+
+  const menu = wrapper.querySelector(".custom-select-menu");
+  if (!menu) {
+    return;
+  }
+
+  const editorRect = refs.editorPanel?.getBoundingClientRect();
+  const previewRect = refs.previewPanel?.getBoundingClientRect();
+  const hasOverlap = editorRect && previewRect
+    ? editorRect.top < previewRect.bottom && editorRect.bottom > previewRect.top
+    : false;
+  const isSideBySide = Boolean(hasOverlap);
+  if (!isSideBySide) {
+    wrapper.classList.remove("open-up");
+    return;
+  }
+
+  const trigger = wrapper.querySelector(".custom-select-trigger") || wrapper;
+  const triggerRect = trigger.getBoundingClientRect();
+  const bounds = editorRect && editorRect.height > 0
+    ? editorRect
+    : { top: 0, bottom: window.innerHeight };
+
+  const menuHeight = menu.scrollHeight;
+  const spaceBelow = bounds.bottom - triggerRect.bottom;
+  const spaceAbove = triggerRect.top - bounds.top;
+  const shouldOpenUp = menuHeight > spaceBelow && spaceAbove > spaceBelow;
+
+  wrapper.classList.toggle("open-up", shouldOpenUp);
+}
+
 function setSkillLevelSelectOpen(wrapper, open) {
   wrapper.classList.toggle("is-open", open);
   const trigger = wrapper.querySelector(".custom-select-trigger");
   if (trigger instanceof HTMLButtonElement) {
     trigger.setAttribute("aria-expanded", String(open));
+  }
+  if (open) {
+    requestAnimationFrame(() => updateSelectMenuPlacement(wrapper));
+  } else {
+    wrapper.classList.remove("open-up");
   }
 }
 
@@ -2123,6 +2163,11 @@ function setLanguageLevelSelectOpen(wrapper, open) {
   const trigger = wrapper.querySelector(".custom-select-trigger");
   if (trigger instanceof HTMLButtonElement) {
     trigger.setAttribute("aria-expanded", String(open));
+  }
+  if (open) {
+    requestAnimationFrame(() => updateSelectMenuPlacement(wrapper));
+  } else {
+    wrapper.classList.remove("open-up");
   }
 }
 
