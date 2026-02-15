@@ -111,7 +111,8 @@ body.theme-dark .bg-noise {
   position: relative;
   z-index: 1;
   width: min(1480px, 100% - 2.5rem);
-  margin: 1.2rem auto 1.4rem;
+  margin-block: 1.2rem 1.4rem;
+  margin-inline: auto;
 }
 
 .topbar {
@@ -119,8 +120,9 @@ body.theme-dark .bg-noise {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1rem;
-  padding: 1.1rem 1.3rem;
+  margin-block-end: 1rem;
+  padding-block: 1.1rem;
+  padding-inline: 1.3rem;
   border-radius: 20px;
   border: 1px solid var(--panel-glass-border);
   background: linear-gradient(160deg, var(--panel-bg-top), var(--panel-bg-bottom));
@@ -140,7 +142,9 @@ body.theme-dark .bg-noise {
 }
 
 .brand p {
-  margin: 0.15rem 0 0;
+  margin-block-start: 0.15rem;
+  margin-inline: 0;
+  margin-block-end: 0;
   color: var(--text-soft);
   font-size: 0.95rem;
 }
@@ -257,12 +261,12 @@ body.theme-dark .theme-dot {
 }
 
 .panel-section + .panel-section {
-  margin-top: 0.8rem;
+  margin-block-start: 0.8rem;
 }
 
 .panel-section h2 {
   display: block;
-  margin-bottom: 0.4rem;
+  margin-block-end: 0.4rem;
   color: var(--text-main);
   font-weight: 600;
 }
@@ -270,14 +274,14 @@ body.theme-dark .theme-dot {
 .panel-section label > span,
 .panel-section > label {
   display: block;
-  margin-bottom: 0.4rem;
+  margin-block-end: 0.4rem;
   color: var(--text-muted);
   font-weight: 500;
 }
 
 .panel-section h2 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-block-start: 0;
+  margin-block-end: 0.5rem;
   font-size: 0.95rem;
 }
 
@@ -296,13 +300,13 @@ select {
   color: var(--text-main);
   font-family: inherit;
   font-size: 0.86rem;
-  margin-top: 0.34rem;
+  margin-block-start: 0.34rem;
   padding: 0.54rem 0.66rem;
 }
 
 .custom-select {
   position: relative;
-  margin-top: 0.34rem;
+  margin-block-start: 0.34rem;
 }
 
 .skill-editor-grid label {
@@ -313,7 +317,7 @@ select {
 
 .skill-editor-grid input,
 .skill-editor-grid .custom-select {
-  margin-top: 0;
+  margin-block-start: 0;
 }
 
 .custom-select-trigger {
@@ -340,8 +344,8 @@ select {
 .custom-select-chevron {
   width: 0.5rem;
   height: 0.5rem;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
   transform: rotate(45deg);
   transition: transform 0.18s ease;
 }
@@ -352,10 +356,9 @@ select {
 
 .custom-select-menu {
   position: absolute;
-  top: calc(100% + 0.35rem);
-  left: 0;
-  right: 0;
-  z-index: 50;
+  inset-block-start: calc(100% + 0.35rem);
+  inset-inline: 0;
+  z-index: 10;
   border-radius: 12px;
   border: 1px solid var(--input-border);
   background: var(--paper-bg);
@@ -381,7 +384,7 @@ select {
   color: var(--text-main);
   font-family: inherit;
   font-size: 0.86rem;
-  text-align: left;
+  text-align: start;
   padding: 0.45rem 0.6rem;
   cursor: pointer;
 }
@@ -436,7 +439,7 @@ button:focus-visible {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-block-end: 0.25rem;
 }
 
 .name-size-inline input[type="range"] {
@@ -457,7 +460,7 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 0.4rem;
-  margin-bottom: 0.45rem;
+  margin-block-end: 0.45rem;
 }
 
 .section-heading-actions {
@@ -467,7 +470,7 @@ button:focus-visible {
 }
 
 .section-heading-row > label {
-  margin-bottom: 0;
+  margin-block-end: 0;
 }
 
 .section-toggle {
@@ -515,7 +518,7 @@ button:focus-visible {
 }
 
 .add-btn-bottom {
-  margin-top: 0.4rem;
+  margin-block-start: 0.4rem;
 }
 
 .repeat-list {
@@ -526,7 +529,7 @@ button:focus-visible {
 .skills-toolbar {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 0.45rem;
+  margin-block-end: 0.45rem;
 }
 
 .repeat-item {
@@ -543,13 +546,13 @@ button:focus-visible {
 
 .skill-item {
   position: relative;
-  padding-top: 1.4rem;
+  padding-block-start: 1.4rem;
 }
 
 .skill-item-actions {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  inset-block-start: 0.5rem;
+  inset-inline-end: 0.5rem;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
@@ -575,6 +578,14 @@ button:focus-visible {
 .remove-icon {
   width: 0.9rem;
   height: 0.9rem;
+}
+
+.skill-collapsed-title {
+  margin-block-start: 0.1rem;
+  margin-inline: 0;
+  margin-block-end: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-main);
 }
 
 .repeat-item-grid {
@@ -609,7 +620,7 @@ button:focus-visible {
 
 .repeat-item-grid + label {
   display: block;
-  margin-top: 0.55rem;
+  margin-block-start: 0.55rem;
 }
 
 .repeat-item-head {
@@ -617,7 +628,7 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 0.6rem;
-  margin-bottom: 0.4rem;
+  margin-block-end: 0.4rem;
 }
 
 .repeat-item-actions {
@@ -648,8 +659,8 @@ button:focus-visible {
 .collapse-icon {
   width: 0.45rem;
   height: 0.45rem;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
   transform: rotate(45deg);
   transition: transform 0.18s ease;
 }
@@ -674,7 +685,7 @@ button:focus-visible {
 }
 
 .skill-level-toggle {
-  margin-top: 0.56rem;
+  margin-block-start: 0.56rem;
   display: inline-flex;
   align-items: center;
   padding: 0.3rem 0.62rem;
@@ -716,7 +727,7 @@ button:focus-visible {
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: 0.7rem;
-  margin-bottom: 0.85rem;
+  margin-block-end: 0.85rem;
 }
 
 .preview-meta {
@@ -726,7 +737,7 @@ button:focus-visible {
   flex-wrap: nowrap;
   white-space: nowrap;
   overflow-x: auto;
-  padding-bottom: 0.12rem;
+  padding-block-end: 0.12rem;
   scrollbar-width: thin;
 }
 
@@ -770,7 +781,9 @@ button:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.2rem 0.25rem 0.2rem 0.48rem;
+  padding-block: 0.2rem;
+  padding-inline-end: 0.25rem;
+  padding-inline-start: 0.48rem;
   border-radius: 999px;
   border: 1px solid var(--input-border);
   background: var(--panel-surface);
@@ -829,19 +842,18 @@ button:focus-visible {
 
 .page-break-line {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline: 0;
   height: 0;
   pointer-events: none;
   z-index: 2;
-  border-top: 2px dashed rgba(128, 128, 128, 0.4);
+  border-block-start: 2px dashed rgba(128, 128, 128, 0.4);
 }
 
 .page-break-line::after {
   content: attr(data-label);
   position: absolute;
-  right: 0.6rem;
-  top: 0.3rem;
+  inset-inline-end: 0.6rem;
+  inset-block-start: 0.3rem;
   font-size: 0.55rem;
   font-family: var(--font-mono);
   letter-spacing: 0.1em;
@@ -863,8 +875,10 @@ button:focus-visible {
 }
 
 .resume-page ul {
-  margin: 0.45rem 0 0;
-  padding-left: 1.1rem;
+  margin-block-start: 0.45rem;
+  margin-inline: 0;
+  margin-block-end: 0;
+  padding-inline-start: 1.1rem;
 }
 
 .resume-page .empty-copy {
@@ -882,11 +896,11 @@ button:focus-visible {
   letter-spacing: 0.12em;
   color: var(--paper-text);
   font-size: 0.68rem;
-  margin-bottom: 0.48rem;
+  margin-block-end: 0.48rem;
 }
 
 .entry + .entry {
-  margin-top: 0.85rem;
+  margin-block-start: 0.85rem;
 }
 
 .entry-topline {
@@ -906,18 +920,22 @@ button:focus-visible {
 }
 
 .entry-meta-inline {
-  margin-left: 0.4rem;
+  margin-inline-start: 0.4rem;
   font-weight: 500;
   color: var(--paper-muted);
   font-size: 0.88rem;
 }
 
 .entry-meta-block {
-  margin: 0.08rem 0 0;
+  margin-block-start: 0.08rem;
+  margin-inline: 0;
+  margin-block-end: 0;
 }
 
 .entry-company {
-  margin: 0.1rem 0 0;
+  margin-block-start: 0.1rem;
+  margin-inline: 0;
+  margin-block-end: 0;
   color: var(--paper-muted);
   font-size: 0.9rem;
 }
@@ -943,7 +961,8 @@ button:focus-visible {
 .skill-chip {
   border: 1px solid var(--paper-divider);
   border-radius: 999px;
-  padding: 0.22rem 0.52rem;
+  padding-block: 0.22rem;
+  padding-inline: 0.52rem;
   font-size: 0.75rem;
   color: var(--paper-muted);
   display: inline-flex;
@@ -966,8 +985,8 @@ button:focus-visible {
 }
 
 .template-berlin .resume-header {
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--paper-divider);
+  padding-block-end: 1rem;
+  border-block-end: 1px solid var(--paper-divider);
 }
 
 .template-berlin .resume-name {
@@ -977,12 +996,12 @@ button:focus-visible {
 }
 
 .template-berlin .resume-role {
-  margin-top: 0.35rem;
+  margin-block-start: 0.35rem;
   font-size: 1.05rem;
 }
 
 .template-berlin .resume-columns {
-  margin-top: 1.2rem;
+  margin-block-start: 1.2rem;
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 1.15rem;
@@ -994,7 +1013,7 @@ button:focus-visible {
 }
 
 .template-berlin section + section {
-  margin-top: 1rem;
+  margin-block-start: 1rem;
 }
 
 .template-berlin .details-list,
@@ -1006,13 +1025,13 @@ button:focus-visible {
 
 .template-berlin .details-list li + li,
 .template-berlin .links-list li + li {
-  margin-top: 0.5rem;
+  margin-block-start: 0.5rem;
 }
 
 .template-berlin a {
   color: inherit;
   text-decoration: none;
-  border-bottom: 1px solid var(--paper-divider);
+  border-block-end: 1px solid var(--paper-divider);
 }
 
 /* Template 2: Aurora Timeline */
@@ -1024,7 +1043,8 @@ button:focus-visible {
 }
 
 .template-aurora .aurora-banner {
-  padding: 1.8rem 2rem;
+  padding-block: 1.8rem;
+  padding-inline: 2rem;
   background:
     linear-gradient(120deg, rgba(14, 99, 122, 0.95), rgba(13, 61, 101, 0.92)),
     radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.18), transparent 45%);
@@ -1044,7 +1064,7 @@ body.theme-dark .template-aurora .aurora-banner {
 }
 
 .template-aurora .aurora-role {
-  margin-top: 0.3rem;
+  margin-block-start: 0.3rem;
   color: rgba(248, 251, 255, 0.86);
 }
 
@@ -1061,12 +1081,12 @@ body.theme-dark .template-aurora .aurora-banner {
 }
 
 .template-aurora .aurora-shell.single-pane .aurora-side {
-  border-right: 0;
+  border-inline-end: 0;
 }
 
 .template-aurora .aurora-side {
   padding: 1.4rem;
-  border-right: 1px solid var(--paper-divider);
+  border-inline-end: 1px solid var(--paper-divider);
 }
 
 .template-aurora .aurora-main {
@@ -1076,30 +1096,33 @@ body.theme-dark .template-aurora .aurora-banner {
 .template-aurora .timeline {
   position: relative;
   margin: 0;
-  padding: 0 0 0 1rem;
+  padding-block: 0;
+  padding-inline-end: 0;
+  padding-inline-start: 1rem;
   list-style: none;
 }
 
 .template-aurora .timeline::before {
   content: "";
   position: absolute;
-  left: 0.2rem;
-  top: 0;
-  bottom: 0;
+  inset-inline-start: 0.2rem;
+  inset-block: 0;
   width: 1px;
   background: var(--paper-divider);
 }
 
 .template-aurora .timeline li {
-  margin: 0 0 0.9rem;
+  margin-block-start: 0;
+  margin-inline: 0;
+  margin-block-end: 0.9rem;
   position: relative;
 }
 
 .template-aurora .timeline li::before {
   content: "";
   position: absolute;
-  left: -0.95rem;
-  top: 0.35rem;
+  inset-inline-start: -0.95rem;
+  inset-block-start: 0.35rem;
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
@@ -1120,8 +1143,9 @@ body.theme-dark .template-atelier .resume-page {
 .template-atelier .atelier-head {
   border: 1px solid var(--paper-divider);
   border-radius: 16px;
-  padding: 1.1rem 1.2rem;
-  margin-bottom: 0.95rem;
+  padding-block: 1.1rem;
+  padding-inline: 1.2rem;
+  margin-block-end: 0.95rem;
 }
 
 .template-atelier .atelier-name {
@@ -1131,7 +1155,7 @@ body.theme-dark .template-atelier .resume-page {
 }
 
 .template-atelier .atelier-role {
-  margin-top: 0.24rem;
+  margin-block-start: 0.24rem;
 }
 
 .template-atelier .atelier-grid {
@@ -1151,7 +1175,7 @@ body.theme-dark .template-atelier .resume-page {
 }
 
 .template-atelier .card + .card {
-  margin-top: 0.9rem;
+  margin-block-start: 0.9rem;
 }
 
 /* Additional Templates */
@@ -1187,12 +1211,12 @@ body.theme-dark .template-atelier .resume-page {
 }
 
 .resume-preview.variant-fjord .resume-header {
-  border-bottom-width: 2px;
+  border-block-end-width: 2px;
 }
 
 .resume-preview.variant-fjord aside {
-  border-left: 1px solid var(--paper-divider);
-  padding-left: 1rem;
+  border-inline-start: 1px solid var(--paper-divider);
+  padding-inline-start: 1rem;
 }
 
 .resume-preview.variant-solstice .aurora-banner {
@@ -1228,9 +1252,9 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .resume-preview.variant-bastion .timeline::before {
-  left: 0.24rem;
+  inset-inline-start: 0.24rem;
   width: 0;
-  border-left: 1px dashed var(--paper-divider);
+  border-inline-start: 1px dashed var(--paper-divider);
   background: transparent;
 }
 
@@ -1380,8 +1404,10 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 
 .template-alpine .alpine-header {
   text-align: center;
-  padding: 1.8rem 2rem 1.2rem;
-  border-bottom: none;
+  padding-block-start: 1.8rem;
+  padding-inline: 2rem;
+  padding-block-end: 1.2rem;
+  border-block-end: none;
 }
 
 .template-alpine .alpine-name {
@@ -1397,7 +1423,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .template-alpine .alpine-meta {
-  margin-top: 0.3rem;
+  margin-block-start: 0.3rem;
   font-size: 0.82rem;
   color: var(--paper-muted);
   letter-spacing: 0.03em;
@@ -1435,16 +1461,17 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .template-alpine .alpine-sidebar section + section {
-  margin-top: 1.2rem;
+  margin-block-start: 1.2rem;
 }
 
 .template-alpine .alpine-main {
-  padding: 1.4rem 1.6rem;
-  border-left: none;
+  padding-block: 1.4rem;
+  padding-inline: 1.6rem;
+  border-inline-start: none;
 }
 
 .template-alpine .alpine-main section + section {
-  margin-top: 1.1rem;
+  margin-block-start: 1.1rem;
 }
 
 .template-alpine .alpine-main-section {
@@ -1458,7 +1485,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--paper-text);
-  margin-bottom: 0.55rem;
+  margin-block-end: 0.55rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1485,7 +1512,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .template-alpine .alpine-details li + li,
 .template-alpine .alpine-links li + li,
 .template-alpine .alpine-skills li + li {
-  margin-top: 0.35rem;
+  margin-block-start: 0.35rem;
 }
 
 .template-alpine .alpine-details li,
@@ -1498,7 +1525,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .template-alpine .alpine-skill-level {
-  margin-left: 0.4rem;
+  margin-inline-start: 0.4rem;
   font-size: 0.75rem;
   color: var(--paper-muted);
   text-transform: uppercase;
@@ -1517,7 +1544,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   align-items: center;
   gap: 0.35rem;
   text-decoration: none;
-  border-bottom: none;
+  border-block-end: none;
 }
 
 .resume-preview .social-link-text {
@@ -1533,11 +1560,11 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .template-berlin a.social-icon-link {
-  border-bottom: none;
+  border-block-end: none;
 }
 
 .template-berlin .social-link-text {
-  border-bottom: 1px solid var(--paper-divider);
+  border-block-end: 1px solid var(--paper-divider);
   text-decoration: none;
 }
 
@@ -1566,21 +1593,21 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--paper-text);
-  margin-bottom: 0.55rem;
+  margin-block-end: 0.55rem;
   position: relative;
-  padding-left: 1.1rem;
+  padding-inline-start: 1.1rem;
 }
 
 .template-alpine .alpine-icon-heading svg {
   position: absolute;
-  left: 0;
-  top: 0;
+  inset-inline-start: 0;
+  inset-block-start: 0;
   color: var(--paper-text);
 }
 
 .template-alpine .alpine-section-body {
   position: relative;
-  padding-left: 1.8rem;
+  padding-inline-start: 1.8rem;
   --alpine-line-x: 0.35rem;
   --alpine-content-offset: 1.8rem;
 }
@@ -1588,9 +1615,9 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .template-alpine .alpine-section-body::before {
   content: "";
   position: absolute;
-  left: var(--alpine-line-x);
-  top: 0.45rem;
-  bottom: 0;
+  inset-inline-start: var(--alpine-line-x);
+  inset-block-start: 0.45rem;
+  inset-block-end: 0;
   width: 1px;
   background: var(--paper-divider);
   transform: translateX(-50%);
@@ -1599,8 +1626,8 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .template-alpine .alpine-section-body::after {
   content: "";
   position: absolute;
-  left: var(--alpine-line-x);
-  top: 0.2rem;
+  inset-inline-start: var(--alpine-line-x);
+  inset-block-start: 0.2rem;
   width: 0.18rem;
   height: 0.18rem;
   border-radius: 50%;
@@ -1616,8 +1643,8 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .template-alpine .alpine-section-body .entry-marked::before {
   content: "";
   position: absolute;
-  left: calc(var(--alpine-line-x) - var(--alpine-content-offset));
-  top: 0.35rem;
+  inset-inline-start: calc(var(--alpine-line-x) - var(--alpine-content-offset));
+  inset-block-start: 0.35rem;
   width: 0.18rem;
   height: 0.18rem;
   border-radius: 50%;
@@ -1633,7 +1660,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .template-alpine .alpine-main a {
   color: inherit;
   text-decoration: none;
-  border-bottom: 1px solid var(--paper-divider);
+  border-block-end: 1px solid var(--paper-divider);
 }
 
 .template-alpine .alpine-main p {
@@ -1642,14 +1669,16 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .template-alpine .alpine-main ul {
-  margin: 0.3rem 0 0;
-  padding-left: 1.6rem;
+  margin-block-start: 0.3rem;
+  margin-inline: 0;
+  margin-block-end: 0;
+  padding-inline-start: 1.6rem;
   font-size: 0.88rem;
   line-height: 1.5;
 }
 
 .template-alpine .alpine-main ul li + li {
-  margin-top: 0.15rem;
+  margin-block-start: 0.15rem;
 }
 
 .template-alpine .entry-meta {
@@ -1671,7 +1700,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 
 .template-alpine .entry-meta-inline {
   font-size: 0.82rem;
-  margin-left: 0;
+  margin-inline-start: 0;
 }
 
 .template-alpine .entry-meta.entry-meta-block {
@@ -1684,7 +1713,9 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .app-footer {
   display: flex;
   justify-content: center;
-  padding: 1.2rem 0 0.6rem;
+  padding-block-start: 1.2rem;
+  padding-inline: 0;
+  padding-block-end: 0.6rem;
 }
 
 .privacy-link {
@@ -1696,7 +1727,8 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
-  padding: 0.4rem 0.8rem;
+  padding-block: 0.4rem;
+  padding-inline: 0.8rem;
   border-radius: 999px;
   transition: color 0.15s;
 }
@@ -1738,8 +1770,9 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.2rem 1.4rem;
-  border-bottom: 1px solid var(--panel-border);
+  padding-block: 1.2rem;
+  padding-inline: 1.4rem;
+  border-block-end: 1px solid var(--panel-border);
   flex-shrink: 0;
 }
 
@@ -1755,7 +1788,8 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   background: transparent;
   color: var(--text-main);
   border-radius: 999px;
-  padding: 0.4rem 0.75rem;
+  padding-block: 0.4rem;
+  padding-inline: 0.75rem;
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -1772,7 +1806,9 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   color: var(--text-soft);
   font-size: 0.92rem;
   line-height: 1.5;
-  margin: 0 0 1.2rem;
+  margin-block-start: 0;
+  margin-inline: 0;
+  margin-block-end: 1.2rem;
 }
 
 .privacy-section {
@@ -1782,11 +1818,13 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .privacy-section + .privacy-section {
-  margin-top: 0.7rem;
+  margin-block-start: 0.7rem;
 }
 
 .privacy-section h3 {
-  margin: 0 0 0.3rem;
+  margin-block-start: 0;
+  margin-inline: 0;
+  margin-block-end: 0.3rem;
   font-size: 0.88rem;
   font-weight: 600;
 }
@@ -1799,7 +1837,9 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 .privacy-updated {
-  margin: 1.2rem 0 0;
+  margin-block-start: 1.2rem;
+  margin-inline: 0;
+  margin-block-end: 0;
   color: var(--text-soft);
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -1810,7 +1850,9 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 
 @page {
   size: A4;
-  margin: 8mm 0 0 0;
+  margin-block-start: 8mm;
+  margin-inline: 0;
+  margin-block-end: 0;
 }
 
 @page :first {
