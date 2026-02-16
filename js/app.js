@@ -1126,7 +1126,7 @@ function insertPageBreakMarkers() {
     const line = document.createElement("div");
     line.className = "page-break-line";
     line.style.top = `${i * pageHeight}px`;
-    line.dataset.label = `page ${i + 1}`;
+    line.dataset.label = `${getUiTranslation("labels.page")} ${i + 1}`;
     page.appendChild(line);
   }
 }

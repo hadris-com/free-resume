@@ -74,7 +74,7 @@ export function createEditorRenderers({
               </label>
               <label>
                 <span>${getUiTranslation("fields.startDate")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="Jan 2025" />
+                <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="${getUiTranslation("placeholders.startDateExample")}" />
               </label>
               <label>
                 <span>${getUiTranslation("fields.endDate")}</span>
@@ -164,11 +164,11 @@ export function createEditorRenderers({
               </label>
               <label>
                 <span>${getUiTranslation("fields.startDate")}</span>
-                <input type="text" data-list="education" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2018" />
+                <input type="text" data-list="education" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="${getUiTranslation("placeholders.educationStartYear")}" />
               </label>
               <label>
                 <span>${getUiTranslation("fields.endDate")}</span>
-                <input type="text" data-list="education" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="2022" />
+                <input type="text" data-list="education" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="${getUiTranslation("placeholders.educationEndYear")}" />
               </label>
             </div>
           </div>
