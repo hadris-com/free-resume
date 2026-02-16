@@ -1,4 +1,4 @@
-import { translations } from "./translations.js";
+import { isSupportedLanguage } from "./i18n.js";
 import { hasText, toBoolean, toInputText } from "./utils.js";
 
 const rawExportConfig = {
@@ -56,9 +56,9 @@ export function createPersistence({ getState, templateCatalog, normalizeSkillLev
   function sanitizeResumeState(rawState) {
     const source = rawState && typeof rawState === "object" ? rawState : {};
     const profileSource = source.profile && typeof source.profile === "object" ? source.profile : {};
-    const fallbackLang = Object.prototype.hasOwnProperty.call(translations, source.lang) ? source.lang : "en";
-    const uiLang = Object.prototype.hasOwnProperty.call(translations, source.uiLang) ? source.uiLang : fallbackLang;
-    const cvLang = Object.prototype.hasOwnProperty.call(translations, source.cvLang) ? source.cvLang : fallbackLang;
+    const fallbackLang = isSupportedLanguage(source.lang) ? source.lang : "en";
+    const uiLang = isSupportedLanguage(source.uiLang) ? source.uiLang : fallbackLang;
+    const cvLang = isSupportedLanguage(source.cvLang) ? source.cvLang : fallbackLang;
     const legacyShowLevels = Array.isArray(source.skills)
       ? source.skills.some((item) => toBoolean(item?.showLevel, false))
       : false;

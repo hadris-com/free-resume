@@ -1,4 +1,4 @@
-export const translations = {
+const translations = {
   en: {
     "brand.title": "Free Resume",
     "brand.subtitle": "Design-forward multilingual resume builder",
@@ -399,3 +399,23 @@ export const translations = {
     "privacy.close": "Schliessen"
   }
 };
+
+function getTranslation(lang, key) {
+  return translations[lang]?.[key] ?? translations.en[key] ?? key;
+}
+
+export function isSupportedLanguage(lang) {
+  return Object.prototype.hasOwnProperty.call(translations, lang);
+}
+
+export function createUiTranslationGetter(getUiLang) {
+  return function getUiTranslation(key) {
+    return getTranslation(getUiLang(), key);
+  };
+}
+
+export function createCvTranslationGetter(getCvLang) {
+  return function getCvTranslation(key) {
+    return getTranslation(getCvLang(), key);
+  };
+}

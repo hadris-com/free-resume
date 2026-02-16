@@ -1,4 +1,4 @@
-import { translations } from "./translations.js";
+import { createCvTranslationGetter, createUiTranslationGetter } from "./i18n.js";
 import { createEditorRenderers } from "./editor-renderers.js";
 import { createFactories } from "./factories.js";
 import { createPersistence } from "./persistence.js";
@@ -72,13 +72,8 @@ const refs = {
 let sampleModeEnabled = false;
 
 // Shared utilities
-function getUiTranslation(key) {
-  return translations[state.uiLang]?.[key] ?? translations.en[key] ?? key;
-}
-
-function getCvTranslation(key) {
-  return translations[state.cvLang]?.[key] ?? translations.en[key] ?? key;
-}
+const getUiTranslation = createUiTranslationGetter(() => state.uiLang);
+const getCvTranslation = createCvTranslationGetter(() => state.cvLang);
 
 function normalizeSkillLevel(level) {
   return skillLevels.includes(level) ? level : "intermediate";
