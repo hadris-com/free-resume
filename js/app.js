@@ -1,4 +1,5 @@
 import { translations } from "./translations.js";
+import { createFactories } from "./factories.js";
 import { createPersistence } from "./persistence.js";
 import {
   buildLink,
@@ -865,44 +866,9 @@ function syncSampleButtonState() {
 }
 
 // Editor item factories
-function createExperience() {
-  return {
-    role: "",
-    company: "",
-    location: "",
-    start: "",
-    end: "",
-    bullets: "",
-    isCollapsed: false
-  };
-}
-
-function createEducation() {
-  return {
-    degree: "",
-    school: "",
-    location: "",
-    start: "",
-    end: "",
-    isCollapsed: false
-  };
-}
-
-function createSkill() {
-  return {
-    name: "",
-    level: "intermediate",
-    showLevel: toBoolean(state.showSkillLevels, false)
-  };
-}
-
-function createLanguage() {
-  return {
-    name: "",
-    level: "intermediate",
-    showLevel: toBoolean(state.showLanguageLevels, false)
-  };
-}
+const { createExperience, createEducation, createSkill, createLanguage } = createFactories({
+  getState: () => state
+});
 
 // Editor rendering
 function renderExperienceEditor() {
