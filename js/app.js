@@ -1,6 +1,6 @@
-import { createCvTranslationGetter, createUiTranslationGetter } from "./i18n.js";
 import { createEditorRenderers } from "./editor-renderers.js";
 import { createEventHandlers } from "./event-handlers.js";
+import { createCvTranslationGetter, createUiTranslationGetter } from "./i18n.js";
 import { createPersistence } from "./persistence.js";
 import { createPrintHelpers } from "./print-helpers.js";
 import { createPreviewRenderers, templateCatalog } from "./preview-renderers.js";
@@ -9,7 +9,7 @@ import { createSampleStateBuilders } from "./sample-state.js";
 import { createStateSync } from "./state-sync.js";
 import { createUiControls } from "./ui-controls.js";
 
-// State and DOM references
+// App-owned state (single source of truth for resume data and UI toggles).
 const state = {
   uiLang: "en",
   cvLang: "en",
@@ -38,6 +38,7 @@ const state = {
   languages: []
 };
 
+// Cached DOM references used across modules.
 const refs = {
   templateSelect: document.getElementById("template-select"),
   templateSelectWrapper: document.getElementById("template-select-wrapper"),
@@ -64,10 +65,50 @@ const refs = {
 
 let sampleModeEnabled = false;
 
-// Shared utilities
+// i18n getters resolve labels against the currently selected UI/CV language.
 const getUiTranslation = createUiTranslationGetter(() => state.uiLang);
 const getCvTranslation = createCvTranslationGetter(() => state.cvLang);
 
+// Normalization enforces consistent resume shape before save/load/sample import.
+const { sanitizeResumeState } = createResumeNormalization({
+  templateCatalog
+});
+
+// Persistence handles localStorage draft lifecycle + raw JSON import/export.
+const { parseRawResumePayload, loadDraftFromLocalStorage, saveDraftToLocalStorage, downloadRawResume } = createPersistence({
+  getState: () => state,
+  sanitizeResumeState
+});
+
+// Sample builders generate blank/sample states using the same sanitizer.
+const { buildSampleResumeState, buildEmptyResumeState } = createSampleStateBuilders({
+  getState: () => state,
+  sanitizeResumeState
+});
+
+// UI controls apply visual/UI-only effects (theme, i18n text, panel sizing, toggles).
+const uiControls = createUiControls({
+  state,
+  refs,
+  getUiTranslation
+});
+
+// State sync maps state <-> static form controls and imported payload updates.
+const { syncStaticInputsFromState, applyImportedState, syncSampleButtonState } = createStateSync({
+  state,
+  refs,
+  uiControls,
+  getSampleModeEnabled: () => sampleModeEnabled
+});
+
+// Print helpers manage print-specific behavior and page-break markers.
+const { insertPageBreakMarkers, fillPrintPages, restorePrintPages, openPdfDialog } = createPrintHelpers({
+  getState: () => state,
+  getResumePreviewElement: () => refs.resumePreview,
+  getUiTranslation
+});
+
+// Preview renderers generate template HTML and compute preview-related flags/classes.
 const { renderTemplate, getTemplateClasses, isResumeBlank } = createPreviewRenderers({
   getState: () => state,
   getUiTranslation,
@@ -75,22 +116,7 @@ const { renderTemplate, getTemplateClasses, isResumeBlank } = createPreviewRende
   normalizeSkillLevel
 });
 
-const { sanitizeResumeState } = createResumeNormalization({
-  templateCatalog
-});
-
-// Draft persistence and raw import/export
-const { parseRawResumePayload, loadDraftFromLocalStorage, saveDraftToLocalStorage, downloadRawResume } = createPersistence({
-  getState: () => state,
-  sanitizeResumeState
-});
-
-const { buildSampleResumeState, buildEmptyResumeState } = createSampleStateBuilders({
-  getState: () => state,
-  sanitizeResumeState
-});
-
-// Editor rendering
+// Editor renderers generate repeatable editor sections (experience, education, etc.).
 const { renderDynamicEditors } = createEditorRenderers({
   state,
   refs,
@@ -99,26 +125,7 @@ const { renderDynamicEditors } = createEditorRenderers({
   normalizeSkillLevel
 });
 
-// UI synchronization and layout helpers
-const uiControls = createUiControls({
-  state,
-  refs,
-  getUiTranslation
-});
-
-const { syncStaticInputsFromState, applyImportedState, syncSampleButtonState } = createStateSync({
-  state,
-  refs,
-  uiControls,
-  getSampleModeEnabled: () => sampleModeEnabled
-});
-
-const { insertPageBreakMarkers, fillPrintPages, restorePrintPages, openPdfDialog } = createPrintHelpers({
-  getState: () => state,
-  getResumePreviewElement: () => refs.resumePreview,
-  getUiTranslation
-});
-
+// Rebuild preview DOM from current state and persist draft after every render.
 function renderPreview() {
   refs.resumePreview.className = `resume-preview ${getTemplateClasses(state.template)}`;
   refs.resumePreview.innerHTML = renderTemplate(state.template);
@@ -129,7 +136,7 @@ function renderPreview() {
   saveDraftToLocalStorage();
 }
 
-// Event handlers
+// Event handlers orchestrate user actions across all modules.
 const { handleRawFileChange, handleInput, handleClick } = createEventHandlers({
   state,
   refs,
@@ -152,7 +159,7 @@ const { handleRawFileChange, handleInput, handleClick } = createEventHandlers({
   openPdfDialog
 });
 
-// App bootstrap
+// App bootstrap: load draft, sync UI, render once, then attach listeners.
 function init() {
   const { applyTheme, applyI18n, syncSectionToggles, syncEditorPanelHeight } = uiControls;
 
