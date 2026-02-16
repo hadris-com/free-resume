@@ -1,3 +1,4 @@
+import { createFactories } from "./factories.js";
 import { templateCatalog } from "./preview-renderers.js";
 import { toBoolean } from "./utils.js";
 
@@ -8,31 +9,34 @@ export function createEventHandlers({
   getUiTranslation,
   applyImportedState,
   syncStaticInputsFromState,
-  applyTheme,
-  applyI18n,
+  uiControls,
   renderDynamicEditors,
   renderPreview,
   syncSampleButtonState,
   getSampleModeEnabled,
   setSampleModeEnabled,
-  syncTemplateSelectUI,
-  closeTemplateSelect,
-  toggleTemplateSelect,
-  closeSkillLevelSelects,
-  setSkillLevelSelectOpen,
-  closeLanguageLevelSelects,
-  setLanguageLevelSelectOpen,
-  createExperience,
-  createEducation,
-  createSkill,
-  createLanguage,
   buildEmptyResumeState,
   buildSampleResumeState,
   downloadRawResume,
   saveDraftToLocalStorage,
-  openPdfDialog,
-  syncSectionToggles
+  openPdfDialog
 }) {
+  const { createExperience, createEducation, createSkill, createLanguage } = createFactories({
+    getState: () => state
+  });
+  const {
+    applyTheme,
+    applyI18n,
+    syncTemplateSelectUI,
+    closeTemplateSelect,
+    toggleTemplateSelect,
+    closeSkillLevelSelects,
+    setSkillLevelSelectOpen,
+    closeLanguageLevelSelects,
+    setLanguageLevelSelectOpen,
+    syncSectionToggles
+  } = uiControls;
+
   async function handleRawFileChange(event) {
     const target = event.target;
 

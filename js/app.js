@@ -1,7 +1,6 @@
 import { createCvTranslationGetter, createUiTranslationGetter } from "./i18n.js";
 import { createEditorRenderers } from "./editor-renderers.js";
 import { createEventHandlers } from "./event-handlers.js";
-import { createFactories } from "./factories.js";
 import { createPersistence } from "./persistence.js";
 import { createPreviewRenderers, templateCatalog } from "./preview-renderers.js";
 import { createUiControls } from "./ui-controls.js";
@@ -116,7 +115,7 @@ const {
 
 function syncStaticInputsFromState() {
   refs.templateSelect.value = state.template;
-  syncTemplateSelectUI();
+  uiControls.syncTemplateSelectUI();
 
   document.querySelectorAll("[data-profile]").forEach((input) => {
     if (!(input instanceof HTMLInputElement)) {
@@ -299,11 +298,6 @@ function syncSampleButtonState() {
   refs.sampleBtn.setAttribute("aria-pressed", String(sampleModeEnabled));
 }
 
-// Editor item factories
-const { createExperience, createEducation, createSkill, createLanguage } = createFactories({
-  getState: () => state
-});
-
 // Editor rendering
 const { renderDynamicEditors } = createEditorRenderers({
   state,
@@ -314,19 +308,7 @@ const { renderDynamicEditors } = createEditorRenderers({
 });
 
 // UI synchronization and layout helpers
-const {
-  applyTheme,
-  applyI18n,
-  syncSectionToggles,
-  syncTemplateSelectUI,
-  closeTemplateSelect,
-  toggleTemplateSelect,
-  setSkillLevelSelectOpen,
-  closeSkillLevelSelects,
-  setLanguageLevelSelectOpen,
-  closeLanguageLevelSelects,
-  syncEditorPanelHeight
-} = createUiControls({
+const uiControls = createUiControls({
   state,
   refs,
   getUiTranslation
@@ -338,7 +320,7 @@ function renderPreview() {
   refs.resumePreview.style.setProperty("--name-font-scale", state.nameFontSize / 100);
   refs.blankPill.hidden = !isResumeBlank();
   insertPageBreakMarkers();
-  syncEditorPanelHeight();
+  uiControls.syncEditorPanelHeight();
   saveDraftToLocalStorage();
 }
 
@@ -373,8 +355,7 @@ const { handleRawFileChange, handleInput, handleClick } = createEventHandlers({
   getUiTranslation,
   applyImportedState,
   syncStaticInputsFromState,
-  applyTheme,
-  applyI18n,
+  uiControls,
   renderDynamicEditors,
   renderPreview,
   syncSampleButtonState,
@@ -382,27 +363,17 @@ const { handleRawFileChange, handleInput, handleClick } = createEventHandlers({
   setSampleModeEnabled: (value) => {
     sampleModeEnabled = value;
   },
-  syncTemplateSelectUI,
-  closeTemplateSelect,
-  toggleTemplateSelect,
-  closeSkillLevelSelects,
-  setSkillLevelSelectOpen,
-  closeLanguageLevelSelects,
-  setLanguageLevelSelectOpen,
-  createExperience,
-  createEducation,
-  createSkill,
-  createLanguage,
   buildEmptyResumeState,
   buildSampleResumeState,
   downloadRawResume,
   saveDraftToLocalStorage,
-  openPdfDialog,
-  syncSectionToggles
+  openPdfDialog
 });
 
 // App bootstrap
 function init() {
+  const { applyTheme, applyI18n, syncSectionToggles, syncEditorPanelHeight } = uiControls;
+
   const savedDraft = loadDraftFromLocalStorage();
   if (savedDraft) {
     applyImportedState(savedDraft);
