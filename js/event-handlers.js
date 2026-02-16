@@ -142,14 +142,6 @@ export function createEventHandlers({
     if (body) {
       body.setAttribute("aria-hidden", String(isCollapsed));
     }
-
-    const collapsedTitle = repeatItem.querySelector(".skill-collapsed-title");
-    if (collapsedTitle) {
-      if (collapsedTitleText) {
-        collapsedTitle.textContent = collapsedTitleText;
-      }
-      collapsedTitle.setAttribute("aria-hidden", String(!isCollapsed));
-    }
   }
 
   function handleClick(event) {
@@ -396,15 +388,9 @@ export function createEventHandlers({
       if (!sectionId) {
         return;
       }
-      if (sectionId === "template") {
-        return;
-      }
       const nextCollapsed = !toBoolean(state.collapsedSections?.[sectionId], false);
       state.collapsedSections = { ...state.collapsedSections, [sectionId]: nextCollapsed };
       syncSectionToggles();
-      if (sectionId === "template" && nextCollapsed) {
-        closeTemplateSelect();
-      }
       return;
     }
 
