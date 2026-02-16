@@ -2346,14 +2346,6 @@ function setRepeatItemCollapsed(trigger, isCollapsed, collapsedTitleText = "") {
   if (body) {
     body.setAttribute("aria-hidden", String(isCollapsed));
   }
-
-  const collapsedTitle = repeatItem.querySelector(".skill-collapsed-title");
-  if (collapsedTitle) {
-    if (collapsedTitleText) {
-      collapsedTitle.textContent = collapsedTitleText;
-    }
-    collapsedTitle.setAttribute("aria-hidden", String(!isCollapsed));
-  }
 }
 
 function handleClick(event) {
@@ -2600,15 +2592,9 @@ function handleClick(event) {
     if (!sectionId) {
       return;
     }
-    if (sectionId === "template") {
-      return;
-    }
     const nextCollapsed = !toBoolean(state.collapsedSections?.[sectionId], false);
     state.collapsedSections = { ...state.collapsedSections, [sectionId]: nextCollapsed };
     syncSectionToggles();
-    if (sectionId === "template" && nextCollapsed) {
-      closeTemplateSelect();
-    }
     return;
   }
 
