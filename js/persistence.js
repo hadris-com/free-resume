@@ -9,7 +9,7 @@ const localDraftConfig = {
   key: "free-resume:draft"
 };
 
-export function createPersistence({ getState, sanitizeResumeState }) {
+export function createPersistence({ getState, sanitizeResumeState, validateResumeShape }) {
   function parseRawResumePayload(payload) {
     if (!payload || typeof payload !== "object") {
       return null;
@@ -31,6 +31,10 @@ export function createPersistence({ getState, sanitizeResumeState }) {
     );
 
     if (!hasExpectedShape) {
+      return null;
+    }
+
+    if (!validateResumeShape(source)) {
       return null;
     }
 

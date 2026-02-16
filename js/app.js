@@ -70,14 +70,15 @@ const getUiTranslation = createUiTranslationGetter(() => state.uiLang);
 const getCvTranslation = createCvTranslationGetter(() => state.cvLang);
 
 // Normalization enforces consistent resume shape before save/load/sample import.
-const { sanitizeResumeState } = createResumeNormalization({
+const { sanitizeResumeState, validateResumeShape } = createResumeNormalization({
   templateCatalog
 });
 
 // Persistence handles localStorage draft lifecycle + raw JSON import/export.
 const { parseRawResumePayload, loadDraftFromLocalStorage, saveDraftToLocalStorage, downloadRawResume } = createPersistence({
   getState: () => state,
-  sanitizeResumeState
+  sanitizeResumeState,
+  validateResumeShape
 });
 
 // Sample builders generate blank/sample states using the same sanitizer.
