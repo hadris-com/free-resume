@@ -1,4 +1,5 @@
 import { translations } from "./translations.js";
+import { createEditorRenderers } from "./editor-renderers.js";
 import { createFactories } from "./factories.js";
 import { createPersistence } from "./persistence.js";
 import {
@@ -71,16 +72,12 @@ const refs = {
 let sampleModeEnabled = false;
 
 // Shared utilities
-function tUI(key) {
+function getUiTranslation(key) {
   return translations[state.uiLang]?.[key] ?? translations.en[key] ?? key;
 }
 
-function tCV(key) {
+function getCvTranslation(key) {
   return translations[state.cvLang]?.[key] ?? translations.en[key] ?? key;
-}
-
-function t(key) {
-  return tUI(key);
 }
 
 function normalizeSkillLevel(level) {
@@ -116,7 +113,7 @@ function buildLocationToggle(location, isInHeader, extraClass = "", textClass = 
     return "";
   }
 
-  const toggleLabel = isInHeader ? t("actions.moveLocationToDetails") : t("actions.moveLocationToHeader");
+  const toggleLabel = isInHeader ? getUiTranslation("actions.moveLocationToDetails") : getUiTranslation("actions.moveLocationToHeader");
   const classes = ["location-toggle", "has-tooltip", extraClass].filter(Boolean).join(" ");
 
   return `<button type="button" class="${classes}" data-action="toggle-location-placement" data-tooltip="${escapeAttr(toggleLabel)}" aria-label="${escapeAttr(toggleLabel)}">${locationIconSvg}<span class="${textClass}">${escapeHtml(location)}</span></button>`;
@@ -135,7 +132,7 @@ function formatRange(start, end) {
   }
 
   if (cleanStart) {
-    return `${cleanStart} - ${tCV("placeholders.present")}`;
+    return `${cleanStart} - ${getCvTranslation("placeholders.present")}`;
   }
 
   return cleanEnd;
@@ -183,11 +180,11 @@ function renderExperienceEntries() {
 
   return entries
     .map((item) => {
-      const role = hasText(item.role) ? item.role : tCV("placeholders.jobTitle");
+      const role = hasText(item.role) ? item.role : getCvTranslation("placeholders.jobTitle");
       const company = hasText(item.company) ? item.company : "";
       const location = hasText(item.location) ? item.location : "";
       const metaInline = company
-        ? `${tCV("labels.at")} ${company}${location ? ` · ${location}` : ""}`
+        ? `${getCvTranslation("labels.at")} ${company}${location ? ` · ${location}` : ""}`
         : location;
       const dateRange = formatRange(item.start, item.end);
       const bullets = String(item.bullets ?? "")
@@ -220,7 +217,7 @@ function renderEducationEntries() {
 
   return entries
     .map((item) => {
-      const degree = hasText(item.degree) ? item.degree : tCV("placeholders.degree");
+      const degree = hasText(item.degree) ? item.degree : getCvTranslation("placeholders.degree");
       const schoolLocation = [item.school, item.location].filter(hasText).join(" · ");
 
       return `
@@ -249,7 +246,7 @@ function renderSkillsMarkup() {
       ${skills
         .map((skill) => {
           const levelMarkup = showLevels
-            ? `<span class="skill-chip-level">${tCV(`levels.${skill.level}`)}</span>`
+            ? `<span class="skill-chip-level">${getCvTranslation(`levels.${skill.level}`)}</span>`
             : "";
 
           return `<span class="skill-chip"><span>${escapeHtml(skill.name)}</span>${levelMarkup}</span>`;
@@ -272,7 +269,7 @@ function renderLanguagesMarkup() {
       ${languages
         .map((lang) => {
           const levelMarkup = showLevels
-            ? `<span class="skill-chip-level">${tCV(`levels.${lang.level}`)}</span>`
+            ? `<span class="skill-chip-level">${getCvTranslation(`levels.${lang.level}`)}</span>`
             : "";
 
           return `<span class="skill-chip"><span>${escapeHtml(lang.name)}</span>${levelMarkup}</span>`;
@@ -284,8 +281,8 @@ function renderLanguagesMarkup() {
 
 // Template renderers
 function renderBerlinTemplate() {
-  const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
-  const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
+  const name = hasText(state.profile.name) ? state.profile.name : getCvTranslation("placeholders.noName");
+  const title = hasText(state.profile.title) ? state.profile.title : getCvTranslation("placeholders.noTitle");
   const locationInHeader = toBoolean(state.alpineLocationInHeader, false);
   const summaryMarkup = getSummaryMarkup();
   const experienceMarkup = renderExperienceEntries();
@@ -311,20 +308,20 @@ function renderBerlinTemplate() {
     .join("");
 
   const mainSections = [
-    summaryMarkup ? `<section><h3 class="section-label">${tCV("sections.summary")}</h3>${summaryMarkup}</section>` : "",
+    summaryMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.summary")}</h3>${summaryMarkup}</section>` : "",
     experienceMarkup
-      ? `<section><h3 class="section-label">${tCV("sections.experience")}</h3>${experienceMarkup}</section>`
+      ? `<section><h3 class="section-label">${getCvTranslation("sections.experience")}</h3>${experienceMarkup}</section>`
       : "",
-    educationMarkup ? `<section><h3 class="section-label">${tCV("sections.education")}</h3>${educationMarkup}</section>` : ""
+    educationMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.education")}</h3>${educationMarkup}</section>` : ""
   ]
     .filter(Boolean)
     .join("");
 
   const sidebarSections = [
-    detailsList ? `<section><h3 class="section-label">${tCV("sections.details")}</h3><ul class="details-list">${detailsList}</ul></section>` : "",
-    linksList ? `<section><h3 class="section-label">${tCV("sections.links")}</h3><ul class="links-list">${linksList}</ul></section>` : "",
-    skillsMarkup ? `<section><h3 class="section-label">${tCV("sections.skills")}</h3>${skillsMarkup}</section>` : "",
-    languagesMarkup ? `<section><h3 class="section-label">${tCV("sections.languages")}</h3>${languagesMarkup}</section>` : ""
+    detailsList ? `<section><h3 class="section-label">${getCvTranslation("sections.details")}</h3><ul class="details-list">${detailsList}</ul></section>` : "",
+    linksList ? `<section><h3 class="section-label">${getCvTranslation("sections.links")}</h3><ul class="links-list">${linksList}</ul></section>` : "",
+    skillsMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.skills")}</h3>${skillsMarkup}</section>` : "",
+    languagesMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.languages")}</h3>${languagesMarkup}</section>` : ""
   ]
     .filter(Boolean)
     .join("");
@@ -346,8 +343,8 @@ function renderBerlinTemplate() {
 }
 
 function renderAuroraTemplate() {
-  const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
-  const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
+  const name = hasText(state.profile.name) ? state.profile.name : getCvTranslation("placeholders.noName");
+  const title = hasText(state.profile.title) ? state.profile.title : getCvTranslation("placeholders.noTitle");
   const locationInHeader = toBoolean(state.alpineLocationInHeader, false);
   const summaryMarkup = getSummaryMarkup();
   const skillsMarkup = renderSkillsMarkup();
@@ -374,11 +371,11 @@ function renderAuroraTemplate() {
   const educationEntries = getEducationItems();
 
   const sideSections = [
-    summaryMarkup ? `<section><h3 class="section-label">${tCV("sections.summary")}</h3>${summaryMarkup}</section>` : "",
-    details ? `<section><h3 class="section-label">${tCV("sections.details")}</h3><ul>${details}</ul></section>` : "",
-    links ? `<section><h3 class="section-label">${tCV("sections.links")}</h3><ul>${links}</ul></section>` : "",
-    skillsMarkup ? `<section><h3 class="section-label">${tCV("sections.skills")}</h3>${skillsMarkup}</section>` : "",
-    languagesMarkup ? `<section><h3 class="section-label">${tCV("sections.languages")}</h3>${languagesMarkup}</section>` : ""
+    summaryMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.summary")}</h3>${summaryMarkup}</section>` : "",
+    details ? `<section><h3 class="section-label">${getCvTranslation("sections.details")}</h3><ul>${details}</ul></section>` : "",
+    links ? `<section><h3 class="section-label">${getCvTranslation("sections.links")}</h3><ul>${links}</ul></section>` : "",
+    skillsMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.skills")}</h3>${skillsMarkup}</section>` : "",
+    languagesMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.languages")}</h3>${languagesMarkup}</section>` : ""
   ]
     .filter(Boolean)
     .join("");
@@ -386,14 +383,14 @@ function renderAuroraTemplate() {
   const mainSections = [
     experienceEntries.length
       ? `<section>
-            <h3 class="section-label">${tCV("sections.experience")}</h3>
+            <h3 class="section-label">${getCvTranslation("sections.experience")}</h3>
             <ul class="timeline">${experienceEntries
               .map((item) => {
-                const role = hasText(item.role) ? item.role : tCV("placeholders.jobTitle");
+                const role = hasText(item.role) ? item.role : getCvTranslation("placeholders.jobTitle");
                 const company = hasText(item.company) ? item.company : "";
                 const location = hasText(item.location) ? item.location : "";
                 const metaInline = company
-                  ? `${tCV("labels.at")} ${company}${location ? ` · ${location}` : ""}`
+                  ? `${getCvTranslation("labels.at")} ${company}${location ? ` · ${location}` : ""}`
                   : location;
                 const dateRange = formatRange(item.start, item.end);
                 const bullets = String(item.bullets ?? "")
@@ -417,10 +414,10 @@ function renderAuroraTemplate() {
       : "",
     educationEntries.length
       ? `<section>
-            <h3 class="section-label">${tCV("sections.education")}</h3>
+            <h3 class="section-label">${getCvTranslation("sections.education")}</h3>
             ${educationEntries
               .map((item) => {
-                const degree = hasText(item.degree) ? item.degree : tCV("placeholders.degree");
+                const degree = hasText(item.degree) ? item.degree : getCvTranslation("placeholders.degree");
                 const meta = [item.school, item.location].filter(hasText).join(" · ");
 
                 return `
@@ -457,8 +454,8 @@ function renderAuroraTemplate() {
 }
 
 function renderAlpineTemplate() {
-  const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
-  const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
+  const name = hasText(state.profile.name) ? state.profile.name : getCvTranslation("placeholders.noName");
+  const title = hasText(state.profile.title) ? state.profile.title : getCvTranslation("placeholders.noTitle");
   const location = state.profile.location;
   const summaryMarkup = getSummaryMarkup();
   const experienceMarkup = renderExperienceEntries();
@@ -498,7 +495,7 @@ function renderAlpineTemplate() {
     ? `<ul class="alpine-skills">${skills
         .map((skill) => {
           const levelMarkup = showSkillLevels
-            ? `<span class="alpine-skill-level">${tCV(`levels.${skill.level}`)}</span>`
+            ? `<span class="alpine-skill-level">${getCvTranslation(`levels.${skill.level}`)}</span>`
             : "";
           return `<li>${escapeHtml(skill.name)}${levelMarkup}</li>`;
         })
@@ -511,7 +508,7 @@ function renderAlpineTemplate() {
     ? `<ul class="alpine-skills">${languages
         .map((lang) => {
           const levelMarkup = showLanguageLevels
-            ? `<span class="alpine-skill-level">${tCV(`levels.${lang.level}`)}</span>`
+            ? `<span class="alpine-skill-level">${getCvTranslation(`levels.${lang.level}`)}</span>`
             : "";
           return `<li>${escapeHtml(lang.name)}${levelMarkup}</li>`;
         })
@@ -519,10 +516,10 @@ function renderAlpineTemplate() {
     : "";
 
   const sidebarSections = [
-    detailsList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.details")}</h3><ul class="alpine-details">${detailsList}</ul></section>` : "",
-    linksList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.links")}</h3><ul class="alpine-links">${linksList}</ul></section>` : "",
-    skillsList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.skills")}</h3>${skillsList}</section>` : "",
-    languagesList ? `<section><h3 class="alpine-dot-heading">${tCV("sections.languages")}</h3>${languagesList}</section>` : ""
+    detailsList ? `<section><h3 class="alpine-dot-heading">${getCvTranslation("sections.details")}</h3><ul class="alpine-details">${detailsList}</ul></section>` : "",
+    linksList ? `<section><h3 class="alpine-dot-heading">${getCvTranslation("sections.links")}</h3><ul class="alpine-links">${linksList}</ul></section>` : "",
+    skillsList ? `<section><h3 class="alpine-dot-heading">${getCvTranslation("sections.skills")}</h3>${skillsList}</section>` : "",
+    languagesList ? `<section><h3 class="alpine-dot-heading">${getCvTranslation("sections.languages")}</h3>${languagesList}</section>` : ""
   ].filter(Boolean).join("");
 
   const iconProfile = `<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"/><path fill="currentColor" d="M4 20a8 8 0 0 1 16 0v1H4z"/></svg>`;
@@ -531,13 +528,13 @@ function renderAlpineTemplate() {
 
   const mainSections = [
     summaryMarkup
-      ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconProfile} ${tCV("sections.summary")}</h3><div class="alpine-section-body">${summaryMarkup}</div></section>`
+      ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconProfile} ${getCvTranslation("sections.summary")}</h3><div class="alpine-section-body">${summaryMarkup}</div></section>`
       : "",
     experienceMarkup
-      ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconWork} ${tCV("sections.experience")}</h3><div class="alpine-section-body">${experienceMarkup}</div></section>`
+      ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconWork} ${getCvTranslation("sections.experience")}</h3><div class="alpine-section-body">${experienceMarkup}</div></section>`
       : "",
     educationMarkup
-      ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconEdu} ${tCV("sections.education")}</h3><div class="alpine-section-body">${educationMarkup}</div></section>`
+      ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconEdu} ${getCvTranslation("sections.education")}</h3><div class="alpine-section-body">${educationMarkup}</div></section>`
       : ""
   ].filter(Boolean).join("");
 
@@ -557,8 +554,8 @@ function renderAlpineTemplate() {
 }
 
 function renderAtelierTemplate() {
-  const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
-  const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
+  const name = hasText(state.profile.name) ? state.profile.name : getCvTranslation("placeholders.noName");
+  const title = hasText(state.profile.title) ? state.profile.title : getCvTranslation("placeholders.noTitle");
   const locationInHeader = toBoolean(state.alpineLocationInHeader, false);
   const summaryMarkup = getSummaryMarkup();
   const experienceMarkup = renderExperienceEntries();
@@ -584,20 +581,20 @@ function renderAtelierTemplate() {
     .join("");
 
   const mainCards = [
-    summaryMarkup ? `<section class="card"><h3 class="section-label">${tCV("sections.summary")}</h3>${summaryMarkup}</section>` : "",
+    summaryMarkup ? `<section class="card"><h3 class="section-label">${getCvTranslation("sections.summary")}</h3>${summaryMarkup}</section>` : "",
     experienceMarkup
-      ? `<section class="card"><h3 class="section-label">${tCV("sections.experience")}</h3>${experienceMarkup}</section>`
+      ? `<section class="card"><h3 class="section-label">${getCvTranslation("sections.experience")}</h3>${experienceMarkup}</section>`
       : "",
-    educationMarkup ? `<section class="card"><h3 class="section-label">${tCV("sections.education")}</h3>${educationMarkup}</section>` : ""
+    educationMarkup ? `<section class="card"><h3 class="section-label">${getCvTranslation("sections.education")}</h3>${educationMarkup}</section>` : ""
   ]
     .filter(Boolean)
     .join("");
 
   const sideCards = [
-    details ? `<section class="card"><h3 class="section-label">${tCV("sections.details")}</h3><ul>${details}</ul></section>` : "",
-    links ? `<section class="card"><h3 class="section-label">${tCV("sections.links")}</h3><ul>${links}</ul></section>` : "",
-    skillsMarkup ? `<section class="card"><h3 class="section-label">${tCV("sections.skills")}</h3>${skillsMarkup}</section>` : "",
-    languagesMarkup ? `<section class="card"><h3 class="section-label">${tCV("sections.languages")}</h3>${languagesMarkup}</section>` : ""
+    details ? `<section class="card"><h3 class="section-label">${getCvTranslation("sections.details")}</h3><ul>${details}</ul></section>` : "",
+    links ? `<section class="card"><h3 class="section-label">${getCvTranslation("sections.links")}</h3><ul>${links}</ul></section>` : "",
+    skillsMarkup ? `<section class="card"><h3 class="section-label">${getCvTranslation("sections.skills")}</h3>${skillsMarkup}</section>` : "",
+    languagesMarkup ? `<section class="card"><h3 class="section-label">${getCvTranslation("sections.languages")}</h3>${languagesMarkup}</section>` : ""
   ]
     .filter(Boolean)
     .join("");
@@ -871,364 +868,13 @@ const { createExperience, createEducation, createSkill, createLanguage } = creat
 });
 
 // Editor rendering
-function renderExperienceEditor() {
-  if (!state.experience.length) {
-    refs.experienceList.innerHTML = `<p class="empty-list">${t("empty.experienceEditor")}</p>`;
-    return;
-  }
-
-  refs.experienceList.innerHTML = state.experience
-    .map(
-      (item, index) => {
-        const isCollapsed = toBoolean(item.isCollapsed, false);
-        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
-        const roleLabel = hasText(item.role) ? escapeHtml(item.role) : "";
-        const companyLabel = hasText(item.company) ? escapeHtml(item.company) : "";
-        const titleLabel = roleLabel && companyLabel
-          ? `${roleLabel} ${t("labels.at")} ${companyLabel}`
-          : roleLabel || companyLabel || `${t("fields.experience")} ${index + 1}`;
-
-        return `
-        <article class="repeat-item${isCollapsed ? " is-collapsed" : ""}">
-          <div class="repeat-item-head">
-            <p class="repeat-item-title">${titleLabel}</p>
-            <div class="repeat-item-actions">
-              <button
-                type="button"
-                class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
-                data-action="toggle-experience"
-                data-index="${index}"
-                aria-expanded="${!isCollapsed}"
-                aria-label="${toggleLabel}"
-                title="${toggleLabel}"
-              >
-                <span class="collapse-icon" aria-hidden="true"></span>
-              </button>
-              <button
-                type="button"
-                class="remove-icon-btn"
-                data-action="remove-experience"
-                data-index="${index}"
-                aria-label="${t("actions.remove")}"
-                title="${t("actions.remove")}"
-              >
-                <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path
-                    d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="repeat-item-body is-collapsable" aria-hidden="${isCollapsed}">
-            <div class="repeat-item-grid experience-grid">
-              <label class="field-span-2">
-                <span>${t("fields.jobTitle")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="role" value="${escapeAttr(item.role)}" placeholder="${t("placeholders.jobTitle")}" />
-              </label>
-              <label class="field-span-2">
-                <span>${t("fields.company")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="company" value="${escapeAttr(item.company)}" placeholder="${t("placeholders.company")}" />
-              </label>
-              <label class="field-span-2">
-                <span>${t("fields.itemLocation")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${t("placeholders.location")}" />
-              </label>
-              <label>
-                <span>${t("fields.startDate")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="Jan 2025" />
-              </label>
-              <label>
-                <span>${t("fields.endDate")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="${t("placeholders.present")}" />
-              </label>
-            </div>
-
-            <label>
-              <span>${t("fields.highlights")}</span>
-            <textarea rows="3" class="highlights-textarea" data-list="experience" data-index="${index}" data-key="bullets">${escapeHtml(item.bullets)}</textarea>
-            </label>
-          </div>
-        </article>
-      `;
-      }
-    )
-    .join("");
-
-  const bottomAddBtn = `<button type="button" class="add-btn add-btn-bottom" data-action="add-experience">${t("actions.addExperience")}</button>`;
-  refs.experienceList.innerHTML += bottomAddBtn;
-}
-
-function renderEducationEditor() {
-  if (!state.education.length) {
-    refs.educationList.innerHTML = `<p class="empty-list">${t("empty.educationEditor")}</p>`;
-    return;
-  }
-
-  refs.educationList.innerHTML = state.education
-    .map(
-      (item, index) => {
-        const isCollapsed = toBoolean(item.isCollapsed, false);
-        const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
-        const degreeLabel = hasText(item.degree) ? escapeHtml(item.degree) : "";
-        const schoolLabel = hasText(item.school) ? escapeHtml(item.school) : "";
-        const titleLabel = degreeLabel && schoolLabel
-          ? `${degreeLabel} ${t("labels.at")} ${schoolLabel}`
-          : degreeLabel || schoolLabel || `${t("fields.education")} ${index + 1}`;
-
-        return `
-        <article class="repeat-item${isCollapsed ? " is-collapsed" : ""}">
-          <div class="repeat-item-head">
-            <p class="repeat-item-title">${titleLabel}</p>
-            <div class="repeat-item-actions">
-              <button
-                type="button"
-                class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
-                data-action="toggle-education"
-                data-index="${index}"
-                aria-expanded="${!isCollapsed}"
-                aria-label="${toggleLabel}"
-                title="${toggleLabel}"
-              >
-                <span class="collapse-icon" aria-hidden="true"></span>
-              </button>
-              <button
-                type="button"
-                class="remove-icon-btn"
-                data-action="remove-education"
-                data-index="${index}"
-                aria-label="${t("actions.remove")}"
-                title="${t("actions.remove")}"
-              >
-                <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path
-                    d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="repeat-item-body is-collapsable" aria-hidden="${isCollapsed}">
-            <div class="repeat-item-grid">
-              <label>
-                <span>${t("fields.degree")}</span>
-                <input type="text" data-list="education" data-index="${index}" data-key="degree" value="${escapeAttr(item.degree)}" placeholder="${t("placeholders.degree")}" />
-              </label>
-              <label>
-                <span>${t("fields.school")}</span>
-                <input type="text" data-list="education" data-index="${index}" data-key="school" value="${escapeAttr(item.school)}" placeholder="${t("placeholders.school")}" />
-              </label>
-              <label>
-                <span>${t("fields.itemLocation")}</span>
-                <input type="text" data-list="education" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${t("placeholders.location")}" />
-              </label>
-              <label>
-                <span>${t("fields.startDate")}</span>
-                <input type="text" data-list="education" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="2018" />
-              </label>
-              <label>
-                <span>${t("fields.endDate")}</span>
-                <input type="text" data-list="education" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="2022" />
-              </label>
-            </div>
-          </div>
-        </article>
-      `;
-      }
-    )
-    .join("");
-}
-
-function renderSkillsEditor() {
-  if (!state.skills.length) {
-    refs.skillsList.innerHTML = `<p class="empty-list">${t("empty.skillsEditor")}</p>`;
-    return;
-  }
-
-  const showSkillLevels = toBoolean(state.showSkillLevels, false);
-  const toggleLabel = showSkillLevels ? t("fields.hideSkillLevels") : t("fields.showSkillLevels");
-  const toggleMarkup = `
-    <div class="skills-toolbar">
-      <button
-        type="button"
-        class="skill-level-toggle${showSkillLevels ? " is-active" : ""}"
-        data-action="toggle-skill-levels"
-        aria-pressed="${showSkillLevels}"
-      >
-        ${toggleLabel}
-      </button>
-    </div>
-  `;
-
-  const skillsMarkup = state.skills
-    .map(
-      (item, index) => {
-        const selectedLevel = normalizeSkillLevel(item.level);
-
-        return `
-        <article class="repeat-item skill-item">
-          <div class="skill-item-actions">
-            <button
-              type="button"
-              class="remove-btn remove-icon-btn"
-              data-action="remove-skill"
-              data-index="${index}"
-              aria-label="${t("actions.remove")}"
-              title="${t("actions.remove")}"
-            >
-              <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                  fill="currentColor"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div class="repeat-item-body">
-            <div class="repeat-item-grid skill-editor-grid">
-              <label>
-                <span>${t("fields.skillName")}</span>
-                <input type="text" data-list="skills" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" placeholder="${t("placeholders.skill")}" />
-              </label>
-              <label>
-                <span>${t("fields.skillLevel")}</span>
-                <div class="custom-select skill-level-select" data-index="${index}">
-                  <button
-                    type="button"
-                    class="custom-select-trigger"
-                    data-action="toggle-skill-level-select"
-                    data-index="${index}"
-                    aria-haspopup="listbox"
-                    aria-expanded="false"
-                  >
-                    <span class="custom-select-value">${t(`levels.${selectedLevel}`)}</span>
-                    <span class="custom-select-chevron" aria-hidden="true"></span>
-                  </button>
-                  <div class="custom-select-menu" role="listbox">
-                    ${skillLevels
-                      .map(
-                        (level) =>
-                          `<button type="button" class="custom-select-option" role="option" data-action="select-skill-level" data-index="${index}" data-value="${level}" aria-selected="${selectedLevel === level}">${t(
-                            `levels.${level}`
-                          )}</button>`
-                      )
-                      .join("")}
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-        </article>
-      `;
-      }
-    )
-    .join("");
-
-  const bottomAddBtn = `<button type="button" class="add-btn add-btn-bottom" data-action="add-skill">${t("actions.addSkill")}</button>`;
-  refs.skillsList.innerHTML = `${toggleMarkup}${skillsMarkup}${bottomAddBtn}`;
-}
-
-function renderLanguagesEditor() {
-  if (!state.languages.length) {
-    refs.languagesList.innerHTML = `<p class="empty-list">${t("empty.languagesEditor")}</p>`;
-    return;
-  }
-
-  const showLanguageLevels = toBoolean(state.showLanguageLevels, false);
-  const toggleLabel = showLanguageLevels ? t("fields.hideLanguageLevels") : t("fields.showLanguageLevels");
-  const toggleMarkup = `
-    <div class="skills-toolbar">
-      <button
-        type="button"
-        class="skill-level-toggle${showLanguageLevels ? " is-active" : ""}"
-        data-action="toggle-language-levels"
-        aria-pressed="${showLanguageLevels}"
-      >
-        ${toggleLabel}
-      </button>
-    </div>
-  `;
-
-  const languagesMarkup = state.languages
-    .map(
-      (item, index) => {
-        const selectedLevel = normalizeSkillLevel(item.level);
-
-        return `
-        <article class="repeat-item skill-item">
-          <div class="skill-item-actions">
-            <button
-              type="button"
-              class="remove-btn remove-icon-btn"
-              data-action="remove-language"
-              data-index="${index}"
-              aria-label="${t("actions.remove")}"
-              title="${t("actions.remove")}"
-            >
-              <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                  fill="currentColor"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div class="repeat-item-body">
-            <div class="repeat-item-grid skill-editor-grid">
-              <label>
-                <span>${t("fields.languageName")}</span>
-                <input type="text" data-list="languages" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" placeholder="${t("placeholders.language")}" />
-              </label>
-              <label>
-                <span>${t("fields.languageLevel")}</span>
-                <div class="custom-select language-level-select" data-index="${index}">
-                  <button
-                    type="button"
-                    class="custom-select-trigger"
-                    data-action="toggle-language-level-select"
-                    data-index="${index}"
-                    aria-haspopup="listbox"
-                    aria-expanded="false"
-                  >
-                    <span class="custom-select-value">${t(`levels.${selectedLevel}`)}</span>
-                    <span class="custom-select-chevron" aria-hidden="true"></span>
-                  </button>
-                  <div class="custom-select-menu" role="listbox">
-                    ${skillLevels
-                      .map(
-                        (level) =>
-                          `<button type="button" class="custom-select-option" role="option" data-action="select-language-level" data-index="${index}" data-value="${level}" aria-selected="${selectedLevel === level}">${t(
-                            `levels.${level}`
-                          )}</button>`
-                      )
-                      .join("")}
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-        </article>
-      `;
-      }
-    )
-    .join("");
-
-  const bottomAddBtn = `<button type="button" class="add-btn add-btn-bottom" data-action="add-language">${t("actions.addLanguage")}</button>`;
-  refs.languagesList.innerHTML = `${toggleMarkup}${languagesMarkup}${bottomAddBtn}`;
-}
-
-function renderDynamicEditors() {
-  renderExperienceEditor();
-  renderEducationEditor();
-  renderSkillsEditor();
-  renderLanguagesEditor();
-}
+const { renderDynamicEditors } = createEditorRenderers({
+  state,
+  refs,
+  getUiTranslation,
+  skillLevels,
+  normalizeSkillLevel
+});
 
 // UI synchronization and layout helpers
 function isResumeBlank() {
@@ -1253,19 +899,19 @@ function applyI18n() {
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     const key = element.getAttribute("data-i18n");
     if (key) {
-      element.textContent = t(key);
+      element.textContent = getUiTranslation(key);
     }
   });
 
   document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
     const key = element.getAttribute("data-i18n-placeholder");
     if (key) {
-      element.setAttribute("placeholder", t(key));
+      element.setAttribute("placeholder", getUiTranslation(key));
     }
   });
 
   refs.themeToggle.querySelector("[data-role='theme-label']").textContent =
-    state.theme === "dark" ? t("actions.lightMode") : t("actions.darkMode");
+    state.theme === "dark" ? getUiTranslation("actions.lightMode") : getUiTranslation("actions.darkMode");
 
   document.querySelectorAll(".lang-btn").forEach((button) => {
     const isActive = button.getAttribute("data-lang") === state.uiLang;
@@ -1294,7 +940,7 @@ function syncSectionToggles() {
 
     const toggle = section.querySelector(".section-toggle");
     if (toggle instanceof HTMLButtonElement) {
-      const label = isCollapsed ? t("actions.expand") : t("actions.collapse");
+      const label = isCollapsed ? getUiTranslation("actions.expand") : getUiTranslation("actions.collapse");
       toggle.classList.toggle("is-collapsed", isCollapsed);
       toggle.setAttribute("aria-expanded", String(!isCollapsed));
       toggle.setAttribute("aria-label", label);
@@ -1517,7 +1163,7 @@ async function handleRawFileChange(event) {
     syncSampleButtonState();
   } catch (error) {
     console.error(error);
-    window.alert(t("errors.invalidRawFile"));
+    window.alert(getUiTranslation("errors.invalidRawFile"));
   } finally {
     target.value = "";
   }
@@ -1583,7 +1229,7 @@ function setRepeatItemCollapsed(trigger, isCollapsed, collapsedTitleText = "") {
   trigger.classList.toggle("is-collapsed", isCollapsed);
   trigger.setAttribute("aria-expanded", String(!isCollapsed));
 
-  const toggleLabel = isCollapsed ? t("actions.expand") : t("actions.collapse");
+  const toggleLabel = isCollapsed ? getUiTranslation("actions.expand") : getUiTranslation("actions.collapse");
   trigger.setAttribute("aria-label", toggleLabel);
   trigger.setAttribute("title", toggleLabel);
 
