@@ -2346,14 +2346,6 @@ function setRepeatItemCollapsed(trigger, isCollapsed, collapsedTitleText = "") {
   if (body) {
     body.setAttribute("aria-hidden", String(isCollapsed));
   }
-
-  const collapsedTitle = repeatItem.querySelector(".skill-collapsed-title");
-  if (collapsedTitle) {
-    if (collapsedTitleText) {
-      collapsedTitle.textContent = collapsedTitleText;
-    }
-    collapsedTitle.setAttribute("aria-hidden", String(!isCollapsed));
-  }
 }
 
 function handleClick(event) {
