@@ -3,13 +3,12 @@ import { createEditorRenderers } from "./editor-renderers.js";
 import { createEventHandlers } from "./event-handlers.js";
 import { createPersistence } from "./persistence.js";
 import { createPreviewRenderers, templateCatalog } from "./preview-renderers.js";
+import { createResumeNormalization, normalizeSkillLevel, skillLevels } from "./resume-normalization.js";
 import { createSampleStateBuilders } from "./sample-state.js";
 import { createStateSync } from "./state-sync.js";
 import { createUiControls } from "./ui-controls.js";
 
 // State and DOM references
-const skillLevels = ["beginner", "intermediate", "advanced", "expert"];
-
 const state = {
   uiLang: "en",
   cvLang: "en",
@@ -68,10 +67,6 @@ let sampleModeEnabled = false;
 const getUiTranslation = createUiTranslationGetter(() => state.uiLang);
 const getCvTranslation = createCvTranslationGetter(() => state.cvLang);
 
-function normalizeSkillLevel(level) {
-  return skillLevels.includes(level) ? level : "intermediate";
-}
-
 function createResumeFilename() {
   const profileName = String(state.profile.name ?? "")
     .trim()
@@ -101,11 +96,14 @@ const { renderTemplate, getTemplateClasses, isResumeBlank } = createPreviewRende
   normalizeSkillLevel
 });
 
+const { sanitizeResumeState } = createResumeNormalization({
+  templateCatalog
+});
+
 // Draft persistence and raw import/export
-const { sanitizeResumeState, parseRawResumePayload, loadDraftFromLocalStorage, saveDraftToLocalStorage, downloadRawResume } = createPersistence({
+const { parseRawResumePayload, loadDraftFromLocalStorage, saveDraftToLocalStorage, downloadRawResume } = createPersistence({
   getState: () => state,
-  templateCatalog,
-  normalizeSkillLevel
+  sanitizeResumeState
 });
 
 const { buildSampleResumeState, buildEmptyResumeState } = createSampleStateBuilders({
