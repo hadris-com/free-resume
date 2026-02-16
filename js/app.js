@@ -1,5 +1,6 @@
 import { translations } from "./translations.js";
 
+// State and DOM references
 const skillLevels = ["beginner", "intermediate", "advanced", "expert"];
 
 const state = {
@@ -56,6 +57,7 @@ const refs = {
 
 let sampleModeEnabled = false;
 
+// Shared utilities
 function tUI(key) {
   return translations[state.uiLang]?.[key] ?? translations.en[key] ?? key;
 }
@@ -91,6 +93,42 @@ function hasText(value) {
 
 function hasObjectContent(item) {
   return Object.values(item).some(hasText);
+}
+
+function toInputText(value) {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  return "";
+}
+
+function toBoolean(value, fallback = false) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return value !== 0;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+
+    if (["true", "1", "yes", "on"].includes(normalized)) {
+      return true;
+    }
+
+    if (["false", "0", "no", "off"].includes(normalized)) {
+      return false;
+    }
+  }
+
+  return fallback;
 }
 
 function normalizeSkillLevel(level) {
@@ -251,6 +289,7 @@ function formatRange(start, end) {
   return cleanEnd;
 }
 
+// Preview data selectors
 function getSummaryMarkup() {
   return hasText(state.summary) ? `<p>${formatTextBlock(state.summary)}</p>` : "";
 }
@@ -391,6 +430,7 @@ function renderLanguagesMarkup() {
   `;
 }
 
+// Template renderers
 function renderBerlinTemplate() {
   const name = hasText(state.profile.name) ? state.profile.name : tCV("placeholders.noName");
   const title = hasText(state.profile.title) ? state.profile.title : tCV("placeholders.noTitle");
@@ -775,6 +815,7 @@ const templateCatalog = {
   }
 };
 
+// Draft persistence and raw import/export
 const rawExportConfig = {
   app: "free-resume",
   schemaVersion: 2
@@ -784,42 +825,7 @@ const localDraftConfig = {
   key: "free-resume:draft"
 };
 
-function toInputText(value) {
-  if (typeof value === "string") {
-    return value;
-  }
-
-  if (typeof value === "number") {
-    return String(value);
-  }
-
-  return "";
-}
-
-function toBoolean(value, fallback = false) {
-  if (typeof value === "boolean") {
-    return value;
-  }
-
-  if (typeof value === "number") {
-    return value !== 0;
-  }
-
-  if (typeof value === "string") {
-    const normalized = value.trim().toLowerCase();
-
-    if (["true", "1", "yes", "on"].includes(normalized)) {
-      return true;
-    }
-
-    if (["false", "0", "no", "off"].includes(normalized)) {
-      return false;
-    }
-  }
-
-  return fallback;
-}
-
+// Raw payload and local-draft state mapping
 function sanitizeExperienceItem(item) {
   return {
     role: toInputText(item?.role),
@@ -1201,43 +1207,7 @@ function syncSampleButtonState() {
   refs.sampleBtn.setAttribute("aria-pressed", String(sampleModeEnabled));
 }
 
-async function handleRawFileChange(event) {
-  const target = event.target;
-
-  if (!(target instanceof HTMLInputElement)) {
-    return;
-  }
-
-  const file = target.files?.[0];
-  if (!file) {
-    return;
-  }
-
-  try {
-    const content = await file.text();
-    const parsed = JSON.parse(content);
-    const importedState = parseRawResumePayload(parsed);
-
-    if (!importedState) {
-      throw new Error("Invalid raw resume payload");
-    }
-
-    applyImportedState(importedState);
-    sampleModeEnabled = false;
-    syncStaticInputsFromState();
-    applyTheme();
-    applyI18n();
-    renderDynamicEditors();
-    renderPreview();
-    syncSampleButtonState();
-  } catch (error) {
-    console.error(error);
-    window.alert(t("errors.invalidRawFile"));
-  } finally {
-    target.value = "";
-  }
-}
-
+// Editor item factories
 function createExperience() {
   return {
     role: "",
@@ -1277,6 +1247,7 @@ function createLanguage() {
   };
 }
 
+// Editor rendering
 function renderExperienceEditor() {
   if (!state.experience.length) {
     refs.experienceList.innerHTML = `<p class="empty-list">${t("empty.experienceEditor")}</p>`;
@@ -1629,6 +1600,14 @@ function renderLanguagesEditor() {
   refs.languagesList.innerHTML = `${toggleMarkup}${languagesMarkup}${bottomAddBtn}`;
 }
 
+function renderDynamicEditors() {
+  renderExperienceEditor();
+  renderEducationEditor();
+  renderSkillsEditor();
+  renderLanguagesEditor();
+}
+
+// UI synchronization and layout helpers
 function isResumeBlank() {
   const profileHasContent = Object.values(state.profile).some(hasText);
   const summaryHasContent = hasText(state.summary);
@@ -1829,13 +1808,6 @@ function closeLanguageLevelSelects(exceptWrapper = null) {
   });
 }
 
-function renderDynamicEditors() {
-  renderExperienceEditor();
-  renderEducationEditor();
-  renderSkillsEditor();
-  renderLanguagesEditor();
-}
-
 function syncEditorPanelHeight() {
   if (!refs.editorPanel || !refs.previewPanel) {
     return;
@@ -1887,6 +1859,44 @@ function insertPageBreakMarkers() {
     line.style.top = `${i * pageHeight}px`;
     line.dataset.label = `page ${i + 1}`;
     page.appendChild(line);
+  }
+}
+
+// Event handlers
+async function handleRawFileChange(event) {
+  const target = event.target;
+
+  if (!(target instanceof HTMLInputElement)) {
+    return;
+  }
+
+  const file = target.files?.[0];
+  if (!file) {
+    return;
+  }
+
+  try {
+    const content = await file.text();
+    const parsed = JSON.parse(content);
+    const importedState = parseRawResumePayload(parsed);
+
+    if (!importedState) {
+      throw new Error("Invalid raw resume payload");
+    }
+
+    applyImportedState(importedState);
+    sampleModeEnabled = false;
+    syncStaticInputsFromState();
+    applyTheme();
+    applyI18n();
+    renderDynamicEditors();
+    renderPreview();
+    syncSampleButtonState();
+  } catch (error) {
+    console.error(error);
+    window.alert(t("errors.invalidRawFile"));
+  } finally {
+    target.value = "";
   }
 }
 
@@ -2241,6 +2251,7 @@ function handleClick(event) {
   }
 }
 
+// App bootstrap
 function init() {
   const savedDraft = loadDraftFromLocalStorage();
   if (savedDraft) {
