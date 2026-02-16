@@ -10,6 +10,26 @@ A modern, template-driven resume web application with:
 
 ## Run locally
 
+This project uses native ES modules (`<script type="module">`), so opening `index.html` directly with `file://` will fail in modern browsers due to CORS/module restrictions.
+
+Start a local HTTP server from the project root and open the shown URL instead:
+
+```bash
+# Option 1: Python 3
+python3 -m http.server 5500
+```
+
+```bash
+# Option 2: Node (without installing globally)
+npx serve . -l 5500
+```
+
+Option 3: VS Code Live Server extension
+- Install the **Live Server** extension in VS Code.
+- Open `index.html` and choose **Open with Live Server**.
+
+Then open `http://localhost:5500` or use the URL printed by the server.
+
 
 ## Deploy with GitHub Actions (GitHub Pages)
 
