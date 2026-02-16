@@ -2,6 +2,7 @@ import { createCvTranslationGetter, createUiTranslationGetter } from "./i18n.js"
 import { createEditorRenderers } from "./editor-renderers.js";
 import { createEventHandlers } from "./event-handlers.js";
 import { createPersistence } from "./persistence.js";
+import { createPrintHelpers } from "./print-helpers.js";
 import { createPreviewRenderers, templateCatalog } from "./preview-renderers.js";
 import { createResumeNormalization, normalizeSkillLevel, skillLevels } from "./resume-normalization.js";
 import { createSampleStateBuilders } from "./sample-state.js";
@@ -67,28 +68,6 @@ let sampleModeEnabled = false;
 const getUiTranslation = createUiTranslationGetter(() => state.uiLang);
 const getCvTranslation = createCvTranslationGetter(() => state.cvLang);
 
-function createResumeFilename() {
-  const profileName = String(state.profile.name ?? "")
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
-  return profileName ? `${profileName}-resume` : "resume";
-}
-
-function openPdfDialog() {
-  const previousTitle = document.title;
-  document.title = createResumeFilename();
-  fillPrintPages();
-  window.print();
-  document.title = previousTitle;
-  restorePrintPages();
-}
-
-function fillPrintPages() {}
-function restorePrintPages() {}
-
 const { renderTemplate, getTemplateClasses, isResumeBlank } = createPreviewRenderers({
   getState: () => state,
   getUiTranslation,
@@ -134,6 +113,12 @@ const { syncStaticInputsFromState, applyImportedState, syncSampleButtonState } =
   getSampleModeEnabled: () => sampleModeEnabled
 });
 
+const { insertPageBreakMarkers, fillPrintPages, restorePrintPages, openPdfDialog } = createPrintHelpers({
+  getState: () => state,
+  getResumePreviewElement: () => refs.resumePreview,
+  getUiTranslation
+});
+
 function renderPreview() {
   refs.resumePreview.className = `resume-preview ${getTemplateClasses(state.template)}`;
   refs.resumePreview.innerHTML = renderTemplate(state.template);
@@ -142,29 +127,6 @@ function renderPreview() {
   insertPageBreakMarkers();
   uiControls.syncEditorPanelHeight();
   saveDraftToLocalStorage();
-}
-
-function insertPageBreakMarkers() {
-  const page = refs.resumePreview.querySelector(".resume-page");
-  if (!page) return;
-
-  page.querySelectorAll(".page-break-line").forEach((el) => el.remove());
-  page.style.minHeight = "";
-
-  const pageHeight = 1123;
-  const totalHeight = page.scrollHeight;
-  if (totalHeight <= pageHeight) return;
-
-  const pageCount = Math.ceil(totalHeight / pageHeight);
-  page.style.minHeight = `${pageCount * pageHeight}px`;
-
-  for (let i = 1; i < pageCount; i++) {
-    const line = document.createElement("div");
-    line.className = "page-break-line";
-    line.style.top = `${i * pageHeight}px`;
-    line.dataset.label = `${getUiTranslation("labels.page")} ${i + 1}`;
-    page.appendChild(line);
-  }
 }
 
 // Event handlers
