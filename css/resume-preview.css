@@ -412,6 +412,33 @@
 }
 
 @media screen and (max-width: 760px) {
+  .preview-meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 0.5rem;
+    white-space: normal;
+    overflow-x: visible;
+  }
+
+  .preview-meta > * {
+    min-width: 0;
+    justify-self: start;
+  }
+
+  .cv-lang-control,
+  .page-size-control {
+    width: auto;
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+
+  .cv-lang-switch,
+  .page-size-switch {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
   .preview-actions {
     width: 100%;
     grid-template-columns: 1fr;
