@@ -135,6 +135,10 @@ body.theme-dark .resume-preview.variant-solstice .aurora-banner {
   background: rgba(242, 145, 78, 0.06);
 }
 
+.resume-preview.variant-bastion {
+  --aurora-accent: #5f6b7c;
+}
+
 .resume-preview.variant-bastion .aurora-banner {
   background:
     linear-gradient(120deg, rgba(70, 78, 92, 0.95), rgba(38, 44, 53, 0.92)),
@@ -157,4 +161,9 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 .resume-preview.variant-bastion .timeline > li::before {
   background: #8d99a8;
   box-shadow: 0 0 0 3px rgba(141, 153, 168, 0.2);
+}
+
+.resume-preview.variant-bastion .timeline > li > ul > li::before {
+  border: 0;
+  background: var(--aurora-accent);
 }
