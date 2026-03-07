@@ -106,6 +106,10 @@
 }
 
 /* Aurora-based variants */
+.resume-preview.variant-solstice {
+  --aurora-accent: #c45d52;
+}
+
 .resume-preview.variant-solstice .aurora-banner {
   background:
     linear-gradient(120deg, rgba(178, 56, 87, 0.95), rgba(240, 130, 68, 0.92)),
@@ -118,8 +122,13 @@ body.theme-dark .resume-preview.variant-solstice .aurora-banner {
     radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
 }
 
-.resume-preview.variant-solstice .timeline li::before {
-  background: #ffd07a;
+.resume-preview.variant-solstice .timeline > li::before {
+  background: #f0c267;
+}
+
+.resume-preview.variant-solstice .timeline > li > ul > li::before {
+  border: 0;
+  background: var(--aurora-accent);
 }
 
 .resume-preview.variant-solstice .aurora-side {
@@ -145,7 +154,7 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   background: transparent;
 }
 
-.resume-preview.variant-bastion .timeline li::before {
+.resume-preview.variant-bastion .timeline > li::before {
   background: #8d99a8;
   box-shadow: 0 0 0 3px rgba(141, 153, 168, 0.2);
 }
