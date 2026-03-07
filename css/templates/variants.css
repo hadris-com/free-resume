@@ -1,4 +1,4 @@
-/* Additional Templates */
+/* Berlin-based variants */
 .resume-preview.variant-noir {
   --paper-bg: #15181d;
   --paper-text: #edf2f7;
@@ -37,50 +37,6 @@
 .resume-preview.variant-fjord aside {
   border-inline-start: 1px solid var(--paper-divider);
   padding-inline-start: 1rem;
-}
-
-.resume-preview.variant-solstice .aurora-banner {
-  background:
-    linear-gradient(120deg, rgba(178, 56, 87, 0.95), rgba(240, 130, 68, 0.92)),
-    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.24), transparent 45%);
-}
-
-body.theme-dark .resume-preview.variant-solstice .aurora-banner {
-  background:
-    linear-gradient(120deg, rgba(190, 78, 108, 0.86), rgba(198, 108, 63, 0.86)),
-    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
-}
-
-.resume-preview.variant-solstice .timeline li::before {
-  background: #ffd07a;
-}
-
-.resume-preview.variant-solstice .aurora-side {
-  background: rgba(242, 145, 78, 0.06);
-}
-
-.resume-preview.variant-bastion .aurora-banner {
-  background:
-    linear-gradient(120deg, rgba(70, 78, 92, 0.95), rgba(38, 44, 53, 0.92)),
-    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
-}
-
-body.theme-dark .resume-preview.variant-bastion .aurora-banner {
-  background:
-    linear-gradient(120deg, rgba(94, 104, 120, 0.86), rgba(58, 65, 77, 0.88)),
-    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.12), transparent 45%);
-}
-
-.resume-preview.variant-bastion .timeline::before {
-  inset-inline-start: 0.24rem;
-  width: 0;
-  border-inline-start: 1px dashed var(--paper-divider);
-  background: transparent;
-}
-
-.resume-preview.variant-bastion .timeline li::before {
-  background: #8d99a8;
-  box-shadow: 0 0 0 3px rgba(141, 153, 168, 0.2);
 }
 
 .resume-preview.variant-slate {
@@ -149,30 +105,47 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   font-size: 0.74rem;
 }
 
-@media screen and (max-width: 1180px) {
-  .resume-page {
-    min-height: auto;
-  }
+/* Aurora-based variants */
+.resume-preview.variant-solstice .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(178, 56, 87, 0.95), rgba(240, 130, 68, 0.92)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.24), transparent 45%);
 }
 
-@media screen and (max-width: 760px) {
-  .preview-actions {
-    width: 100%;
-    grid-template-columns: 1fr;
-  }
-
-  .preview-actions .ghost-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .resume-page {
-    border-radius: 12px;
-    padding: 1.1rem;
-  }
-
+body.theme-dark .resume-preview.variant-solstice .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(190, 78, 108, 0.86), rgba(198, 108, 63, 0.86)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
 }
 
+.resume-preview.variant-solstice .timeline li::before {
+  background: #ffd07a;
+}
 
+.resume-preview.variant-solstice .aurora-side {
+  background: rgba(242, 145, 78, 0.06);
+}
 
+.resume-preview.variant-bastion .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(70, 78, 92, 0.95), rgba(38, 44, 53, 0.92)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
+}
 
+body.theme-dark .resume-preview.variant-bastion .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(94, 104, 120, 0.86), rgba(58, 65, 77, 0.88)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.12), transparent 45%);
+}
+
+.resume-preview.variant-bastion .timeline::before {
+  inset-inline-start: 0.24rem;
+  width: 0;
+  border-inline-start: 1px dashed var(--paper-divider);
+  background: transparent;
+}
+
+.resume-preview.variant-bastion .timeline li::before {
+  background: #8d99a8;
+  box-shadow: 0 0 0 3px rgba(141, 153, 168, 0.2);
+}
