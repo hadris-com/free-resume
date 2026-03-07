@@ -38,8 +38,24 @@
   grid-template-columns: 1fr;
 }
 
-.template-berlin section + section {
-  margin-block-start: 1rem;
+.template-berlin .resume-columns > div > section + section,
+.template-berlin .resume-columns > aside > section + section {
+  margin-block-start: 1.15rem;
+}
+
+.template-berlin .resume-columns .section-label {
+  margin-block-end: 0;
+}
+
+.template-berlin .resume-columns .section-label + * {
+  margin-block-start: 0.45rem;
+}
+
+.template-berlin .resume-columns > div > section > p,
+.template-berlin .resume-columns > div > section > ul,
+.template-berlin .resume-columns > aside > section > p,
+.template-berlin .resume-columns > aside > section > ul {
+  margin-block-end: 0;
 }
 
 .template-berlin .details-list,
