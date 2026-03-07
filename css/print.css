@@ -102,21 +102,27 @@
 
 
   /* ---------- Stretch inner layouts to fill the page ---------- */
-  .template-aurora .resume-page {
+  .template-aurora .resume-page[data-print-page-count="1"] {
     display: flex !important;
     flex-direction: column !important;
   }
 
-  .template-aurora .aurora-shell {
+  .template-aurora .resume-page[data-print-page-count="1"] .aurora-shell {
     flex: 1 !important;
   }
 
-  .template-aurora .aurora-main {
+  .template-aurora .resume-page[data-print-page-count="1"] .aurora-main {
     display: flex !important;
     flex-direction: column !important;
   }
 
-  .template-aurora .aurora-main > section:last-child {
+  .template-aurora .aurora-side,
+  .template-aurora .aurora-main {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .template-aurora .resume-page[data-print-page-count="1"] .aurora-main > section:last-child {
     flex: 1 !important;
   }
 

@@ -2,6 +2,7 @@ import { getPageMetrics } from "./page-layout.js";
 
 export function createPrintHelpers({ getState, getResumePreviewElement, getUiTranslation }) {
   const PRINT_PAGE_SIZE_STYLE_ID = "dynamic-print-page-size";
+  const PAGE_HEIGHT_ROUNDING_EPSILON = 1;
 
   function getActivePageMetrics() {
     return getPageMetrics(getState().pageSize);
@@ -48,7 +49,7 @@ export function createPrintHelpers({ getState, getResumePreviewElement, getUiTra
       return;
     }
 
-    const pageCount = Math.ceil(totalHeight / heightPx);
+    const pageCount = Math.ceil(Math.max(heightPx, totalHeight - PAGE_HEIGHT_ROUNDING_EPSILON) / heightPx);
     page.style.minHeight = `${pageCount * heightPx}px`;
 
     for (let i = 1; i < pageCount; i++) {
@@ -74,8 +75,16 @@ export function createPrintHelpers({ getState, getResumePreviewElement, getUiTra
     page.dataset.printMinHeightValue = previousValue;
     page.dataset.printMinHeightPriority = previousPriority;
 
+    // Measure the content at its natural height instead of reusing the
+    // preview-only min-height that was added for on-screen page markers.
+    page.style.removeProperty("min-height");
+
     const totalHeight = Math.max(page.scrollHeight, page.offsetHeight, heightPx);
-    const pageCount = Math.max(1, Math.ceil(totalHeight / heightPx));
+    const pageCount = Math.max(
+      1,
+      Math.ceil(Math.max(heightPx, totalHeight - PAGE_HEIGHT_ROUNDING_EPSILON) / heightPx)
+    );
+    page.dataset.printPageCount = String(pageCount);
     page.style.setProperty("min-height", `${pageCount * heightPx}px`, "important");
   }
 
@@ -97,6 +106,7 @@ export function createPrintHelpers({ getState, getResumePreviewElement, getUiTra
 
     delete page.dataset.printMinHeightValue;
     delete page.dataset.printMinHeightPriority;
+    delete page.dataset.printPageCount;
   }
 
   function openPdfDialog() {
