@@ -28,13 +28,13 @@
     <link rel="stylesheet" href="./css/foundation.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/app-shell.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/editor.css?v=20260307-1" />
-    <link rel="stylesheet" href="./css/resume-preview.css?v=20260307-1" />
+    <link rel="stylesheet" href="./css/resume-preview.css?v=20260307-2" />
     <link rel="stylesheet" href="./css/templates/berlin.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/templates/aurora.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/templates/atelier.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/templates/alpine.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/templates/variants.css?v=20260307-1" />
-    <link rel="stylesheet" href="./css/print.css?v=20260216-1" />
+    <link rel="stylesheet" href="./css/print.css?v=20260307-2" />
   </head>
   <body>
     <div class="bg-noise" aria-hidden="true"></div>
@@ -294,6 +294,13 @@
                   <button type="button" class="cv-lang-btn" data-cv-lang="de" aria-pressed="false">DE</button>
                 </div>
               </div>
+              <div class="page-size-control" role="group" aria-label="Page size">
+                <span class="page-size-label" data-i18n="fields.pageSize">Page size</span>
+                <div class="page-size-switch" role="group" aria-label="Page size options">
+                  <button type="button" class="page-size-btn active" data-page-size="a4" aria-pressed="true" data-i18n="options.pageSizeA4">A4</button>
+                  <button type="button" class="page-size-btn" data-page-size="letter" aria-pressed="false" data-i18n="options.pageSizeLetter">Letter</button>
+                </div>
+              </div>
             </div>
             <div class="preview-actions">
               <input id="raw-file-input" type="file" accept=".json,application/json" hidden />
@@ -380,6 +387,6 @@
       </div>
     </dialog>
 
-    <script type="module" src="./js/app.js?v=20260216-3"></script>
+    <script type="module" src="./js/app.js?v=20260307-4"></script>
   </body>
 </html>

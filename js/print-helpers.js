@@ -1,5 +1,24 @@
+import { getPageMetrics } from "./page-layout.js";
+
 export function createPrintHelpers({ getState, getResumePreviewElement, getUiTranslation }) {
-  const PRINT_PAGE_HEIGHT = 1123;
+  const PRINT_PAGE_SIZE_STYLE_ID = "dynamic-print-page-size";
+
+  function getActivePageMetrics() {
+    return getPageMetrics(getState().pageSize);
+  }
+
+  function syncPrintPageSize() {
+    const { printLabel } = getActivePageMetrics();
+    let styleElement = document.getElementById(PRINT_PAGE_SIZE_STYLE_ID);
+
+    if (!(styleElement instanceof HTMLStyleElement)) {
+      styleElement = document.createElement("style");
+      styleElement.id = PRINT_PAGE_SIZE_STYLE_ID;
+      document.head.append(styleElement);
+    }
+
+    styleElement.textContent = `@page { size: ${printLabel}; margin: 0; }`;
+  }
 
   function createResumeFilename() {
     const state = getState();
@@ -15,25 +34,27 @@ export function createPrintHelpers({ getState, getResumePreviewElement, getUiTra
   function insertPageBreakMarkers() {
     const previewElement = getResumePreviewElement();
     const page = previewElement?.querySelector(".resume-page");
+    const { heightPx } = getActivePageMetrics();
     if (!page) {
       return;
     }
 
+    syncPrintPageSize();
     page.querySelectorAll(".page-break-line").forEach((el) => el.remove());
     page.style.minHeight = "";
 
     const totalHeight = page.scrollHeight;
-    if (totalHeight <= PRINT_PAGE_HEIGHT) {
+    if (totalHeight <= heightPx) {
       return;
     }
 
-    const pageCount = Math.ceil(totalHeight / PRINT_PAGE_HEIGHT);
-    page.style.minHeight = `${pageCount * PRINT_PAGE_HEIGHT}px`;
+    const pageCount = Math.ceil(totalHeight / heightPx);
+    page.style.minHeight = `${pageCount * heightPx}px`;
 
     for (let i = 1; i < pageCount; i++) {
       const line = document.createElement("div");
       line.className = "page-break-line";
-      line.style.top = `${i * PRINT_PAGE_HEIGHT}px`;
+      line.style.top = `${i * heightPx}px`;
       line.dataset.label = `${getUiTranslation("labels.page")} ${i + 1}`;
       page.appendChild(line);
     }
@@ -42,18 +63,20 @@ export function createPrintHelpers({ getState, getResumePreviewElement, getUiTra
   function fillPrintPages() {
     const previewElement = getResumePreviewElement();
     const page = previewElement?.querySelector(".resume-page");
+    const { heightPx } = getActivePageMetrics();
     if (!page) {
       return;
     }
 
+    syncPrintPageSize();
     const previousValue = page.style.getPropertyValue("min-height");
     const previousPriority = page.style.getPropertyPriority("min-height");
     page.dataset.printMinHeightValue = previousValue;
     page.dataset.printMinHeightPriority = previousPriority;
 
-    const totalHeight = Math.max(page.scrollHeight, page.offsetHeight, PRINT_PAGE_HEIGHT);
-    const pageCount = Math.max(1, Math.ceil(totalHeight / PRINT_PAGE_HEIGHT));
-    page.style.setProperty("min-height", `${pageCount * PRINT_PAGE_HEIGHT}px`, "important");
+    const totalHeight = Math.max(page.scrollHeight, page.offsetHeight, heightPx);
+    const pageCount = Math.max(1, Math.ceil(totalHeight / heightPx));
+    page.style.setProperty("min-height", `${pageCount * heightPx}px`, "important");
   }
 
   function restorePrintPages() {

@@ -100,6 +100,48 @@
   color: var(--paper-bg);
 }
 
+.page-size-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-block: 0.2rem;
+  padding-inline: 0.48rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--input-border);
+  background: var(--panel-surface);
+}
+
+.page-size-label {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.page-size-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.18rem;
+}
+
+.page-size-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  padding: 0.28rem 0.5rem;
+  cursor: pointer;
+}
+
+.page-size-btn.active {
+  background: var(--text-main);
+  color: var(--paper-bg);
+}
+
 .resume-preview {
   display: grid;
   place-items: center;
@@ -111,8 +153,8 @@
 
 .resume-page {
   position: relative;
-  width: min(860px, 100%);
-  min-height: 1123px;
+  width: min(var(--page-width, 794px), 100%);
+  min-height: var(--page-height, 1123px);
   padding: 2rem;
   border-radius: 18px;
   background: var(--paper-bg);

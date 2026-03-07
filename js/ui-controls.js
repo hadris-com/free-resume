@@ -38,8 +38,17 @@ export function createUiControls({ state, refs, getUiTranslation }) {
       button.setAttribute("aria-pressed", String(isActive));
     });
 
+    syncPageSizeUI();
     syncTemplateSelectUI();
     syncSectionToggles();
+  }
+
+  function syncPageSizeUI() {
+    document.querySelectorAll(".page-size-btn").forEach((button) => {
+      const isActive = button.getAttribute("data-page-size") === state.pageSize;
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
   }
 
   function syncSectionToggles() {
@@ -212,6 +221,7 @@ export function createUiControls({ state, refs, getUiTranslation }) {
   return {
     applyTheme,
     applyI18n,
+    syncPageSizeUI,
     syncSectionToggles,
     syncTemplateSelectUI,
     closeTemplateSelect,

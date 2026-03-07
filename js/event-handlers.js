@@ -248,6 +248,13 @@ export function createEventHandlers({
       return;
     }
 
+    if (trigger.classList.contains("page-size-btn")) {
+      state.pageSize = trigger.getAttribute("data-page-size") === "letter" ? "letter" : "a4";
+      applyI18n();
+      renderPreview();
+      return;
+    }
+
     if (trigger.id === "theme-toggle") {
       state.theme = state.theme === "dark" ? "light" : "dark";
       applyTheme();
