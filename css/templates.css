@@ -1,65 +1,3 @@
-/* Template 1: Berlin Classic */
-.template-berlin .resume-page {
-  display: flex;
-  flex-direction: column;
-}
-
-.template-berlin .resume-header {
-  padding-block-end: 1rem;
-  border-block-end: 1px solid var(--paper-divider);
-}
-
-.template-berlin .resume-name {
-  font-family: var(--font-display);
-  font-size: calc(clamp(2rem, 3.7vw, 2.75rem) * var(--name-font-scale, 1));
-  letter-spacing: -0.02em;
-}
-
-.template-berlin .resume-role {
-  margin-block-start: 0.35rem;
-  font-size: 1.05rem;
-}
-
-.template-berlin .resume-location {
-  margin-block-start: 0.2rem;
-  font-size: 0.85rem;
-  color: var(--paper-muted);
-}
-
-.template-berlin .resume-columns {
-  margin-block-start: 1.2rem;
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1.15rem;
-  flex: 1;
-}
-
-.template-berlin .resume-columns.single-column {
-  grid-template-columns: 1fr;
-}
-
-.template-berlin section + section {
-  margin-block-start: 1rem;
-}
-
-.template-berlin .details-list,
-.template-berlin .links-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.template-berlin .details-list li + li,
-.template-berlin .links-list li + li {
-  margin-block-start: 0.5rem;
-}
-
-.template-berlin a {
-  color: inherit;
-  text-decoration: none;
-  border-block-end: 1px solid var(--paper-divider);
-}
-
 /* Template 2: Aurora Timeline */
 .template-aurora .resume-page {
   padding: 0;
@@ -374,7 +312,6 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 @media screen and (max-width: 760px) {
-  .template-berlin .resume-columns,
   .template-atelier .atelier-grid,
   .template-aurora .aurora-shell,
   .template-alpine .alpine-body {
@@ -565,15 +502,6 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
   text-decoration: underline;
   text-underline-offset: 2px;
   text-decoration-color: var(--paper-divider);
-}
-
-.template-berlin a.social-icon-link {
-  border-block-end: none;
-}
-
-.template-berlin .social-link-text {
-  border-block-end: 1px solid var(--paper-divider);
-  text-decoration: none;
 }
 
 .template-alpine .alpine-sidebar a.social-icon-link {
