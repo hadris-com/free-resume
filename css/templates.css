@@ -1,48 +1,3 @@
-/* Template 3: Atelier Grid */
-.template-atelier .resume-page {
-  padding: 1.5rem;
-  background:
-    linear-gradient(160deg, rgba(252, 252, 250, 1), rgba(250, 248, 244, 1));
-}
-
-body.theme-dark .template-atelier .resume-page {
-  background: linear-gradient(160deg, #0f1622, #121e2d);
-}
-
-.template-atelier .atelier-head {
-  border-radius: 16px;
-  padding-block: 1.1rem;
-  padding-inline: 1.2rem;
-.template-atelier .atelier-role {
-  margin-block-start: 0.24rem;
-}
-
-.template-atelier .atelier-location {
-  margin-block-start: 0.18rem;
-  font-size: 0.84rem;
-  color: var(--paper-muted);
-}
-
-.template-atelier .atelier-grid {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 0.9rem;
-}
-
-.template-atelier .atelier-grid.single-column {
-  grid-template-columns: 1fr;
-}
-
-.template-atelier .card {
-  border: 1px solid var(--paper-divider);
-  border-radius: 14px;
-  padding: 0.95rem;
-}
-
-.template-atelier .card + .card {
-  margin-block-start: 0.9rem;
-}
-
 /* Additional Templates */
 .resume-preview.variant-noir {
   --paper-bg: #15181d;
@@ -201,8 +156,6 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 @media screen and (max-width: 760px) {
-  .template-atelier .atelier-grid,
-  .template-aurora .aurora-shell,
   .template-alpine .alpine-body {
     grid-template-columns: 1fr;
   }
@@ -222,14 +175,6 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
     padding: 1.1rem;
   }
 
-  .template-aurora .aurora-banner {
-    padding: 1.2rem;
-  }
-
-  .template-aurora .aurora-side,
-  .template-aurora .aurora-main {
-    padding: 1rem;
-  }
 }
 
 /* Template 4: Alpine Classic */
