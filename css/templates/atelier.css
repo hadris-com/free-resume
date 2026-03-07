@@ -35,7 +35,7 @@ body.theme-dark .template-atelier .resume-page {
 
 .template-atelier .atelier-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
   gap: 0.9rem;
 }
 
@@ -43,10 +43,36 @@ body.theme-dark .template-atelier .resume-page {
   grid-template-columns: 1fr;
 }
 
+.template-atelier .atelier-grid > div,
+.template-atelier .atelier-grid > aside,
+.template-atelier .card {
+  min-width: 0;
+}
+
 .template-atelier .card {
   border: 1px solid var(--paper-divider);
   border-radius: 14px;
   padding: 0.95rem;
+}
+
+.template-atelier .card > .section-label {
+  margin-block-end: 0;
+}
+
+.template-atelier .card > .section-label + * {
+  margin-block-start: 0.45rem;
+}
+
+.template-atelier .card > p,
+.template-atelier .card > ul {
+  margin-block-end: 0;
+}
+
+.template-atelier .card a,
+.template-atelier .card .location-toggle,
+.template-atelier .card .contact-meta,
+.template-atelier .card .social-link-text {
+  overflow-wrap: anywhere;
 }
 
 .template-atelier .card + .card {

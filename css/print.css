@@ -1,11 +1,5 @@
 @page {
   size: A4;
-  margin-block-start: 8mm;
-  margin-inline: 0;
-  margin-block-end: 0;
-}
-
-@page :first {
   margin: 0;
 }
 
@@ -82,6 +76,8 @@
     box-shadow: none !important;
     color: var(--paper-text) !important;
     overflow: visible !important;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
 
