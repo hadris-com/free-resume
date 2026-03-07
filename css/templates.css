@@ -368,21 +368,12 @@ body.theme-dark .resume-preview.variant-bastion .aurora-banner {
 }
 
 @media screen and (max-width: 1180px) {
-  .editor-panel {
-    min-height: auto;
-    height: auto;
-    max-height: none;
-    overflow: visible;
-  }
-
   .resume-page {
     min-height: auto;
   }
 }
 
 @media screen and (max-width: 760px) {
-  .field-grid,
-  .repeat-item-grid,
   .template-berlin .resume-columns,
   .template-atelier .atelier-grid,
   .template-aurora .aurora-shell,
