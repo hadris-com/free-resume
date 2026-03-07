@@ -492,7 +492,7 @@ export function createPreviewRenderers({ getState, getUiTranslation, getCvTransl
 
     const mainSections = [
       summaryMarkup
-        ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconProfile} ${getCvTranslation("sections.summary")}</h3><div class="alpine-section-body">${summaryMarkup}</div></section>`
+        ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconProfile} ${getCvTranslation("sections.summary")}</h3><div class="alpine-section-body"><article class="entry entry-marked">${summaryMarkup}</article></div></section>`
         : "",
       experienceMarkup
         ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconWork} ${getCvTranslation("sections.experience")}</h3><div class="alpine-section-body">${experienceMarkup}</div></section>`
