@@ -258,3 +258,130 @@
   color: var(--paper-text);
 }
 
+.resume-preview .location-toggle {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.resume-preview .location-toggle svg {
+  width: 9px;
+  height: 9px;
+}
+
+.resume-preview .location-toggle .location-text {
+  color: inherit;
+}
+
+.resume-preview .location-toggle.has-tooltip {
+  position: relative;
+}
+
+.resume-preview .location-toggle.has-tooltip::before,
+.resume-preview .location-toggle.has-tooltip::after {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  position: absolute;
+  left: 50%;
+  z-index: 5;
+}
+
+.resume-preview .location-toggle.has-tooltip::before {
+  content: "";
+  top: calc(100% + 0.1rem);
+  transform: translateX(-50%) translateY(-2px);
+  border: 6px solid transparent;
+  border-bottom-color: rgba(15, 23, 42, 0.92);
+}
+
+.resume-preview .location-toggle.has-tooltip::after {
+  content: attr(data-tooltip);
+  top: calc(100% + 0.35rem);
+  transform: translateX(-50%) translateY(-2px);
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  padding: 0.28rem 0.5rem;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.22);
+  white-space: nowrap;
+}
+
+.resume-preview .location-toggle.has-tooltip:hover::before,
+.resume-preview .location-toggle.has-tooltip:hover::after,
+.resume-preview .location-toggle:focus-visible::before,
+.resume-preview .location-toggle:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.resume-preview .location-toggle:focus-visible {
+  outline: 2px solid var(--paper-divider);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+
+.resume-preview a.social-icon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+  border-block-end: none;
+}
+
+.resume-preview .social-link-text {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--paper-divider);
+}
+
+.resume-preview .social-link-icon svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  display: block;
+}
+
+.resume-preview .contact-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+}
+
+.resume-preview .contact-icon svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  display: block;
+}
+
+@media screen and (max-width: 1180px) {
+  .resume-page {
+    min-height: auto;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .preview-actions {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .preview-actions .ghost-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resume-page {
+    border-radius: 12px;
+    padding: 1.1rem;
+  }
+}
