@@ -126,12 +126,12 @@
     flex: 1 !important;
   }
 
-  .template-berlin .resume-page {
+  .template-berlin .resume-page[data-print-page-count="1"] {
     display: flex !important;
     flex-direction: column !important;
   }
 
-  .template-berlin .resume-columns {
+  .template-berlin .resume-page[data-print-page-count="1"] .resume-columns {
     flex: 1 !important;
   }
 

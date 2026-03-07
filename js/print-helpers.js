@@ -84,8 +84,13 @@ export function createPrintHelpers({ getState, getResumePreviewElement, getUiTra
       1,
       Math.ceil(Math.max(heightPx, totalHeight - PAGE_HEIGHT_ROUNDING_EPSILON) / heightPx)
     );
+    const computedStyle = window.getComputedStyle(page);
+    const paddingBlock =
+      (Number.parseFloat(computedStyle.paddingTop) || 0) +
+      (Number.parseFloat(computedStyle.paddingBottom) || 0);
+    const compensatedMinHeight = Math.max(heightPx, (pageCount * heightPx) - ((pageCount - 1) * paddingBlock));
     page.dataset.printPageCount = String(pageCount);
-    page.style.setProperty("min-height", `${pageCount * heightPx}px`, "important");
+    page.style.setProperty("min-height", `${compensatedMinHeight}px`, "important");
   }
 
   function restorePrintPages() {
