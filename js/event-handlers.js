@@ -1,4 +1,5 @@
 import { createFactories } from "./factories.js";
+import { resolvePageSize } from "./page-layout.js";
 import { templateCatalog } from "./preview-renderers.js";
 import { toBoolean } from "./utils.js";
 
@@ -246,7 +247,7 @@ export function createEventHandlers({
     }
 
     if (trigger.classList.contains("page-size-btn")) {
-      state.pageSize = trigger.getAttribute("data-page-size") === "letter" ? "letter" : "a4";
+      state.pageSize = resolvePageSize(trigger.getAttribute("data-page-size"));
       applyI18n();
       renderPreview();
       return;
