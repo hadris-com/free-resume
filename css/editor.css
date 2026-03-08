@@ -237,7 +237,7 @@ textarea {
 }
 
 .section-body {
-  max-height: 2000px;
+  max-height: none;
 }
 
 .panel-section.is-collapsed .section-body {
@@ -355,7 +355,7 @@ textarea {
 }
 
 .repeat-item-body {
-  max-height: 1600px;
+  max-height: none;
 }
 
 .repeat-item-body.is-collapsable {

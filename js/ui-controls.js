@@ -1,6 +1,63 @@
 import { toBoolean } from "./utils.js";
 
 export function createUiControls({ state, refs, getUiTranslation }) {
+  function setCollapseTriggerState(trigger, isCollapsed) {
+    if (!(trigger instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    const label = isCollapsed ? getUiTranslation("actions.expand") : getUiTranslation("actions.collapse");
+    trigger.classList.toggle("is-collapsed", isCollapsed);
+    trigger.setAttribute("aria-expanded", String(!isCollapsed));
+    trigger.setAttribute("aria-label", label);
+    trigger.setAttribute("title", label);
+  }
+
+  function setCollapsibleState(container, bodySelector, isCollapsed, { trigger = null, animate = false } = {}) {
+    const body = container.querySelector(bodySelector);
+
+    if (body instanceof HTMLElement) {
+      if (animate) {
+        if (isCollapsed) {
+          body.style.maxHeight = `${body.scrollHeight}px`;
+          container.classList.add("is-collapsed");
+          void body.offsetHeight;
+          body.style.maxHeight = "0px";
+        } else {
+          container.classList.remove("is-collapsed");
+          body.style.maxHeight = "0px";
+          void body.offsetHeight;
+          body.style.maxHeight = `${body.scrollHeight}px`;
+        }
+      } else {
+        container.classList.toggle("is-collapsed", isCollapsed);
+        body.style.maxHeight = isCollapsed ? "0px" : `${body.scrollHeight}px`;
+      }
+
+      body.setAttribute("aria-hidden", String(isCollapsed));
+    } else {
+      container.classList.toggle("is-collapsed", isCollapsed);
+    }
+
+    setCollapseTriggerState(trigger, isCollapsed);
+  }
+
+  function syncCollapsibleHeights() {
+    if (!refs.editorPanel) {
+      return;
+    }
+
+    refs.editorPanel.querySelectorAll(".section-body, .repeat-item-body").forEach((body) => {
+      if (!(body instanceof HTMLElement)) {
+        return;
+      }
+
+      const container = body.closest(".panel-section, .repeat-item");
+      const isCollapsed = container?.classList.contains("is-collapsed");
+      body.style.maxHeight = isCollapsed ? "0px" : `${body.scrollHeight}px`;
+    });
+  }
+
   function applyTheme() {
     document.body.classList.toggle("theme-dark", state.theme === "dark");
     refs.themeToggle.setAttribute("aria-pressed", String(state.theme === "dark"));
@@ -58,17 +115,11 @@ export function createUiControls({ state, refs, getUiTranslation }) {
         return;
       }
       const isCollapsed = toBoolean(state.collapsedSections?.[sectionId], false);
-      section.classList.toggle("is-collapsed", isCollapsed);
-
       const toggle = section.querySelector(".section-toggle");
-      if (toggle instanceof HTMLButtonElement) {
-        const label = isCollapsed ? getUiTranslation("actions.expand") : getUiTranslation("actions.collapse");
-        toggle.classList.toggle("is-collapsed", isCollapsed);
-        toggle.setAttribute("aria-expanded", String(!isCollapsed));
-        toggle.setAttribute("aria-label", label);
-        toggle.setAttribute("title", label);
-      }
+      setCollapsibleState(section, ".section-body", isCollapsed, { trigger: toggle, animate: false });
     });
+
+    syncCollapsibleHeights();
   }
 
   function syncTemplateSelectUI() {
@@ -204,6 +255,8 @@ export function createUiControls({ state, refs, getUiTranslation }) {
       return;
     }
 
+    syncCollapsibleHeights();
+
     const isDesktop = window.matchMedia("(min-width: 1181px)").matches;
     if (!isDesktop) {
       refs.editorPanel.style.height = "";
@@ -230,6 +283,8 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     closeSkillLevelSelects,
     setLanguageLevelSelectOpen,
     closeLanguageLevelSelects,
+    setCollapsibleState,
+    syncCollapsibleHeights,
     syncEditorPanelHeight
   };
 }

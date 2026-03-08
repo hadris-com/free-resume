@@ -34,6 +34,8 @@ export function createEventHandlers({
     setSkillLevelSelectOpen,
     closeLanguageLevelSelects,
     setLanguageLevelSelectOpen,
+    setCollapsibleState,
+    syncCollapsibleHeights,
     syncSectionToggles
   } = uiControls;
 
@@ -86,18 +88,21 @@ export function createEventHandlers({
       if (refs.nameSizeOutput) {
         refs.nameSizeOutput.textContent = `${state.nameFontSize}%`;
       }
+      syncCollapsibleHeights();
       renderPreview();
       return;
     }
 
     if (target.dataset.profile) {
       state.profile[target.dataset.profile] = target.value;
+      syncCollapsibleHeights();
       renderPreview();
       return;
     }
 
     if (target.dataset.field === "summary") {
       state.summary = target.value;
+      syncCollapsibleHeights();
       renderPreview();
       return;
     }
@@ -110,6 +115,7 @@ export function createEventHandlers({
       if (!Number.isNaN(index) && state[listName]?.[index]) {
         state[listName][index][key] =
           target instanceof HTMLInputElement && target.type === "checkbox" ? target.checked : target.value;
+        syncCollapsibleHeights();
         renderPreview();
       }
       return;
@@ -130,18 +136,7 @@ export function createEventHandlers({
       return;
     }
 
-    repeatItem.classList.toggle("is-collapsed", isCollapsed);
-    trigger.classList.toggle("is-collapsed", isCollapsed);
-    trigger.setAttribute("aria-expanded", String(!isCollapsed));
-
-    const toggleLabel = isCollapsed ? getUiTranslation("actions.expand") : getUiTranslation("actions.collapse");
-    trigger.setAttribute("aria-label", toggleLabel);
-    trigger.setAttribute("title", toggleLabel);
-
-    const body = repeatItem.querySelector(".repeat-item-body");
-    if (body) {
-      body.setAttribute("aria-hidden", String(isCollapsed));
-    }
+    setCollapsibleState(repeatItem, ".repeat-item-body", isCollapsed, { trigger, animate: true });
 
     const collapsedTitle = repeatItem.querySelector(".skill-collapsed-title");
     if (collapsedTitle) {
@@ -150,6 +145,8 @@ export function createEventHandlers({
       }
       collapsedTitle.setAttribute("aria-hidden", String(!isCollapsed));
     }
+
+    syncCollapsibleHeights();
   }
 
   function handleClick(event) {
@@ -408,7 +405,13 @@ export function createEventHandlers({
       }
       const nextCollapsed = !toBoolean(state.collapsedSections?.[sectionId], false);
       state.collapsedSections = { ...state.collapsedSections, [sectionId]: nextCollapsed };
-      syncSectionToggles();
+      const section = trigger.closest(".panel-section");
+      if (section instanceof HTMLElement) {
+        setCollapsibleState(section, ".section-body", nextCollapsed, { trigger, animate: true });
+        syncCollapsibleHeights();
+      } else {
+        syncSectionToggles();
+      }
       if (sectionId === "template" && nextCollapsed) {
         closeTemplateSelect();
       }
