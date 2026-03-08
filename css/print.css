@@ -208,14 +208,21 @@
   }
 
   /* ---------- Alpine: fill page in print ---------- */
-  .template-alpine .resume-page {
+  .template-alpine .resume-page[data-print-page-count="1"] {
     display: flex !important;
     flex-direction: column !important;
     background: #fdfdfc !important;
   }
 
-  .template-alpine .alpine-body {
+  .template-alpine .resume-page[data-print-page-count="1"] .alpine-body {
     flex: 1 !important;
+  }
+
+  .template-alpine .alpine-body,
+  .template-alpine .alpine-sidebar,
+  .template-alpine .alpine-main {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   /* ---------- Hide empty-state placeholders ---------- */
