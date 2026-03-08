@@ -1,0 +1,169 @@
+/* Berlin-based variants */
+.resume-preview.variant-noir {
+  --paper-bg: #15181d;
+  --paper-text: #edf2f7;
+  --paper-muted: #c4ced8;
+  --paper-divider: rgba(232, 237, 244, 0.24);
+}
+
+.resume-preview.variant-noir .resume-page {
+  background: linear-gradient(170deg, #1b2028, #10151b);
+}
+
+.resume-preview.variant-noir .section-label {
+  color: #d9e2ec;
+  letter-spacing: 0.18em;
+}
+
+.resume-preview.variant-noir .skill-chip {
+  background: rgba(245, 248, 255, 0.08);
+}
+
+.resume-preview.variant-fjord {
+  --paper-bg: #f5f9fc;
+  --paper-text: #102a3a;
+  --paper-muted: #3f5c70;
+  --paper-divider: rgba(16, 58, 84, 0.2);
+}
+
+.resume-preview.variant-fjord .resume-page {
+  background: linear-gradient(180deg, #f9fcff, #edf4f9);
+}
+
+.resume-preview.variant-fjord .resume-header {
+  border-block-end-width: 2px;
+}
+
+.resume-preview.variant-fjord aside {
+  border-inline-start: 1px solid var(--paper-divider);
+  padding-inline-start: 1rem;
+}
+
+.resume-preview.variant-slate {
+  --paper-bg: #f6f7f8;
+  --paper-text: #232a30;
+  --paper-muted: #57616b;
+  --paper-divider: rgba(35, 42, 48, 0.2);
+}
+
+.resume-preview.variant-slate .resume-page {
+  background: linear-gradient(180deg, #fbfcfd, #eef1f4);
+}
+
+.resume-preview.variant-slate .resume-name {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.resume-preview.variant-slate .skill-chip-level {
+  letter-spacing: 0.09em;
+}
+
+.resume-preview.variant-kernel {
+  --paper-bg: #f6f8fb;
+  --paper-text: #19232f;
+  --paper-muted: #52616f;
+  --paper-divider: rgba(24, 47, 69, 0.2);
+}
+
+.resume-preview.variant-kernel .resume-page {
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 22px,
+      rgba(18, 46, 73, 0.045) 22px,
+      rgba(18, 46, 73, 0.045) 23px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 22px,
+      rgba(18, 46, 73, 0.045) 22px,
+      rgba(18, 46, 73, 0.045) 23px
+    ),
+    linear-gradient(180deg, #fbfcfd, #eef3f8);
+}
+
+.resume-preview.variant-kernel .resume-name,
+.resume-preview.variant-kernel .section-label {
+  font-family: var(--font-mono);
+}
+
+.resume-preview.variant-kernel .resume-name {
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.resume-preview.variant-kernel .section-label {
+  letter-spacing: 0.14em;
+}
+
+.resume-preview.variant-kernel .details-list,
+.resume-preview.variant-kernel .links-list {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+/* Aurora-based variants */
+.resume-preview.variant-solstice {
+  --aurora-accent: #c45d52;
+}
+
+.resume-preview.variant-solstice .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(178, 56, 87, 0.95), rgba(240, 130, 68, 0.92)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.24), transparent 45%);
+}
+
+body.theme-dark .resume-preview.variant-solstice .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(190, 78, 108, 0.86), rgba(198, 108, 63, 0.86)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
+}
+
+.resume-preview.variant-solstice .timeline > li::before {
+  background: #f0c267;
+}
+
+.resume-preview.variant-solstice .timeline > li > ul > li::before {
+  border: 0;
+  background: var(--aurora-accent);
+}
+
+.resume-preview.variant-solstice .aurora-side {
+  background: rgba(242, 145, 78, 0.06);
+}
+
+.resume-preview.variant-bastion {
+  --aurora-accent: #5f6b7c;
+}
+
+.resume-preview.variant-bastion .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(70, 78, 92, 0.95), rgba(38, 44, 53, 0.92)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.14), transparent 45%);
+}
+
+body.theme-dark .resume-preview.variant-bastion .aurora-banner {
+  background:
+    linear-gradient(120deg, rgba(94, 104, 120, 0.86), rgba(58, 65, 77, 0.88)),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.12), transparent 45%);
+}
+
+.resume-preview.variant-bastion .timeline::before {
+  inset-inline-start: 0.24rem;
+  width: 0;
+  border-inline-start: 1px dashed var(--paper-divider);
+  background: transparent;
+}
+
+.resume-preview.variant-bastion .timeline > li::before {
+  background: #8d99a8;
+  box-shadow: 0 0 0 3px rgba(141, 153, 168, 0.2);
+}
+
+.resume-preview.variant-bastion .timeline > li > ul > li::before {
+  border: 0;
+  background: var(--aurora-accent);
+}

@@ -2,6 +2,7 @@ import { createEditorRenderers } from "./editor-renderers.js";
 import { createEventHandlers } from "./event-handlers.js";
 import { createCvTranslationGetter, createUiTranslationGetter } from "./i18n.js";
 import { createPersistence } from "./persistence.js";
+import { getPageMetrics } from "./page-layout.js";
 import { createPrintHelpers } from "./print-helpers.js";
 import { createPreviewRenderers, templateCatalog } from "./preview-renderers.js";
 import { createResumeNormalization, normalizeSkillLevel, skillLevels } from "./resume-normalization.js";
@@ -14,6 +15,7 @@ const state = {
   uiLang: "en",
   cvLang: "en",
   template: "alpine",
+  pageSize: "a4",
   theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
   showSkills: false,
   showSkillLevels: false,
@@ -128,8 +130,12 @@ const { renderDynamicEditors } = createEditorRenderers({
 
 // Rebuild preview DOM from current state and persist draft after every render.
 function renderPreview() {
+  const { widthPx, heightPx } = getPageMetrics(state.pageSize);
+
   refs.resumePreview.className = `resume-preview ${getTemplateClasses(state.template)}`;
   refs.resumePreview.innerHTML = renderTemplate(state.template);
+  refs.resumePreview.style.setProperty("--page-width", `${widthPx}px`);
+  refs.resumePreview.style.setProperty("--page-height", `${heightPx}px`);
   refs.resumePreview.style.setProperty("--name-font-scale", state.nameFontSize / 100);
   refs.blankPill.hidden = !isResumeBlank();
   insertPageBreakMarkers();

@@ -378,22 +378,24 @@ export function createPreviewRenderers({ getState, getUiTranslation, getCvTransl
       educationEntries.length
         ? `<section>
             <h3 class="section-label">${getCvTranslation("sections.education")}</h3>
-            ${educationEntries
+            <ul class="timeline">${educationEntries
               .map((item) => {
                 const degree = hasText(item.degree) ? item.degree : getCvTranslation("placeholders.degree");
                 const meta = [item.school, item.location].filter(hasText).join(" · ");
 
                 return `
-                        <article class="entry">
-                          <div class="entry-topline">
-                            <h4 class="entry-title">${escapeHtml(degree)}</h4>
-                            <span class="entry-meta">${escapeHtml(formatRange(item.start, item.end))}</span>
-                          </div>
-                          ${meta ? `<p class="entry-company">${escapeHtml(meta)}</p>` : ""}
-                        </article>
+                        <li>
+                          <article class="entry">
+                            <div class="entry-topline">
+                              <h4 class="entry-title">${escapeHtml(degree)}</h4>
+                              <span class="entry-meta">${escapeHtml(formatRange(item.start, item.end))}</span>
+                            </div>
+                            ${meta ? `<p class="entry-company">${escapeHtml(meta)}</p>` : ""}
+                          </article>
+                        </li>
                       `;
               })
-              .join("")}
+              .join("")}</ul>
           </section>`
         : ""
     ]
@@ -492,7 +494,7 @@ export function createPreviewRenderers({ getState, getUiTranslation, getCvTransl
 
     const mainSections = [
       summaryMarkup
-        ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconProfile} ${getCvTranslation("sections.summary")}</h3><div class="alpine-section-body">${summaryMarkup}</div></section>`
+        ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconProfile} ${getCvTranslation("sections.summary")}</h3><div class="alpine-section-body"><article class="entry entry-marked">${summaryMarkup}</article></div></section>`
         : "",
       experienceMarkup
         ? `<section class="alpine-main-section"><h3 class="alpine-icon-heading">${iconWork} ${getCvTranslation("sections.experience")}</h3><div class="alpine-section-body">${experienceMarkup}</div></section>`

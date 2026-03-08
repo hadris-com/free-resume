@@ -1,4 +1,5 @@
 import { isSupportedLanguage } from "./i18n.js";
+import { resolvePageSize } from "./page-layout.js";
 import { toBoolean, toInputText } from "./utils.js";
 
 export const skillLevels = ["beginner", "intermediate", "advanced", "expert"];
@@ -8,6 +9,7 @@ const rootKeys = new Set([
   "uiLang",
   "cvLang",
   "template",
+  "pageSize",
   "theme",
   "showSkills",
   "showSkillLevels",
@@ -30,6 +32,7 @@ const skillKeys = new Set(["name", "level", "showLevel"]);
 const fieldLimits = {
   lang: 8,
   template: 32,
+  pageSize: 16,
   theme: 16,
   profile: 256,
   summary: 10000,
@@ -154,6 +157,7 @@ export function createResumeNormalization({ templateCatalog }) {
       !isOptionalString(rawState.uiLang, fieldLimits.lang) ||
       !isOptionalString(rawState.cvLang, fieldLimits.lang) ||
       !isOptionalString(rawState.template, fieldLimits.template) ||
+      !isOptionalString(rawState.pageSize, fieldLimits.pageSize) ||
       !isOptionalString(rawState.theme, fieldLimits.theme) ||
       !isBooleanLike(rawState.showSkills) ||
       !isBooleanLike(rawState.showSkillLevels) ||
@@ -180,6 +184,10 @@ export function createResumeNormalization({ templateCatalog }) {
     }
 
     if (typeof rawState.theme === "string" && rawState.theme !== "dark" && rawState.theme !== "light") {
+      return false;
+    }
+
+    if (typeof rawState.pageSize === "string" && resolvePageSize(rawState.pageSize) !== rawState.pageSize) {
       return false;
     }
 
@@ -272,6 +280,7 @@ export function createResumeNormalization({ templateCatalog }) {
       uiLang,
       cvLang,
       template: typeof source.template === "string" && templateCatalog[source.template] ? source.template : "alpine",
+      pageSize: resolvePageSize(source.pageSize),
       theme: source.theme === "dark" ? "dark" : "light",
       showSkills: Boolean(source.showSkills),
       showSkillLevels,

@@ -1,0 +1,319 @@
+body {
+  font-family: var(--font-body);
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at 14% 20%, var(--bg-1) 0%, transparent 35%),
+    radial-gradient(circle at 90% 82%, var(--bg-2) 0%, transparent 45%),
+    linear-gradient(120deg, var(--bg-0), #f8fafc 42%, #f5f5f4);
+}
+
+body.theme-dark {
+  background:
+    radial-gradient(circle at 12% 20%, var(--bg-1) 0%, transparent 38%),
+    radial-gradient(circle at 92% 84%, var(--bg-2) 0%, transparent 44%),
+    linear-gradient(120deg, var(--bg-0), #060b13 46%, #0a131d);
+}
+
+.bg-noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: radial-gradient(circle, #000 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+body.theme-dark .bg-noise {
+  background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1480px, 100% - 2.5rem);
+  margin-block: 1.2rem 1.4rem;
+  margin-inline: auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block-end: 1rem;
+  padding-block: 1.1rem;
+  padding-inline: 1.3rem;
+  border-radius: 20px;
+  border: 1px solid var(--panel-glass-border);
+  background: linear-gradient(160deg, var(--panel-bg-top), var(--panel-bg-bottom));
+  -webkit-backdrop-filter: var(--panel-blur);
+  backdrop-filter: var(--panel-blur);
+  box-shadow:
+    inset 0 1px 0 var(--panel-glass-highlight),
+    var(--panel-shadow);
+}
+
+.brand h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+}
+
+.brand p {
+  margin-block-start: 0.15rem;
+  margin-inline: 0;
+  margin-block-end: 0;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
+.brand-kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--accent);
+}
+
+.topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.lang-switch {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 0.2rem;
+  background: var(--accent-soft);
+}
+
+.lang-btn {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  border: 0;
+  background: transparent;
+  color: var(--text-main);
+  border-radius: 999px;
+  padding: 0.36rem 0.65rem;
+  cursor: pointer;
+}
+
+.lang-btn.active {
+  background: var(--text-main);
+  color: var(--paper-bg);
+}
+
+.ghost-btn {
+  border: 1px solid var(--panel-border);
+  background: transparent;
+  color: var(--text-main);
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.theme-dot {
+  width: 0.65rem;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #f4a524, #ffd58a);
+  box-shadow: 0 0 0 2px rgba(255, 197, 84, 0.2);
+}
+
+body.theme-dark .theme-dot {
+  background: linear-gradient(145deg, #9bd6ff, #7bc5ff);
+  box-shadow: 0 0 0 2px rgba(123, 197, 255, 0.25);
+}
+
+.workspace {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+}
+
+.editor-panel,
+.preview-panel {
+  border-radius: 22px;
+  border: 1px solid var(--panel-glass-border);
+  background: linear-gradient(160deg, var(--panel-bg-top), var(--panel-bg-bottom));
+  -webkit-backdrop-filter: var(--panel-blur);
+  backdrop-filter: var(--panel-blur);
+  box-shadow:
+    inset 0 1px 0 var(--panel-glass-highlight),
+    var(--panel-shadow);
+}
+
+.preview-panel {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Footer ---- */
+.app-footer {
+  display: flex;
+  justify-content: center;
+  padding-block-start: 1.2rem;
+  padding-inline: 0;
+  padding-block-end: 0.6rem;
+}
+
+.privacy-link {
+  border: 0;
+  background: transparent;
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding-block: 0.4rem;
+  padding-inline: 0.8rem;
+  border-radius: 999px;
+  transition: color 0.15s;
+}
+
+.privacy-link:hover {
+  color: var(--text-main);
+}
+
+/* ---- Privacy Modal ---- */
+.privacy-modal {
+  border: 1px solid var(--panel-glass-border);
+  border-radius: 22px;
+  background: linear-gradient(160deg, var(--panel-bg-top), var(--panel-bg-bottom));
+  -webkit-backdrop-filter: var(--panel-blur);
+  backdrop-filter: var(--panel-blur);
+  box-shadow:
+    inset 0 1px 0 var(--panel-glass-highlight),
+    var(--panel-shadow);
+  color: var(--text-main);
+  max-width: min(600px, calc(100% - 2rem));
+  max-height: calc(100dvh - 4rem);
+  padding: 0;
+  overflow: hidden;
+}
+
+.privacy-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.privacy-modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 4rem);
+}
+
+.privacy-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.2rem;
+  padding-inline: 1.4rem;
+  border-block-end: 1px solid var(--panel-border);
+  flex-shrink: 0;
+}
+
+.privacy-modal-header h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+}
+
+.privacy-modal-close {
+  border: 1px solid var(--panel-border);
+  background: transparent;
+  color: var(--text-main);
+  border-radius: 999px;
+  padding-block: 0.4rem;
+  padding-inline: 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.privacy-modal-body {
+  padding: 1.4rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.privacy-intro {
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-block-start: 0;
+  margin-inline: 0;
+  margin-block-end: 1.2rem;
+}
+
+.privacy-section {
+  padding: 0.85rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+}
+
+.privacy-section + .privacy-section {
+  margin-block-start: 0.7rem;
+}
+
+.privacy-section h3 {
+  margin-block-start: 0;
+  margin-inline: 0;
+  margin-block-end: 0.3rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.privacy-section p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.privacy-updated {
+  margin-block-start: 1.2rem;
+  margin-inline: 0;
+  margin-block-end: 0;
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  opacity: 0.7;
+}
+
+@media screen and (max-width: 1180px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .app-shell {
+    width: calc(100% - 1rem);
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .topbar-controls {
+    justify-content: space-between;
+  }
+}

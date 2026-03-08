@@ -35,6 +35,7 @@ export function createStateSync({ state, refs, uiControls, getSampleModeEnabled 
     state.uiLang = nextState.uiLang;
     state.cvLang = nextState.cvLang;
     state.template = nextState.template;
+    state.pageSize = nextState.pageSize;
     state.theme = nextState.theme;
     state.showSkills = nextState.showSkills || nextState.skills.length > 0;
     state.showSkillLevels = toBoolean(nextState.showSkillLevels, false);
