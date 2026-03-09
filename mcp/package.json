@@ -1,0 +1,21 @@
+{
+  "name": "free-resume-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Free Resume - provides schema, validation, and generation tools for AI assistants",
+  "type": "module",
+  "bin": {
+    "free-resume-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  }
+}
