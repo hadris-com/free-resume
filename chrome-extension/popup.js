@@ -10,6 +10,16 @@
 const generateBtn = document.getElementById("generate-btn");
 const statusEl = document.getElementById("status");
 const templateSelect = document.getElementById("template-select");
+const maxSkillsInput = document.getElementById("max-skills");
+
+function getMaxSkills() {
+  const val = parseInt(maxSkillsInput.value, 10);
+  return isNaN(val) || val < 0 ? 10 : val;
+}
+
+function getSkillsOrder() {
+  return document.querySelector('input[name="skills-order"]:checked')?.value ?? "linkedin";
+}
 
 function setStatus(text, type = "") {
   statusEl.textContent = text;
@@ -30,7 +40,7 @@ function getSelectedPageSize() {
   return checked?.value ?? "a4";
 }
 
-function mapLinkedInToResumeState(raw, { template, pageSize }) {
+function mapLinkedInToResumeState(raw, { template, pageSize, maxSkills }) {
   return {
     uiLang: "en",
     cvLang: "en",

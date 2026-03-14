@@ -115,6 +115,33 @@
     .status.error { color: #dc2626; }
     .status.success { color: #16a34a; }
     .status.warning { color: #d97706; }
+
+    .skills-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .skills-row label {
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+
+    .skills-row input[type="number"] {
+      width: 60px;
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 13px;
+      background: #fafafa;
+      text-align: center;
+    }
+
+    .skills-row span {
+      font-size: 11px;
+      color: #888;
+    }
   </style>
 </head>
 <body>
@@ -144,6 +171,24 @@
     <label>
       <input type="radio" name="page-size" value="letter">
       Letter
+    </label>
+  </div>
+
+  <div class="skills-row">
+    <label for="max-skills">Max skills</label>
+    <input type="number" id="max-skills" min="1" max="100" value="10">
+    <span>(0 = all)</span>
+  </div>
+
+  <label>Skills order</label>
+  <div class="page-size-group" style="margin-bottom:16px">
+    <label>
+      <input type="radio" name="skills-order" value="linkedin" checked>
+      LinkedIn order
+    </label>
+    <label>
+      <input type="radio" name="skills-order" value="endorsed">
+      Top endorsed
     </label>
   </div>
 
