@@ -1,0 +1,284 @@
+/* Template 4: Alpine Classic */
+.template-alpine .resume-page {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: "Source Sans Pro", "Segoe UI", sans-serif;
+}
+
+.template-alpine .alpine-header {
+  text-align: center;
+  padding-block-start: 1.8rem;
+  padding-inline: 2rem;
+  padding-block-end: 1.2rem;
+  border-block-end: none;
+}
+
+.template-alpine .alpine-name {
+  font-family: "Oswald", "Arial Narrow", sans-serif;
+  font-size: calc(clamp(1.8rem, 3.2vw, 2.4rem) * var(--name-font-scale, 1));
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.template-alpine .alpine-dot-heading,
+.template-alpine .alpine-icon-heading {
+  font-family: "Oswald", "Arial Narrow", sans-serif;
+}
+
+.template-alpine .alpine-meta {
+  margin: 0;
+  margin-block-start: 0.1rem;
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+  letter-spacing: 0.03em;
+}
+
+.template-alpine .alpine-detail-meta {
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+  letter-spacing: 0.03em;
+}
+
+.template-alpine .alpine-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.template-alpine .alpine-meta-location {
+  margin: 0;
+  margin-block-start: 0.02rem;
+  font-size: 0.69rem;
+}
+
+.template-alpine .alpine-pin svg {
+  vertical-align: -0.1em;
+}
+
+.template-alpine .alpine-meta-location .alpine-detail-meta {
+  font-size: 0.69rem;
+}
+
+.template-alpine .alpine-meta-location .alpine-pin svg {
+  width: 8px;
+  height: 8px;
+}
+
+.template-alpine .alpine-body {
+  display: grid;
+  grid-template-columns: 1fr 2.2fr;
+  flex: 1;
+}
+
+.template-alpine .alpine-body.alpine-single {
+  grid-template-columns: 1fr;
+}
+
+.template-alpine .alpine-sidebar {
+  padding: 1.4rem;
+  text-align: center;
+}
+
+.template-alpine .alpine-sidebar section + section {
+  margin-block-start: 1.2rem;
+}
+
+.template-alpine .alpine-main {
+  padding-block: 1.4rem;
+  padding-inline: 1.6rem;
+  border-inline-start: none;
+}
+
+.template-alpine .alpine-main section + section {
+  margin-block-start: 1.1rem;
+}
+
+.template-alpine .alpine-main-section {
+  position: relative;
+}
+
+.template-alpine .alpine-dot-heading {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--paper-text);
+  margin-block-end: 0.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.template-alpine .alpine-dot-heading::before,
+.template-alpine .alpine-dot-heading::after {
+  content: "·";
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--paper-muted);
+}
+
+.template-alpine .alpine-details,
+.template-alpine .alpine-links,
+.template-alpine .alpine-skills {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.template-alpine .alpine-details li + li,
+.template-alpine .alpine-links li + li,
+.template-alpine .alpine-skills li + li {
+  margin-block-start: 0.35rem;
+}
+
+.template-alpine .alpine-details li,
+.template-alpine .alpine-links li {
+  font-size: 0.82rem;
+}
+
+.template-alpine .alpine-skills li {
+  font-size: 0.88rem;
+}
+
+.template-alpine .alpine-skill-level {
+  margin-inline-start: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--paper-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.template-alpine .alpine-sidebar a,
+.template-alpine .alpine-main a {
+  color: var(--paper-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--paper-divider);
+}
+
+.template-alpine .alpine-sidebar a.social-icon-link {
+  text-decoration: none;
+}
+
+.template-alpine .alpine-icon-heading {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--paper-text);
+  margin-block-end: 0.55rem;
+  position: relative;
+  padding-inline-start: 1.1rem;
+}
+
+.template-alpine .alpine-icon-heading svg {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  color: var(--paper-text);
+}
+
+.template-alpine .alpine-section-body {
+  position: relative;
+  padding-inline-start: 1.8rem;
+  --alpine-line-x: 0.35rem;
+  --alpine-content-offset: 1.8rem;
+}
+
+.template-alpine .alpine-section-body::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: var(--alpine-line-x);
+  inset-block-start: 0.45rem;
+  inset-block-end: 0;
+  width: 1px;
+  background: var(--paper-divider);
+  transform: translateX(-50%);
+}
+
+.template-alpine .alpine-section-body .entry-marked {
+  position: relative;
+}
+
+.template-alpine .alpine-section-body .entry-marked::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--alpine-line-x) - var(--alpine-content-offset));
+  inset-block-start: 0.35rem;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--paper-bg);
+  border: 1px solid var(--paper-text);
+  transform: translateX(-50%);
+}
+
+.template-alpine .alpine-main p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.template-alpine .alpine-main ul {
+  list-style: none;
+  margin-block-start: 0.3rem;
+  margin-inline: 0;
+  margin-block-end: 0;
+  padding-inline-start: 1rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.template-alpine .alpine-main ul li {
+  position: relative;
+  padding-inline-start: 0.7rem;
+}
+
+.template-alpine .alpine-main ul li::before {
+  content: "•";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: -0.02em;
+  color: var(--paper-muted);
+  font-size: 0.82em;
+  line-height: 1;
+}
+
+.template-alpine .alpine-main ul li + li {
+  margin-block-start: 0.15rem;
+}
+
+.template-alpine .entry-meta {
+  font-size: 0.76rem;
+}
+
+.template-alpine .entry-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.25rem;
+}
+
+.template-alpine .entry-role {
+  font-weight: 600;
+}
+
+.template-alpine .entry-meta-inline {
+  font-size: 0.82rem;
+  margin-inline-start: 0;
+}
+
+.template-alpine .entry-meta.entry-meta-block {
+  color: var(--paper-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+
+@media screen and (max-width: 760px) {
+  .template-alpine .alpine-body {
+    grid-template-columns: 1fr;
+  }
+}

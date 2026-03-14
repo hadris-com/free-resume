@@ -1,0 +1,86 @@
+/* Template 3: Atelier Grid */
+.template-atelier .resume-page {
+  padding: 1.5rem;
+  background:
+    linear-gradient(160deg, rgba(252, 252, 250, 1), rgba(250, 248, 244, 1));
+}
+
+body.theme-dark .template-atelier .resume-page {
+  background: linear-gradient(160deg, #0f1622, #121e2d);
+}
+
+.template-atelier .atelier-head {
+  border: 1px solid var(--paper-divider);
+  border-radius: 16px;
+  padding-block: 1.1rem;
+  padding-inline: 1.2rem;
+  margin-block-end: 0.95rem;
+}
+
+.template-atelier .atelier-name {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  font-size: calc(clamp(1.8rem, 3vw, 2.45rem) * var(--name-font-scale, 1));
+}
+
+.template-atelier .atelier-role {
+  margin-block-start: 0.24rem;
+}
+
+.template-atelier .atelier-location {
+  margin-block-start: 0.18rem;
+  font-size: 0.84rem;
+  color: var(--paper-muted);
+}
+
+.template-atelier .atelier-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 0.9rem;
+}
+
+.template-atelier .atelier-grid.single-column {
+  grid-template-columns: 1fr;
+}
+
+.template-atelier .atelier-grid > div,
+.template-atelier .atelier-grid > aside,
+.template-atelier .card {
+  min-width: 0;
+}
+
+.template-atelier .card {
+  border: 1px solid var(--paper-divider);
+  border-radius: 14px;
+  padding: 0.95rem;
+}
+
+.template-atelier .card > .section-label {
+  margin-block-end: 0;
+}
+
+.template-atelier .card > .section-label + * {
+  margin-block-start: 0.45rem;
+}
+
+.template-atelier .card > p,
+.template-atelier .card > ul {
+  margin-block-end: 0;
+}
+
+.template-atelier .card a,
+.template-atelier .card .location-toggle,
+.template-atelier .card .contact-meta,
+.template-atelier .card .social-link-text {
+  overflow-wrap: anywhere;
+}
+
+.template-atelier .card + .card {
+  margin-block-start: 0.9rem;
+}
+
+@media screen and (max-width: 760px) {
+  .template-atelier .atelier-grid {
+    grid-template-columns: 1fr;
+  }
+}
