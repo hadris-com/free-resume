@@ -81,7 +81,7 @@ function mapLinkedInToResumeState(raw, { template, pageSize, maxSkills }) {
       end: edu.end ?? "",
       isCollapsed: false
     })),
-    skills: (raw.skills ?? []).map((name) => ({
+    skills: (maxSkills > 0 ? (raw.skills ?? []).slice(0, maxSkills) : (raw.skills ?? [])).map((name) => ({
       name,
       level: "intermediate",
       showLevel: false
@@ -97,6 +97,152 @@ function mapLinkedInToResumeState(raw, { template, pageSize, maxSkills }) {
 async function getActiveTab() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   return tab;
+}
+
+function waitForTabComplete(tabId) {
+  return new Promise((resolve) => {
+    function onUpdated(id, info) {
+      if (id === tabId && info.status === "complete") {
+        chrome.tabs.onUpdated.removeListener(onUpdated);
+        resolve();
+      }
+    }
+    chrome.tabs.onUpdated.addListener(onUpdated);
+  });
+}
+
+async function runInTab(tabId, func) {
+  const results = await chrome.scripting.executeScript({ target: { tabId }, func });
+  return results?.[0]?.result;
+}
+
+async function fetchContactInfo(profileUrl) {
+  const baseUrl = profileUrl.replace(/\/$/, "").replace(/(\/in\/[^/]+).*/, "$1");
+  const contactUrl = baseUrl + "/overlay/contact-info/";
+  let tab;
+  try {
+    tab = await chrome.tabs.create({ url: contactUrl, active: false });
+    await waitForTabComplete(tab.id);
+    await new Promise((r) => setTimeout(r, 3000));
+    const result = await runInTab(tab.id, () => {
+      const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      // Email: prefer explicit mailto link, then scan all contact sections for email-like text
+      const emailLink = document.querySelector('a[href^="mailto:"]');
+      let email = emailLink ? emailLink.href.replace("mailto:", "").trim() : "";
+      if (!email) {
+        for (const section of document.querySelectorAll(".pv-contact-info__contact-type")) {
+          for (const span of section.querySelectorAll("span")) {
+            const t = span.textContent.trim();
+            if (EMAIL_RE.test(t)) { email = t; break; }
+          }
+          if (email) break;
+        }
+      }
+
+      // Phone: prefer tel: link, then text inside .pv-contact-info__contact-type > Phone header
+      const phoneLink = document.querySelector('a[href^="tel:"]');
+      let phone = phoneLink ? phoneLink.href.replace("tel:", "").trim() : "";
+      if (!phone) {
+        for (const section of document.querySelectorAll(".pv-contact-info__contact-type")) {
+          const header = section.querySelector(".pv-contact-info__header");
+          if (header?.textContent?.trim().toLowerCase() === "phone") {
+            phone = section.querySelector("span")?.textContent?.trim() ?? "";
+            break;
+          }
+        }
+      }
+
+      // Websites: find the "Websites" section and classify links as github vs generic website
+      let website = "";
+      let github = "";
+      for (const section of document.querySelectorAll(".pv-contact-info__contact-type")) {
+        const header = section.querySelector(".pv-contact-info__header");
+        if (header?.textContent?.trim().toLowerCase() !== "websites") continue;
+        for (const a of section.querySelectorAll("a.pv-contact-info__contact-link")) {
+          const href = a.href.trim();
+          if (!href) continue;
+          if (/github\.com/i.test(href)) {
+            if (!github) github = href;
+          } else {
+            if (!website) website = href;
+          }
+        }
+      }
+
+      return { email, phone, website, github };
+    });
+    return result ?? {};
+  } catch {
+    return {};
+  } finally {
+    if (tab?.id) chrome.tabs.remove(tab.id).catch(() => {});
+  }
+}
+
+async function fetchAbout(profileUrl) {
+  const aboutUrl = profileUrl.replace(/\/$/, "").replace(/(\/in\/[^/]+).*/, "$1") + "/details/summary/";
+  let tab;
+  try {
+    tab = await chrome.tabs.create({ url: aboutUrl, active: false });
+    await waitForTabComplete(tab.id);
+    await new Promise((r) => setTimeout(r, 2000));
+    const text = await runInTab(tab.id, () => {
+      // The summary detail page renders the full about text
+      const section = document.querySelector("section:has(#summary), main section");
+      if (!section) return "";
+      const spans = section.querySelectorAll("span[aria-hidden='true']");
+      return Array.from(spans)
+        .map((s) => s.textContent.trim())
+        .filter((t) => t.length > 30)
+        .join(" ")
+        .slice(0, 10000);
+    });
+    return text ?? "";
+  } catch {
+    return "";
+  } finally {
+    if (tab?.id) chrome.tabs.remove(tab.id).catch(() => {});
+  }
+}
+
+async function fetchAllSkills(profileUrl) {
+  const skillsUrl = profileUrl.replace(/\/$/, "").replace(/(\/in\/[^/]+).*/, "$1") + "/details/skills/";
+  let tab;
+  try {
+    tab = await chrome.tabs.create({ url: skillsUrl, active: false });
+    await waitForTabComplete(tab.id);
+    await new Promise((r) => setTimeout(r, 2000));
+    const skills = await runInTab(tab.id, () => {
+      const getText = (el) => el?.textContent?.trim() ?? "";
+      const items = document.querySelectorAll(
+        "main ul > li.artdeco-list__item, main ul > li.pvs-list__item--line-separated"
+      );
+      return Array.from(items)
+        .map((li) => {
+          const el =
+            li.querySelector(".mr1.hoverable-link-text.t-bold span[aria-hidden='true']") ||
+            li.querySelector(".mr1.t-bold span[aria-hidden='true']") ||
+            li.querySelector("span[aria-hidden='true']");
+          const name = getText(el);
+          if (!name) return null;
+
+          // Extract endorsement count from any span like "12 endorsements"
+          let endorsements = 0;
+          for (const span of li.querySelectorAll("span")) {
+            const m = span.textContent.trim().match(/^(\d+)\s+endorsement/i);
+            if (m) { endorsements = parseInt(m[1], 10); break; }
+          }
+          return { name, endorsements };
+        })
+        .filter(Boolean);
+    });
+    return skills ?? [];
+  } catch {
+    return [];
+  } finally {
+    if (tab?.id) chrome.tabs.remove(tab.id).catch(() => {});
+  }
 }
 
 async function init() {
@@ -139,9 +285,37 @@ generateBtn.addEventListener("click", async () => {
     return;
   }
 
+  // Fetch full skills, contact info, and about (if needed) in parallel
+  setStatus("Fetching skills, contact info & about...");
+  const [allSkills, contactInfo, aboutText] = await Promise.all([
+    fetchAllSkills(raw.profileUrl),
+    fetchContactInfo(raw.profileUrl),
+    raw.about ? Promise.resolve("") : fetchAbout(raw.profileUrl)
+  ]);
+  if (allSkills.length > (raw.skills ?? []).length) {
+    const order = getSkillsOrder();
+    const sorted = order === "endorsed"
+      ? [...allSkills].sort((a, b) => b.endorsements - a.endorsements)
+      : allSkills;
+    // Deduplicate by name (LinkedIn skills page lists items across multiple uls)
+    const seen = new Set();
+    raw.skills = sorted.map((s) => s.name).filter((n) => {
+      const key = n.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+  if (contactInfo.email && !raw.email) raw.email = contactInfo.email;
+  if (contactInfo.phone && !raw.phone) raw.phone = contactInfo.phone;
+  if (contactInfo.website) raw.website = contactInfo.website;
+  if (contactInfo.github) raw.github = contactInfo.github;
+  if (aboutText && !raw.about) raw.about = aboutText;
+
   const template = templateSelect.value;
   const pageSize = getSelectedPageSize();
-  const resumeState = mapLinkedInToResumeState(raw, { template, pageSize });
+  const maxSkills = getMaxSkills();
+  const resumeState = mapLinkedInToResumeState(raw, { template, pageSize, maxSkills });
 
   await chrome.storage.session.set({ resumeState });
 
