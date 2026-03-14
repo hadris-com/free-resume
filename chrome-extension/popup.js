@@ -39,7 +39,7 @@ function mapLinkedInToResumeState(raw, { template, pageSize }) {
     theme: "light",
     showSkills: raw.skills.length > 0,
     showSkillLevels: false,
-    showLanguageLevels: (raw.languages ?? []).length > 0,
+    showLanguageLevels: false,
     nameFontSize: 100,
     alpineLocationInHeader: false,
     collapsedSections: {},
@@ -79,7 +79,7 @@ function mapLinkedInToResumeState(raw, { template, pageSize }) {
     languages: (raw.languages ?? []).map((lang) => ({
       name: lang.name,
       level: lang.level,
-      showLevel: true
+      showLevel: false
     }))
   };
 }
