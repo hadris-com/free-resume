@@ -1,3 +1,8 @@
 .DS_Store
 mcp/node_modules/
 mcp/dist/
+
+# Chrome extension — asset copies synced from repo root via sync-assets.sh
+chrome-extension/js/
+chrome-extension/css/
+chrome-extension/fonts/
