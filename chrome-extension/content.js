@@ -12,7 +12,11 @@ function getText(el) {
 }
 
 function extractName() {
-  return getText(document.querySelector("h1.text-heading-xlarge"));
+  return (
+    getText(document.querySelector("h1.text-heading-xlarge")) ||
+    getText(document.querySelector(".pv-text-details__left-panel h1")) ||
+    getText(document.querySelector("h1"))
+  );
 }
 
 function extractHeadline() {
@@ -28,22 +32,50 @@ function extractLocation() {
 }
 
 function extractEmail() {
-  const link = document.querySelector('.ci-email a[href^="mailto:"]');
+  // Try contact-info section first, then any mailto link on the page
+  const link =
+    document.querySelector('.ci-email a[href^="mailto:"]') ||
+    document.querySelector('a[href^="mailto:"]');
   return link ? link.href.replace("mailto:", "").trim() : "";
+}
+
+function extractPhone() {
+  // .ci-phone is the standard class; fall back to any tel: link
+  const el = document.querySelector(".ci-phone .t-14");
+  if (el) return getText(el);
+  const link = document.querySelector('a[href^="tel:"]');
+  return link ? link.href.replace("tel:", "").trim() : "";
+}
+
+// Extracts email + phone from /overlay/contact-info/ page
+function extractContactInfo() {
+  return {
+    email: extractEmail(),
+    phone: extractPhone()
+  };
 }
 
 function extractAbout() {
   const section = document.querySelector("section:has(#about)");
   if (!section) return "";
-  // aria-hidden spans always have the full text even when "See more" is collapsed
+
+  // Strategy 1: standard container class
   const spans = section.querySelectorAll(
     ".pv-shared-text-with-see-more span[aria-hidden='true']"
   );
-  return Array.from(spans)
+  const text1 = Array.from(spans)
     .map((s) => s.textContent.trim())
     .filter(Boolean)
-    .join(" ")
-    .slice(0, 10000);
+    .join(" ");
+  if (text1) return text1.slice(0, 10000);
+
+  // Strategy 2: any aria-hidden span with substantial text in the section
+  const allSpans = Array.from(section.querySelectorAll("span[aria-hidden='true']"));
+  const text2 = allSpans
+    .map((s) => s.textContent.trim())
+    .filter((t) => t.length > 30)
+    .join(" ");
+  return text2.slice(0, 10000);
 }
 
 function parseDateRange(rawText) {
@@ -130,9 +162,21 @@ function extractExperience() {
   const results = [];
 
   for (const li of topUl.querySelectorAll(":scope > li")) {
-    // Grouped pattern: the item has a nested ul (sub-roles under one employer)
+    // Grouped pattern: the item has a nested ul with actual role entries.
+    // We distinguish it from skills/footer uls by checking for caption wrappers
+    // (date ranges), which are present in role entries but not in skills lists.
     const nestedUl = li.querySelector("ul");
-    if (nestedUl) {
+    const isGrouped =
+      nestedUl &&
+      nestedUl.querySelector(
+        ".pvs-entity__caption-wrapper, .mr1.t-bold span[aria-hidden='true']"
+      ) &&
+      nestedUl.querySelector(":scope > li") &&
+      // Make sure the nested li has a date range (not just skill tags)
+      Array.from(nestedUl.querySelectorAll(":scope > li")).some(
+        (nested) => nested.querySelector(".pvs-entity__caption-wrapper")
+      );
+    if (isGrouped) {
       // The company name is in the bold span of this parent item
       const companyEl =
         li.querySelector(".mr1.t-bold span[aria-hidden='true']") ||
@@ -249,9 +293,39 @@ function extractLanguages() {
 }
 
 // ---------------------------------------------------------------------------
+// Skills — full extraction from /details/skills/ page.
+// On that page there is no #skills anchor; skills are in the main content list.
+// ---------------------------------------------------------------------------
+function extractAllSkillsFromDetailPage() {
+  const items = document.querySelectorAll(
+    "main ul > li.artdeco-list__item, main ul > li.pvs-list__item--line-separated"
+  );
+  return Array.from(items)
+    .map((li) => {
+      const el =
+        li.querySelector(".mr1.hoverable-link-text.t-bold span[aria-hidden='true']") ||
+        li.querySelector(".mr1.t-bold span[aria-hidden='true']") ||
+        li.querySelector("span[aria-hidden='true']");
+      return getText(el);
+    })
+    .filter(Boolean);
+}
+
+// ---------------------------------------------------------------------------
 // Message listener
 // ---------------------------------------------------------------------------
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message?.action === "extractSkillsOnly") {
+    const skills = extractAllSkillsFromDetailPage();
+    sendResponse({ skills });
+    return true;
+  }
+
+  if (message?.action === "extractContactInfo") {
+    sendResponse(extractContactInfo());
+    return true;
+  }
+
   if (message?.action !== "extract") return;
 
   const data = {
