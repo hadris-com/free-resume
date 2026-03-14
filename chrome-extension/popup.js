@@ -47,11 +47,11 @@ function mapLinkedInToResumeState(raw, { template, pageSize }) {
       name: raw.name ?? "",
       title: raw.headline ?? "",
       email: raw.email ?? "",
-      phone: "",
+      phone: raw.phone ?? "",
       location: raw.location ?? "",
-      website: "",
+      website: raw.website ?? "",
       linkedin: raw.profileUrl ?? "",
-      github: ""
+      github: raw.github ?? ""
     },
     summary: (raw.about ?? "").slice(0, 10000),
     experience: (raw.experience ?? []).map((exp) => ({
