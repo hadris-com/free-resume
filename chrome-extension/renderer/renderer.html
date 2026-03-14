@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generating CV...</title>
+  <!--
+    These CSS paths resolve to chrome-extension/css/ after running sync-assets.sh.
+    Only resume-rendering CSS is loaded — no app shell or editor styles needed.
+  -->
+  <link rel="stylesheet" href="../css/fonts.css">
+  <link rel="stylesheet" href="../css/foundation.css">
+  <link rel="stylesheet" href="../css/resume-preview.css">
+  <link rel="stylesheet" href="../css/templates/berlin.css">
+  <link rel="stylesheet" href="../css/templates/aurora.css">
+  <link rel="stylesheet" href="../css/templates/atelier.css">
+  <link rel="stylesheet" href="../css/templates/alpine.css">
+  <link rel="stylesheet" href="../css/templates/variants.css">
+  <link rel="stylesheet" href="../css/print.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    #resume-preview {
+      margin: 0 auto;
+    }
+
+    #error-message {
+      display: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #dc2626;
+      padding: 40px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="resume-preview" class="resume-preview"></div>
+  <div id="error-message"></div>
+  <script type="module" src="renderer.js"></script>
+</body>
+</html>
