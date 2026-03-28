@@ -12,7 +12,7 @@ It is no longer just a speculative build plan. It should help another agent quic
 - what the next logical slices of work should be
 
 ## Current Status
-As of 2026-03-28, the repo contains a working first-pass kanban app at `job-kanban/index.html`.
+As of 2026-03-28, the repo contains a working first-pass kanban app at `job-kanban/index.html` plus a basic Node-based logic test suite under `job-kanban/tests/`.
 
 The app is separate from the resume builder and follows the intended local-first architecture:
 
@@ -70,6 +70,12 @@ Module files:
 - `job-kanban/js/dates.js`
 - `job-kanban/js/validation.js`
 - `job-kanban/js/schema.js`
+
+Current test files:
+
+- `job-kanban/tests/board-store.test.js`
+- `job-kanban/tests/validation.test.js`
+- `job-kanban/tests/dates.test.js`
 
 ### Data Model
 The persisted board state follows the planned shape:
@@ -178,6 +184,12 @@ Privacy copy exists in the app and currently states:
 Verification completed so far:
 
 - all `job-kanban/js/*.js` modules passed `node --experimental-default-type=module --check`
+- all `job-kanban/tests/*.js` files passed `node --experimental-default-type=module --check`
+- `node --test --experimental-default-type=module job-kanban/tests/*.test.js` passed
+- the logic test suite currently covers:
+  - `board-store.js` state transitions for create, apply, close, reopen, add/edit step, and delete
+  - `validation.js` normalization and rejection paths for valid and invalid import payloads
+  - `dates.js` plain date, date-time, and instant validation helpers
 - local served route `http://127.0.0.1:8000/job-kanban/` returned `200 OK`
 - key asset paths returned `200 OK`:
   - `/job-kanban/app.css`
@@ -190,13 +202,13 @@ What has not been fully verified yet:
 - manual browser walkthrough of every modal flow
 - keyboard-only interaction pass
 - screen reader pass
-- malformed import edge cases beyond static code inspection
+- malformed import edge cases beyond the current logic test cases
 - persistence behavior across multiple real page reload cycles in a browser session
 
 ## Known Gaps And Risks
 The app is functional, but this is still an MVP. The next agent should treat these as active follow-up areas:
 
-- No automated tests exist yet.
+- Test coverage is still limited to pure logic and does not exercise browser UI behavior.
 - Accessibility has not received a dedicated refinement pass.
 - There is no drag-and-drop or manual reordering.
 - There are no filters, search, tags, reminders, or analytics views.
@@ -242,13 +254,13 @@ Recommended follow-up work:
 - test keyboard traversal through board cards and modal actions
 
 ### Priority 3: Test Coverage
-Add lightweight tests around pure logic first:
+Basic lightweight tests now exist around pure logic:
 
 - `validation.js`
 - `board-store.js`
 - `dates.js`
 
-Suggested scenarios:
+Currently covered scenarios:
 
 - create inserts at the top of `Backlog`
 - apply moves to `Applied`
@@ -257,6 +269,12 @@ Suggested scenarios:
 - delete removes both card record and column reference
 - valid import payloads normalize successfully
 - invalid payloads are rejected cleanly
+
+Good next additions:
+
+- expand validation coverage for more malformed import payload shapes
+- add focused tests for persistence helpers
+- add browser-level smoke coverage once a lightweight harness is chosen
 
 ### Priority 4: UX Polish
 Once QA is stable:
@@ -297,11 +315,12 @@ That order gives the fastest route from app entry point to state transitions to 
 - Existing untracked directories like `.local/` and `docs/` were user-owned and should be treated carefully.
 - Continue making small logical commits rather than batching unrelated changes together.
 - Prefer building on the current modules instead of collapsing them into one large file.
+- Rerun the current logic suite with `node --test --experimental-default-type=module job-kanban/tests/*.test.js`.
 
 ## Definition Of Done For The Next Agent
 The next meaningful milestone should be:
 
 - all current modal flows manually exercised in a real browser
 - any bugs from that pass fixed
-- at least basic logic tests added for store and validation behavior
+- the current logic tests kept green while browser and accessibility fixes land
 - accessibility issues reduced enough that keyboard usage feels intentional rather than incidental
