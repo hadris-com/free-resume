@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Kanban</title>
+    <meta
+      name="description"
+      content="Local-first job application kanban board with JSON import/export and no third-party services."
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';"
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='4' width='28' height='24' rx='5' fill='%230b5f5c'/><rect x='6' y='8' width='5' height='16' rx='2' fill='%23f3f4f6'/><rect x='13.5' y='8' width='5' height='16' rx='2' fill='%23f3f4f6'/><rect x='21' y='8' width='5' height='16' rx='2' fill='%23f3f4f6'/></svg>"
+    />
+    <link rel="stylesheet" href="../css/fonts.css?v=20260307-1" />
+    <link rel="stylesheet" href="../css/foundation.css?v=20260307-1" />
+    <link rel="stylesheet" href="./app.css?v=20260328-1" />
+  </head>
+  <body class="job-kanban-body">
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb-a" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb-b" aria-hidden="true"></div>
+
+    <div class="kanban-shell">
+      <header class="kanban-topbar">
+        <div class="brand-copy">
+          <p class="brand-kicker">Local-first workflow</p>
+          <h1>Job Kanban</h1>
+          <p class="brand-subtitle">
+            Track applications in your browser with clear four-column workflow states and JSON backups.
+          </p>
+        </div>
+
+        <div class="topbar-actions">
+          <button id="new-application-btn" type="button" class="toolbar-btn toolbar-btn-primary">New application</button>
+          <button id="import-json-btn" type="button" class="toolbar-btn">Import JSON</button>
+          <button id="export-json-btn" type="button" class="toolbar-btn">Export JSON</button>
+          <button id="privacy-btn" type="button" class="toolbar-btn toolbar-btn-quiet">Privacy</button>
+        </div>
+      </header>
+
+      <main class="kanban-main">
+        <section class="summary-ribbon" aria-label="Board summary">
+          <div>
+            <p class="summary-kicker">Stored only in this browser</p>
+            <p id="board-summary" class="board-summary">Create your first application card to start tracking the pipeline.</p>
+          </div>
+          <p id="status-pill" class="status-pill" aria-live="polite" hidden></p>
+        </section>
+
+        <section id="board-root" class="board-grid" aria-label="Job application kanban board"></section>
+      </main>
+    </div>
+
+    <input id="import-file-input" class="sr-only" type="file" accept="application/json,.json" />
+
+    <dialog id="app-modal" class="app-modal">
+      <div id="app-modal-content"></div>
+    </dialog>
+
+    <dialog id="privacy-modal" class="privacy-modal">
+      <div class="privacy-modal-shell">
+        <div class="modal-header">
+          <div>
+            <p class="modal-kicker">Privacy</p>
+            <h2>What this app stores</h2>
+          </div>
+          <button type="button" class="icon-btn" data-privacy-close>Close</button>
+        </div>
+
+        <div class="modal-body privacy-copy">
+          <p>
+            Your job board data is stored in this browser using localStorage. The app does not send your cards to an
+            app-controlled server, and it does not use cookies.
+          </p>
+          <p>
+            Import and export files stay local to your device unless you choose to move them elsewhere. The page also
+            avoids unnecessary external requests by using self-hosted assets from this repository.
+          </p>
+          <p>
+            If you host this page yourself, normal web hosting and browser request metadata may still exist, such as IP
+            address, user-agent, or server logs. That metadata is separate from the card data you enter into the board.
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="toolbar-btn toolbar-btn-primary" data-privacy-close>Close</button>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="module" src="./js/app-shell.js?v=20260328-1"></script>
+  </body>
+</html>
