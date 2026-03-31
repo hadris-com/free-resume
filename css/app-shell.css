@@ -192,6 +192,11 @@ body.theme-dark .theme-dot {
   color: var(--text-main);
 }
 
+.footer-link:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent), #ffffff 30%);
+  outline-offset: 2px;
+}
+
 /* ---- Privacy Modal ---- */
 .privacy-modal {
   border: 1px solid var(--panel-glass-border);
