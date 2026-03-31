@@ -142,8 +142,7 @@ body.job-kanban-body.theme-dark {
 
 .summary-ribbon,
 .board-column,
-.modal-shell,
-.privacy-modal-shell {
+.modal-shell {
   border: 1px solid var(--panel-glass-border);
   background: linear-gradient(160deg, var(--panel-bg-top), var(--panel-bg-bottom));
   -webkit-backdrop-filter: var(--panel-blur);
@@ -336,8 +335,7 @@ body.job-kanban-body.theme-dark {
   text-align: center;
 }
 
-.app-modal,
-.privacy-modal {
+.app-modal {
   border: 0;
   padding: 0;
   background: transparent;
@@ -346,14 +344,12 @@ body.job-kanban-body.theme-dark {
   width: 100%;
 }
 
-.app-modal::backdrop,
-.privacy-modal::backdrop {
+.app-modal::backdrop {
   background: rgba(7, 11, 19, 0.48);
   backdrop-filter: blur(6px);
 }
 
-.modal-shell,
-.privacy-modal-shell {
+.modal-shell {
   display: flex;
   flex-direction: column;
   max-height: calc(100dvh - 4rem);
@@ -547,11 +543,6 @@ body.job-kanban-body.theme-dark {
 .timeline-item-title {
   margin: 0;
   font-size: 0.98rem;
-}
-
-.privacy-copy {
-  display: grid;
-  gap: 1rem;
 }
 
 @media (max-width: 1200px) {

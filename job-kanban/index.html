@@ -40,7 +40,6 @@
             <button id="new-application-btn" type="button" class="toolbar-btn toolbar-btn-primary">New application</button>
             <button id="import-json-btn" type="button" class="toolbar-btn">Import JSON</button>
             <button id="export-json-btn" type="button" class="toolbar-btn">Export JSON</button>
-            <button id="privacy-btn" type="button" class="toolbar-btn toolbar-btn-quiet">Privacy</button>
           </div>
 
           <button id="theme-toggle" type="button" class="ghost-btn" aria-pressed="false">
@@ -61,6 +60,10 @@
 
         <section id="board-root" class="board-grid" aria-label="Job application kanban board"></section>
       </main>
+
+      <footer class="app-footer">
+        <button type="button" class="privacy-link" id="privacy-btn">Privacy</button>
+      </footer>
     </div>
 
     <input id="import-file-input" class="sr-only" type="file" accept="application/json,.json" />
@@ -69,33 +72,61 @@
       <div id="app-modal-content"></div>
     </dialog>
 
-    <dialog id="privacy-modal" class="privacy-modal">
-      <div class="privacy-modal-shell">
-        <div class="modal-header">
-          <div>
-            <p class="modal-kicker">Privacy</p>
-            <h2>What this app stores</h2>
-          </div>
-          <button type="button" class="icon-btn" data-privacy-close>Close</button>
-        </div>
+    <dialog id="privacy-modal" class="privacy-modal" aria-labelledby="privacy-modal-title">
+      <div class="privacy-modal-content">
+        <header class="privacy-modal-header">
+          <h2 id="privacy-modal-title">Privacy Policy</h2>
+          <button type="button" class="privacy-modal-close" id="privacy-close-btn" data-privacy-close>Close</button>
+        </header>
+        <div class="privacy-modal-body">
+          <p class="privacy-intro">Job Kanban is a static, client-side application. Your privacy is our priority.</p>
 
-        <div class="modal-body privacy-copy">
-          <p>
-            Your job board data is stored in this browser using localStorage. The app does not send your cards to an
-            app-controlled server, and it does not use cookies.
-          </p>
-          <p>
-            Import and export files stay local to your device unless you choose to move them elsewhere. The page also
-            avoids unnecessary external requests by using self-hosted assets from this repository.
-          </p>
-          <p>
-            If you host this page yourself, normal web hosting and browser request metadata may still exist, such as IP
-            address, user-agent, or server logs. That metadata is separate from the card data you enter into the board.
-          </p>
-        </div>
+          <section class="privacy-section">
+            <h3>No personal data collected</h3>
+            <p>This application does not collect, transmit, or process any personal data. All job application content you enter stays entirely within your browser.</p>
+          </section>
 
-        <div class="modal-footer">
-          <button type="button" class="toolbar-btn toolbar-btn-primary" data-privacy-close>Close</button>
+          <section class="privacy-section">
+            <h3>Local storage only</h3>
+            <p>Your job board draft is saved to your browser's localStorage so you can continue editing later. This data never leaves your device. You can clear it at any time through your browser settings.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3>Hosting</h3>
+            <p>This site is hosted on GitHub Pages. GitHub may collect technical information such as your IP address in server logs. See GitHub's privacy statement for details.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3>No cookies</h3>
+            <p>This application does not set or read any cookies.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3>No third-party services</h3>
+            <p>All fonts and assets are self-hosted. No external requests are made when you use this application.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3>Data retention</h3>
+            <p>Your job board data remains in your browser's localStorage until you manually clear it through your browser settings. No data is retained on any server by the site operator.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3>Your rights</h3>
+            <p>Under the General Data Protection Regulation (GDPR), you have the right to access, rectify, erase, restrict processing, port, and object to the processing of your personal data. Since all data is stored locally in your browser and never transmitted to us, you can exercise these rights directly by clearing your browser's localStorage or site data at any time.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3>Data controller</h3>
+            <p>This site is operated and maintained by its developer as a free, open-source project. If you have privacy-related questions, you can open an issue on the project's GitHub repository.</p>
+          </section>
+
+          <section class="privacy-section">
+            <h3>Right to lodge a complaint</h3>
+            <p>If you believe your data protection rights have been violated, you have the right to lodge a complaint with a supervisory authority in the EU member state of your habitual residence, place of work, or place of the alleged infringement.</p>
+          </section>
+
+          <p class="privacy-updated">Last updated: March 2026</p>
         </div>
       </div>
     </dialog>
