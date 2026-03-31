@@ -3,6 +3,14 @@ body.job-kanban-body {
   --kanban-accent-soft: var(--accent-soft);
   --kanban-border-soft: color-mix(in srgb, var(--panel-border), transparent 18%);
   --kanban-surface-shadow: 0 14px 34px rgba(3, 16, 46, 0.08);
+  --kanban-modal-backdrop: rgba(10, 16, 28, 0.22);
+  --kanban-modal-surface-top: rgba(255, 255, 255, 0.76);
+  --kanban-modal-surface-bottom: rgba(255, 255, 255, 0.9);
+  --kanban-modal-panel: rgba(255, 255, 255, 0.86);
+  --kanban-modal-section: rgba(255, 255, 255, 0.72);
+  --kanban-modal-border: rgba(16, 24, 40, 0.1);
+  --kanban-modal-shadow: 0 30px 80px rgba(3, 16, 46, 0.14);
+  --kanban-modal-blur: blur(24px) saturate(165%);
   --kanban-alert: #b42318;
   --kanban-alert-soft: rgba(180, 35, 24, 0.12);
   --kanban-warm: #9a6700;
@@ -13,6 +21,14 @@ body.job-kanban-body {
 
 body.job-kanban-body.theme-dark {
   --kanban-surface-shadow: 0 18px 42px rgba(0, 0, 0, 0.26);
+  --kanban-modal-backdrop: rgba(2, 6, 16, 0.42);
+  --kanban-modal-surface-top: rgba(15, 23, 38, 0.8);
+  --kanban-modal-surface-bottom: rgba(10, 16, 28, 0.92);
+  --kanban-modal-panel: rgba(14, 22, 36, 0.84);
+  --kanban-modal-section: rgba(17, 27, 43, 0.72);
+  --kanban-modal-border: rgba(191, 202, 224, 0.12);
+  --kanban-modal-shadow: 0 36px 90px rgba(0, 0, 0, 0.4);
+  --kanban-modal-blur: blur(22px) saturate(150%);
   --kanban-alert: #ffb4ab;
   --kanban-alert-soft: rgba(255, 180, 171, 0.12);
   --kanban-warm: #f4c98b;
@@ -344,9 +360,23 @@ body.job-kanban-body.theme-dark {
   width: 100%;
 }
 
-.app-modal::backdrop {
-  background: rgba(7, 11, 19, 0.48);
-  backdrop-filter: blur(6px);
+.privacy-modal {
+  color: var(--text-main);
+}
+
+.app-modal::backdrop,
+.privacy-modal::backdrop {
+  background: var(--kanban-modal-backdrop);
+  backdrop-filter: blur(4px) saturate(118%);
+}
+
+.modal-shell,
+.privacy-modal {
+  border: 1px solid var(--kanban-modal-border);
+  background: linear-gradient(180deg, var(--kanban-modal-surface-top), var(--kanban-modal-surface-bottom));
+  -webkit-backdrop-filter: var(--kanban-modal-blur);
+  backdrop-filter: var(--kanban-modal-blur);
+  box-shadow: var(--kanban-modal-shadow);
 }
 
 .modal-shell {
@@ -370,6 +400,12 @@ body.job-kanban-body.theme-dark {
   border-bottom: 1px solid var(--panel-border);
 }
 
+.modal-header,
+.modal-footer,
+.privacy-modal-header {
+  background: color-mix(in srgb, var(--kanban-modal-surface-top), white 10%);
+}
+
 .modal-header h2 {
   margin: 0.25rem 0 0;
   font-family: var(--font-display);
@@ -388,6 +424,7 @@ body.job-kanban-body.theme-dark {
   padding: 1rem 1.2rem 1.25rem;
   max-height: min(70dvh, 46rem);
   overflow-y: auto;
+  background: var(--kanban-modal-panel);
 }
 
 .modal-footer {
@@ -465,7 +502,7 @@ body.job-kanban-body.theme-dark {
   padding: 1rem;
   border: 1px solid var(--kanban-border-soft);
   border-radius: 16px;
-  background: var(--panel-surface);
+  background: var(--kanban-modal-section);
 }
 
 .detail-section + .detail-section {
@@ -489,7 +526,7 @@ body.job-kanban-body.theme-dark {
   padding: 0.75rem 0.85rem;
   border-radius: 12px;
   border: 1px solid var(--input-border);
-  background: color-mix(in srgb, var(--panel-surface), transparent 12%);
+  background: var(--kanban-modal-panel);
 }
 
 .detail-item dt {
@@ -530,7 +567,17 @@ body.job-kanban-body.theme-dark {
   padding: 0.95rem;
   border-radius: 14px;
   border: 1px solid var(--input-border);
-  background: color-mix(in srgb, var(--panel-surface), transparent 8%);
+  background: var(--kanban-modal-panel);
+}
+
+.privacy-modal-header,
+.privacy-modal-body {
+  background: var(--kanban-modal-panel);
+}
+
+.privacy-section {
+  background: var(--kanban-modal-section);
+  border-color: var(--kanban-modal-border);
 }
 
 .timeline-item-header {
