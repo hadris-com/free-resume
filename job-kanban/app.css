@@ -191,7 +191,6 @@ body.job-kanban-body.theme-dark {
 }
 
 .summary-kicker,
-.column-kicker,
 .modal-kicker {
   margin: 0;
   font-family: var(--font-mono);

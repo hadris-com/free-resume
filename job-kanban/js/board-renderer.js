@@ -170,7 +170,7 @@ function renderCard(columnId, card, getTranslation, getLanguage) {
   return `<li><article class="application-card">${body}</article></li>`
 }
 
-function renderColumn(columnId, column, cards, columnIndex, getTranslation, getLanguage) {
+function renderColumn(columnId, column, cards, getTranslation, getLanguage) {
   const cardCountKey = new Intl.PluralRules(getLanguage()).select(column.cardIds.length) === "one" ? "one" : "other"
   const cardMarkup = cards.length
     ? cards.map((card) => renderCard(columnId, card, getTranslation, getLanguage)).join("")
@@ -180,7 +180,6 @@ function renderColumn(columnId, column, cards, columnIndex, getTranslation, getL
     <section class="board-column" data-column-id="${escapeHtml(columnId)}">
       <header class="column-header">
         <div class="column-title-group">
-          <p class="column-kicker">${escapeHtml(getTranslation("columns.lane", { number: String(columnIndex + 1).padStart(2, "0") }))}</p>
           <h2>${escapeHtml(getTranslation(`columns.${columnId}`))}</h2>
         </div>
         <div class="column-count" aria-label="${escapeHtml(getTranslation(`columns.count.${cardCountKey}`, { count: column.cardIds.length }))}">${escapeHtml(String(column.cardIds.length))}</div>
@@ -214,10 +213,10 @@ export function createBoardRenderer({ getState, boardRoot, summaryRoot, getTrans
 
     renderSummary(state)
 
-    boardRoot.innerHTML = FIXED_COLUMN_ORDER.map((columnId, index) => {
+    boardRoot.innerHTML = FIXED_COLUMN_ORDER.map((columnId) => {
       const column = state.columns[columnId]
       const cards = column.cardIds.map((cardId) => state.cardsById[cardId]).filter(Boolean)
-      return renderColumn(columnId, column, cards, index, getTranslation, getLanguage)
+      return renderColumn(columnId, column, cards, getTranslation, getLanguage)
     }).join("")
   }
 
