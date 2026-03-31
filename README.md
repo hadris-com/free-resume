@@ -37,18 +37,6 @@ Then visit `http://localhost:5500`.
 > - Use **Print** for paper output and **Save PDF** for exporting a PDF file.
 > - Use **Download raw CV** to save your resume data as JSON, and **Upload raw CV** to restore it later.
 
-## 📋 Job Kanban
-
-This repo now also includes a separate static job application tracker at [`job-kanban/index.html`](job-kanban/index.html).
-
-It follows the same local-first approach as the resume app:
-
-- plain HTML, CSS, and ES modules
-- data stored in your browser with JSON import/export
-- no cookies and no third-party services
-
----
-
 ## 🧩 Chrome Extension — LinkedIn Import
 
 The `chrome-extension/` directory contains a Manifest V3 Chrome extension that imports a LinkedIn profile and generates a PDF resume in one click.
