@@ -34,5 +34,7 @@ test("toDateTimeInputValue returns datetime-local compatible values", () => {
 
 test("isValidInstantString rejects malformed timestamps", () => {
   assert.equal(isValidInstantString("2026-03-08T09:45:30.000Z"), true)
+  assert.equal(isValidInstantString("2026-03-08"), false)
+  assert.equal(isValidInstantString("2026-03-08T09:45:30"), false)
   assert.equal(isValidInstantString("not-an-instant"), false)
 })

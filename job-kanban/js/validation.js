@@ -237,7 +237,7 @@ export function parseBoardPayload(payload) {
     return null
   }
 
-  if (typeof payload.app === "string" && payload.app !== APP_ID) {
+  if (payload.app != null && payload.app !== APP_ID) {
     return null
   }
 

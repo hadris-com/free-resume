@@ -26,7 +26,7 @@
 
 .panel-section h2 {
   display: block;
-  margin-block-end: 0.4rem;
+  margin: 0 0 0.5rem;
   color: var(--text-main);
   font-family: var(--font-display);
   font-size: 1.4rem;
@@ -41,11 +41,6 @@
   margin-block-end: 0.4rem;
   color: var(--text-muted);
   font-weight: 500;
-}
-
-.panel-section h2 {
-  margin-block-start: 0;
-  margin-block-end: 0.5rem;
 }
 
 label {

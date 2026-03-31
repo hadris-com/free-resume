@@ -117,6 +117,10 @@ test("parseBoardPayload rejects unsupported schema versions", () => {
   assert.equal(parseBoardPayload(buildPayload(buildValidState(), { schemaVersion: SCHEMA_VERSION + 1 })), null)
 })
 
+test("parseBoardPayload rejects snapshots with a non-string app marker", () => {
+  assert.equal(parseBoardPayload(buildPayload(buildValidState(), { app: 42 })), null)
+})
+
 test("parseBoardPayload rejects malformed card data", () => {
   const state = buildValidState()
 

@@ -169,8 +169,7 @@ const modalController = createModalController({
   contentRoot: refs.appModalContent,
   store,
   announce,
-  getTranslation,
-  getLanguage: () => uiLang
+  getTranslation
 })
 
 const cardActions = createCardActions({

@@ -23,10 +23,7 @@ The app is separate from the resume builder and follows the intended local-first
 - no app-controlled backend
 - explicit button-driven workflow actions instead of drag-and-drop
 
-Relevant commits already on `main`:
-
-- `d6f47e7` `Add standalone job kanban app`
-- `992f7e7` `Document the job kanban page`
+Initial implementation and documentation landed during the branch work that introduced the job kanban app.
 
 ## What Is Implemented
 

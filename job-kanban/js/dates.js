@@ -1,4 +1,5 @@
 const temporalApi = globalThis.Temporal ?? null
+const ISO_INSTANT_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})$/
 
 function pad(value) {
   return String(value).padStart(2, "0")
@@ -139,7 +140,7 @@ export function isValidInstantString(value) {
     }
   }
 
-  return !Number.isNaN(Date.parse(value))
+  return ISO_INSTANT_PATTERN.test(value) && !Number.isNaN(Date.parse(value))
 }
 
 export function normalizeDateInputValue(value) {
