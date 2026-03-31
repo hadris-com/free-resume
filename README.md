@@ -37,8 +37,6 @@ Then visit `http://localhost:5500`.
 > - Use **Print** for paper output and **Save PDF** for exporting a PDF file.
 > - Use **Download raw CV** to save your resume data as JSON, and **Upload raw CV** to restore it later.
 
----
-
 ## 🧩 Chrome Extension — LinkedIn Import
 
 The `chrome-extension/` directory contains a Manifest V3 Chrome extension that imports a LinkedIn profile and generates a PDF resume in one click.
