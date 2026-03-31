@@ -19,28 +19,34 @@
     />
     <link rel="stylesheet" href="../css/fonts.css?v=20260307-1" />
     <link rel="stylesheet" href="../css/foundation.css?v=20260307-1" />
-    <link rel="stylesheet" href="./app.css?v=20260328-1" />
+    <link rel="stylesheet" href="../css/app-shell.css?v=20260307-1" />
+    <link rel="stylesheet" href="./app.css?v=20260330-1" />
   </head>
   <body class="job-kanban-body">
-    <div class="bg-grid" aria-hidden="true"></div>
-    <div class="bg-orb bg-orb-a" aria-hidden="true"></div>
-    <div class="bg-orb bg-orb-b" aria-hidden="true"></div>
+    <div class="bg-noise" aria-hidden="true"></div>
 
-    <div class="kanban-shell">
-      <header class="kanban-topbar">
-        <div class="brand-copy">
-          <p class="brand-kicker">Local-first workflow</p>
+    <div class="app-shell kanban-shell">
+      <header class="topbar kanban-topbar">
+        <div class="brand brand-copy">
+          <p class="brand-kicker">A4 Studio</p>
           <h1>Job Kanban</h1>
-          <p class="brand-subtitle">
-            Track applications in your browser with clear four-column workflow states and JSON backups.
+          <p>
+            Local-first application tracking with the same editorial shell as Free Resume and clear four-column stages.
           </p>
         </div>
 
-        <div class="topbar-actions">
-          <button id="new-application-btn" type="button" class="toolbar-btn toolbar-btn-primary">New application</button>
-          <button id="import-json-btn" type="button" class="toolbar-btn">Import JSON</button>
-          <button id="export-json-btn" type="button" class="toolbar-btn">Export JSON</button>
-          <button id="privacy-btn" type="button" class="toolbar-btn toolbar-btn-quiet">Privacy</button>
+        <div class="topbar-controls kanban-topbar-controls">
+          <div class="topbar-actions">
+            <button id="new-application-btn" type="button" class="toolbar-btn toolbar-btn-primary">New application</button>
+            <button id="import-json-btn" type="button" class="toolbar-btn">Import JSON</button>
+            <button id="export-json-btn" type="button" class="toolbar-btn">Export JSON</button>
+            <button id="privacy-btn" type="button" class="toolbar-btn toolbar-btn-quiet">Privacy</button>
+          </div>
+
+          <button id="theme-toggle" type="button" class="ghost-btn" aria-pressed="false">
+            <span class="theme-dot" aria-hidden="true"></span>
+            <span data-role="theme-label">Dark mode</span>
+          </button>
         </div>
       </header>
 
@@ -94,6 +100,6 @@
       </div>
     </dialog>
 
-    <script type="module" src="./js/app-shell.js?v=20260328-1"></script>
+    <script type="module" src="./js/app-shell.js?v=20260330-1"></script>
   </body>
 </html>

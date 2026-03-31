@@ -14,11 +14,14 @@ const refs = {
   importJsonBtn: document.getElementById("import-json-btn"),
   exportJsonBtn: document.getElementById("export-json-btn"),
   privacyBtn: document.getElementById("privacy-btn"),
+  themeToggle: document.getElementById("theme-toggle"),
   importFileInput: document.getElementById("import-file-input"),
   appModal: document.getElementById("app-modal"),
   appModalContent: document.getElementById("app-modal-content"),
   privacyModal: document.getElementById("privacy-modal")
 }
+
+const THEME_STORAGE_KEY = "free-resume:job-kanban-theme"
 
 const initialState = createPersistence({
   getState: () => createEmptyBoardState(),
@@ -39,6 +42,43 @@ const renderer = createBoardRenderer({
 })
 
 let announcementTimeout = null
+let theme = loadThemePreference()
+
+function getPreferredTheme() {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+}
+
+function loadThemePreference() {
+  try {
+    const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY)
+    return storedTheme === "dark" || storedTheme === "light" ? storedTheme : getPreferredTheme()
+  } catch {
+    return getPreferredTheme()
+  }
+}
+
+function saveThemePreference() {
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme)
+  } catch {
+    // Ignore persistence failures and keep the current in-memory theme.
+  }
+}
+
+function applyTheme() {
+  document.body.classList.toggle("theme-dark", theme === "dark")
+
+  if (!refs.themeToggle) {
+    return
+  }
+
+  refs.themeToggle.setAttribute("aria-pressed", String(theme === "dark"))
+
+  const label = refs.themeToggle.querySelector("[data-role='theme-label']")
+  if (label) {
+    label.textContent = theme === "dark" ? "Light mode" : "Dark mode"
+  }
+}
 
 function announce(message, tone = "success") {
   if (!refs.statusPill) {
@@ -125,6 +165,7 @@ function handlePrivacyClick(event) {
 }
 
 function init() {
+  applyTheme()
   render()
 
   store.subscribe(() => {
@@ -146,6 +187,11 @@ function init() {
   refs.importFileInput?.addEventListener("change", handleImportChange)
   refs.privacyBtn?.addEventListener("click", () => {
     refs.privacyModal?.showModal()
+  })
+  refs.themeToggle?.addEventListener("click", () => {
+    theme = theme === "dark" ? "light" : "dark"
+    applyTheme()
+    saveThemePreference()
   })
   refs.privacyModal?.addEventListener("click", handlePrivacyClick)
 }
