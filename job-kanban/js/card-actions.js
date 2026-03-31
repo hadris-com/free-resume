@@ -1,4 +1,4 @@
-export function createCardActions({ store, modalController, announce }) {
+export function createCardActions({ store, modalController, announce, getTranslation }) {
   function handleAction(action, cardId) {
     if (!cardId) {
       return false
@@ -33,7 +33,7 @@ export function createCardActions({ store, modalController, announce }) {
       const reopenedCard = store.reopenCard(cardId)
 
       if (reopenedCard) {
-        announce(`Moved ${reopenedCard.company} back to Backlog.`, "success")
+        announce(getTranslation("announcements.reopened", { company: reopenedCard.company }), "success")
       }
 
       return true

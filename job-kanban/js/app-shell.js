@@ -1,6 +1,7 @@
 import { createBoardRenderer } from "./board-renderer.js"
 import { createBoardStore } from "./board-store.js"
 import { createCardActions } from "./card-actions.js"
+import { createKanbanTranslationGetter, resolveKanbanLanguage } from "./i18n.js"
 import { createModalController } from "./modal-controller.js"
 import { createPersistence } from "./persistence.js"
 import { createEmptyBoardState } from "./schema.js"
@@ -15,6 +16,7 @@ const refs = {
   exportJsonBtn: document.getElementById("export-json-btn"),
   privacyBtn: document.getElementById("privacy-btn"),
   themeToggle: document.getElementById("theme-toggle"),
+  metaDescription: document.querySelector('meta[name="description"]'),
   importFileInput: document.getElementById("import-file-input"),
   appModal: document.getElementById("app-modal"),
   appModalContent: document.getElementById("app-modal-content"),
@@ -22,30 +24,47 @@ const refs = {
 }
 
 const THEME_STORAGE_KEY = "free-resume:job-kanban-theme"
+const UI_LANG_STORAGE_KEY = "free-resume:job-kanban-ui-lang"
+
+let theme = loadThemePreference()
+let uiLang = loadLanguagePreference()
+
+const getTranslation = createKanbanTranslationGetter(() => uiLang)
 
 const initialState = createPersistence({
   getState: () => createEmptyBoardState(),
-  parseBoardPayload
+  parseBoardPayload,
+  getTranslation
 }).loadDraftFromLocalStorage() ?? createEmptyBoardState()
 
 const store = createBoardStore(initialState)
 
 const persistence = createPersistence({
   getState: () => store.getState(),
-  parseBoardPayload
+  parseBoardPayload,
+  getTranslation
 })
 
 const renderer = createBoardRenderer({
   getState: () => store.getState(),
   boardRoot: refs.boardRoot,
-  summaryRoot: refs.boardSummary
+  summaryRoot: refs.boardSummary,
+  getTranslation,
+  getLanguage: () => uiLang
 })
 
 let announcementTimeout = null
-let theme = loadThemePreference()
 
 function getPreferredTheme() {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+}
+
+function loadLanguagePreference() {
+  try {
+    return resolveKanbanLanguage(window.localStorage.getItem(UI_LANG_STORAGE_KEY))
+  } catch {
+    return "en"
+  }
 }
 
 function loadThemePreference() {
@@ -54,6 +73,14 @@ function loadThemePreference() {
     return storedTheme === "dark" || storedTheme === "light" ? storedTheme : getPreferredTheme()
   } catch {
     return getPreferredTheme()
+  }
+}
+
+function saveLanguagePreference() {
+  try {
+    window.localStorage.setItem(UI_LANG_STORAGE_KEY, uiLang)
+  } catch {
+    // Ignore persistence failures and keep the current in-memory language.
   }
 }
 
@@ -76,8 +103,49 @@ function applyTheme() {
 
   const label = refs.themeToggle.querySelector("[data-role='theme-label']")
   if (label) {
-    label.textContent = theme === "dark" ? "Light mode" : "Dark mode"
+    label.textContent = theme === "dark" ? getTranslation("actions.lightMode") : getTranslation("actions.darkMode")
   }
+}
+
+function applyI18n() {
+  document.documentElement.lang = uiLang
+  document.title = getTranslation("meta.title")
+
+  if (refs.metaDescription) {
+    refs.metaDescription.setAttribute("content", getTranslation("meta.description"))
+  }
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    const key = element.getAttribute("data-i18n")
+
+    if (key) {
+      element.textContent = getTranslation(key)
+    }
+  })
+
+  document.querySelectorAll("[data-i18n-content]").forEach((element) => {
+    const key = element.getAttribute("data-i18n-content")
+
+    if (key) {
+      element.setAttribute("content", getTranslation(key))
+    }
+  })
+
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+    const key = element.getAttribute("data-i18n-aria-label")
+
+    if (key) {
+      element.setAttribute("aria-label", getTranslation(key))
+    }
+  })
+
+  document.querySelectorAll(".lang-btn").forEach((button) => {
+    const isActive = button.getAttribute("data-lang") === uiLang
+    button.classList.toggle("active", isActive)
+    button.setAttribute("aria-pressed", String(isActive))
+  })
+
+  applyTheme()
 }
 
 function announce(message, tone = "success") {
@@ -100,13 +168,16 @@ const modalController = createModalController({
   dialog: refs.appModal,
   contentRoot: refs.appModalContent,
   store,
-  announce
+  announce,
+  getTranslation,
+  getLanguage: () => uiLang
 })
 
 const cardActions = createCardActions({
   store,
   modalController,
-  announce
+  announce,
+  getTranslation
 })
 
 function render() {
@@ -136,16 +207,16 @@ async function handleImportChange(event) {
 
   try {
     const importedState = await persistence.parseImportFile(file)
-    const confirmed = window.confirm("Replace the current board with the imported JSON snapshot?")
+    const confirmed = window.confirm(getTranslation("confirm.importReplace"))
 
     if (!confirmed) {
       return
     }
 
     store.replaceState(importedState)
-    announce("Imported board snapshot.", "success")
+    announce(getTranslation("announcements.imported"), "success")
   } catch (error) {
-    announce(error instanceof Error ? error.message : "Could not import that file.", "error")
+    announce(error instanceof Error ? error.message : getTranslation("errors.importFallback"), "error")
   } finally {
     input.value = ""
   }
@@ -166,6 +237,7 @@ function handlePrivacyClick(event) {
 
 function init() {
   applyTheme()
+  applyI18n()
   render()
 
   store.subscribe(() => {
@@ -182,11 +254,20 @@ function init() {
   })
   refs.exportJsonBtn?.addEventListener("click", () => {
     persistence.downloadBoardSnapshot()
-    announce("Exported JSON snapshot.", "success")
+    announce(getTranslation("announcements.exported"), "success")
   })
   refs.importFileInput?.addEventListener("change", handleImportChange)
   refs.privacyBtn?.addEventListener("click", () => {
     refs.privacyModal?.showModal()
+  })
+  document.querySelectorAll(".lang-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      uiLang = resolveKanbanLanguage(button.getAttribute("data-lang"))
+      saveLanguagePreference()
+      applyI18n()
+      render()
+      modalController.refresh()
+    })
   })
   refs.themeToggle?.addEventListener("click", () => {
     theme = theme === "dark" ? "light" : "dark"

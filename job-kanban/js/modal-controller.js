@@ -6,12 +6,12 @@ import {
   toDateTimeInputValue,
   todayPlainDateString
 } from "./dates.js"
+import { getLocalizedKanbanOptionLabel } from "./i18n.js"
 import {
   backlogCloseReasonOptions,
   backlogLabelOptions,
   closeReasonOptions,
   fitVerdictOptions,
-  getOptionLabel,
   processStageOptions,
   processStatusOptions
 } from "./schema.js"
@@ -26,7 +26,7 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;")
 }
 
-function renderOptions(options, selectedValue, { blankLabel = null } = {}) {
+function renderOptions(options, selectedValue, getOptionLabel, { blankLabel = null } = {}) {
   const items = []
 
   if (blankLabel != null) {
@@ -35,7 +35,7 @@ function renderOptions(options, selectedValue, { blankLabel = null } = {}) {
 
   for (const option of options) {
     items.push(
-      `<option value="${escapeHtml(option.value)}"${option.value === selectedValue ? " selected" : ""}>${escapeHtml(option.label)}</option>`
+      `<option value="${escapeHtml(option.value)}"${option.value === selectedValue ? " selected" : ""}>${escapeHtml(getOptionLabel(option.value))}</option>`
     )
   }
 
@@ -60,10 +60,10 @@ function normalizeLongText(value) {
   return typeof value === "string" ? value.replace(/\r\n/g, "\n").trim() : ""
 }
 
-function renderCloseButton(view) {
+function renderCloseButton(view, getTranslation) {
   const action = view.returnView ? "return" : "close"
-  const label = view.returnView ? "Back" : "Cancel"
-  return `<button type="button" class="toolbar-btn toolbar-btn-quiet" data-modal-action="${action}">${label}</button>`
+  const label = view.returnView ? getTranslation("actions.back") : getTranslation("actions.cancel")
+  return `<button type="button" class="toolbar-btn toolbar-btn-quiet" data-modal-action="${action}">${escapeHtml(label)}</button>`
 }
 
 function renderModalShell({ kicker, title, subtitle = "", body, footer, formView = null }) {
@@ -88,9 +88,9 @@ function renderModalShell({ kicker, title, subtitle = "", body, footer, formView
   return `<form class="modal-form" data-modal-view="${escapeHtml(formView)}">${content}</form>`
 }
 
-function renderDetailItem(label, value, { full = false, rich = false, isLink = false } = {}) {
+function renderDetailItem(label, value, { emptyLabel, full = false, rich = false, isLink = false } = {}) {
   const classes = `detail-item${full ? " detail-item-full" : ""}`
-  let detailMarkup = `<span class="detail-empty">Not set</span>`
+  let detailMarkup = `<span class="detail-empty">${escapeHtml(emptyLabel)}</span>`
 
   if (value) {
     if (isLink) {
@@ -113,45 +113,46 @@ function renderDetailItem(label, value, { full = false, rich = false, isLink = f
   `
 }
 
-function renderDetailsActions(cardId, columnId) {
+function renderDetailsActions(cardId, columnId, getTranslation) {
   const workflowButtons =
     columnId === "backlog"
       ? `
-        <button type="button" class="toolbar-btn toolbar-btn-primary" data-modal-action="open-apply-card" data-card-id="${escapeHtml(cardId)}">Applied</button>
-        <button type="button" class="toolbar-btn" data-modal-action="open-close-card" data-card-id="${escapeHtml(cardId)}" data-mode="discard">Discard</button>
+        <button type="button" class="toolbar-btn toolbar-btn-primary" data-modal-action="open-apply-card" data-card-id="${escapeHtml(cardId)}">${escapeHtml(getTranslation("actions.applied"))}</button>
+        <button type="button" class="toolbar-btn" data-modal-action="open-close-card" data-card-id="${escapeHtml(cardId)}" data-mode="discard">${escapeHtml(getTranslation("actions.discard"))}</button>
       `
       : columnId === "applied"
         ? `
-          <button type="button" class="toolbar-btn toolbar-btn-primary" data-modal-action="open-step-editor" data-card-id="${escapeHtml(cardId)}">Start Process</button>
-          <button type="button" class="toolbar-btn" data-modal-action="open-close-card" data-card-id="${escapeHtml(cardId)}" data-mode="close">Close</button>
+          <button type="button" class="toolbar-btn toolbar-btn-primary" data-modal-action="open-step-editor" data-card-id="${escapeHtml(cardId)}">${escapeHtml(getTranslation("actions.startProcess"))}</button>
+          <button type="button" class="toolbar-btn" data-modal-action="open-close-card" data-card-id="${escapeHtml(cardId)}" data-mode="close">${escapeHtml(getTranslation("actions.closeCard"))}</button>
         `
         : columnId === "in_progress"
           ? `
-            <button type="button" class="toolbar-btn toolbar-btn-primary" data-modal-action="open-step-editor" data-card-id="${escapeHtml(cardId)}">Add step</button>
-            <button type="button" class="toolbar-btn" data-modal-action="open-close-card" data-card-id="${escapeHtml(cardId)}" data-mode="close">Close</button>
+            <button type="button" class="toolbar-btn toolbar-btn-primary" data-modal-action="open-step-editor" data-card-id="${escapeHtml(cardId)}">${escapeHtml(getTranslation("actions.addStep"))}</button>
+            <button type="button" class="toolbar-btn" data-modal-action="open-close-card" data-card-id="${escapeHtml(cardId)}" data-mode="close">${escapeHtml(getTranslation("actions.closeCard"))}</button>
           `
-          : `<button type="button" class="toolbar-btn toolbar-btn-primary" data-modal-action="reopen-card" data-card-id="${escapeHtml(cardId)}">Reopen</button>`
+          : `<button type="button" class="toolbar-btn toolbar-btn-primary" data-modal-action="reopen-card" data-card-id="${escapeHtml(cardId)}">${escapeHtml(getTranslation("actions.reopen"))}</button>`
 
   return `
     <div class="details-actions">
-      <button type="button" class="toolbar-btn toolbar-btn-quiet" data-modal-action="open-edit-basics" data-card-id="${escapeHtml(cardId)}">Edit basics</button>
-      <button type="button" class="toolbar-btn toolbar-btn-quiet" data-modal-action="open-edit-fit" data-card-id="${escapeHtml(cardId)}">Edit fit</button>
+      <button type="button" class="toolbar-btn toolbar-btn-quiet" data-modal-action="open-edit-basics" data-card-id="${escapeHtml(cardId)}">${escapeHtml(getTranslation("actions.editBasics"))}</button>
+      <button type="button" class="toolbar-btn toolbar-btn-quiet" data-modal-action="open-edit-fit" data-card-id="${escapeHtml(cardId)}">${escapeHtml(getTranslation("actions.editFit"))}</button>
       ${workflowButtons}
-      <button type="button" class="toolbar-btn action-btn-danger" data-modal-action="open-delete-confirmation" data-card-id="${escapeHtml(cardId)}">Delete permanently</button>
+      <button type="button" class="toolbar-btn action-btn-danger" data-modal-action="open-delete-confirmation" data-card-id="${escapeHtml(cardId)}">${escapeHtml(getTranslation("actions.deletePermanently"))}</button>
     </div>
   `
 }
 
-function renderDetailsView(card, columnId) {
+function renderDetailsView(card, columnId, getTranslation) {
+  const emptyLabel = getTranslation("common.notSet")
   const latestStep = getLatestProcessStep(card)
   const subtitle =
     columnId === "backlog"
-      ? getOptionLabel("backlog", card.backlogLabel, "Backlog card")
+      ? getLocalizedKanbanOptionLabel("backlog", card.backlogLabel, getTranslation, "modal.subtitle.backlog")
       : columnId === "applied"
-        ? "Applied workflow card"
+        ? getTranslation("modal.subtitle.applied")
         : columnId === "in_progress"
-          ? "Currently active"
-          : "Closed workflow card"
+          ? getTranslation("modal.subtitle.inProgress")
+          : getTranslation("modal.subtitle.closed")
   const stepListMarkup = card.processSteps.length
     ? `
       <div class="timeline-list">
@@ -161,9 +162,9 @@ function renderDetailsView(card, columnId) {
               <article class="timeline-item">
                 <div class="timeline-item-header">
                   <div>
-                    <p class="timeline-item-title">${escapeHtml(getOptionLabel("stage", step.stage))}</p>
+                    <p class="timeline-item-title">${escapeHtml(getLocalizedKanbanOptionLabel("stage", step.stage, getTranslation))}</p>
                     <div class="timeline-meta">
-                      <span class="meta-chip">${escapeHtml(getOptionLabel("status", step.status))}</span>
+                      <span class="meta-chip">${escapeHtml(getLocalizedKanbanOptionLabel("status", step.status, getTranslation))}</span>
                       ${
                         step.scheduledAt
                           ? `<span class="meta-chip">${escapeHtml(formatPlainDateTime(step.scheduledAt))}</span>`
@@ -184,7 +185,7 @@ function renderDetailsView(card, columnId) {
                       data-card-id="${escapeHtml(card.id)}"
                       data-step-id="${escapeHtml(step.id)}"
                     >
-                      Edit step
+                      ${escapeHtml(getTranslation("actions.editStep"))}
                     </button>
                   </div>
                 </div>
@@ -195,124 +196,124 @@ function renderDetailsView(card, columnId) {
           .join("")}
       </div>
     `
-    : `<p class="detail-empty">No process steps yet.</p>`
+    : `<p class="detail-empty">${escapeHtml(getTranslation("modal.noProcessSteps"))}</p>`
 
   const body = `
     <section class="detail-section">
       <div class="detail-grid">
-        ${renderDetailItem("Company", card.company)}
-        ${renderDetailItem("Role", card.role)}
-        ${renderDetailItem("Location", card.location)}
-        ${renderDetailItem("Backlog label", getOptionLabel("backlog", card.backlogLabel))}
-        ${renderDetailItem("Job URL", card.jobUrl, { full: true, isLink: true })}
-        ${renderDetailItem("Notes", card.notes, { full: true, rich: true })}
+        ${renderDetailItem(getTranslation("fields.company"), card.company, { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.role"), card.role, { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.location"), card.location, { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.backlogLabel"), getLocalizedKanbanOptionLabel("backlog", card.backlogLabel, getTranslation), { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.jobUrl"), card.jobUrl, { emptyLabel, full: true, isLink: true })}
+        ${renderDetailItem(getTranslation("fields.notes"), card.notes, { emptyLabel, full: true, rich: true })}
       </div>
     </section>
 
     <section class="detail-section">
-      <h3>Fit assessment</h3>
+      <h3>${escapeHtml(getTranslation("sections.fitAssessment"))}</h3>
       <div class="detail-grid">
-        ${renderDetailItem("Verdict", getOptionLabel("fit", card.fitAssessment.verdict))}
-        ${renderDetailItem("Reviewed", card.fitAssessment.reviewedAt ? formatPlainDate(card.fitAssessment.reviewedAt) : "")}
-        ${renderDetailItem("Summary", card.fitAssessment.summary, { full: true, rich: true })}
+        ${renderDetailItem(getTranslation("fields.verdict"), getLocalizedKanbanOptionLabel("fit", card.fitAssessment.verdict, getTranslation), { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.reviewed"), card.fitAssessment.reviewedAt ? formatPlainDate(card.fitAssessment.reviewedAt) : "", { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.summary"), card.fitAssessment.summary, { emptyLabel, full: true, rich: true })}
       </div>
     </section>
 
     <section class="detail-section">
-      <h3>Process</h3>
+      <h3>${escapeHtml(getTranslation("sections.process"))}</h3>
       ${
         latestStep
-          ? `<p class="form-hint">Current step is derived from the latest recorded process step: ${escapeHtml(getOptionLabel("stage", latestStep.stage))}.</p>`
-          : `<p class="form-hint">Current in-progress state appears here after you add the first process step.</p>`
+          ? `<p class="form-hint">${escapeHtml(getTranslation("modal.currentStepHint", { stage: getLocalizedKanbanOptionLabel("stage", latestStep.stage, getTranslation) }))}</p>`
+          : `<p class="form-hint">${escapeHtml(getTranslation("modal.firstStepHint"))}</p>`
       }
       ${stepListMarkup}
     </section>
 
     <section class="detail-section">
-      <h3>Lifecycle</h3>
+      <h3>${escapeHtml(getTranslation("sections.lifecycle"))}</h3>
       <div class="detail-grid">
-        ${renderDetailItem("Applied", card.appliedAt ? formatPlainDate(card.appliedAt) : "")}
-        ${renderDetailItem("Closed", card.closedAt ? formatPlainDate(card.closedAt) : "")}
-        ${renderDetailItem("Close reason", getOptionLabel("close", card.closeReason))}
-        ${renderDetailItem("Close note", card.closeNote, { full: true, rich: true })}
-        ${renderDetailItem("Created", formatInstant(card.createdAt))}
-        ${renderDetailItem("Updated", formatInstant(card.updatedAt))}
+        ${renderDetailItem(getTranslation("fields.applied"), card.appliedAt ? formatPlainDate(card.appliedAt) : "", { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.closed"), card.closedAt ? formatPlainDate(card.closedAt) : "", { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.closeReason"), getLocalizedKanbanOptionLabel("close", card.closeReason, getTranslation), { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.closeNote"), card.closeNote, { emptyLabel, full: true, rich: true })}
+        ${renderDetailItem(getTranslation("fields.created"), formatInstant(card.createdAt), { emptyLabel })}
+        ${renderDetailItem(getTranslation("fields.updated"), formatInstant(card.updatedAt), { emptyLabel })}
       </div>
     </section>
   `
 
   return renderModalShell({
-    kicker: "Card details",
+    kicker: getTranslation("modal.cardDetails"),
     title: `${card.company} · ${card.role}`,
     subtitle,
     body,
-    footer: renderDetailsActions(card.id, columnId)
+    footer: renderDetailsActions(card.id, columnId, getTranslation)
   })
 }
 
-function renderCreateCardView(view) {
+function renderCreateCardView(view, getTranslation) {
   const body = `
     <div class="form-grid">
       <div class="form-field">
-        <label for="company-input">Company</label>
+        <label for="company-input">${escapeHtml(getTranslation("fields.company"))}</label>
         <input id="company-input" name="company" type="text" required />
       </div>
       <div class="form-field">
-        <label for="role-input">Role</label>
+        <label for="role-input">${escapeHtml(getTranslation("fields.role"))}</label>
         <input id="role-input" name="role" type="text" required />
       </div>
       <div class="form-field">
-        <label for="job-url-input">Job URL</label>
+        <label for="job-url-input">${escapeHtml(getTranslation("fields.jobUrl"))}</label>
         <input id="job-url-input" name="jobUrl" type="text" inputmode="url" />
       </div>
       <div class="form-field">
-        <label for="location-input">Location</label>
+        <label for="location-input">${escapeHtml(getTranslation("fields.location"))}</label>
         <input id="location-input" name="location" type="text" />
       </div>
       <div class="form-field">
-        <label for="backlog-label-input">Backlog label</label>
-        <select id="backlog-label-input" name="backlogLabel">${renderOptions(backlogLabelOptions, "considering")}</select>
+        <label for="backlog-label-input">${escapeHtml(getTranslation("fields.backlogLabel"))}</label>
+        <select id="backlog-label-input" name="backlogLabel">${renderOptions(backlogLabelOptions, "considering", (value) => getLocalizedKanbanOptionLabel("backlog", value, getTranslation))}</select>
       </div>
-      <p class="form-hint form-field-full">New cards always start in Backlog and are inserted at the top of the column.</p>
+      <p class="form-hint form-field-full">${escapeHtml(getTranslation("modal.createCard.hint"))}</p>
       <p class="modal-feedback form-field-full" data-modal-feedback></p>
     </div>
   `
 
   return renderModalShell({
-    kicker: "Create card",
-    title: "New application",
-    subtitle: "Capture the basics now and review the rest later from the details view.",
+    kicker: getTranslation("modal.createCard.kicker"),
+    title: getTranslation("modal.createCard.title"),
+    subtitle: getTranslation("modal.createCard.subtitle"),
     body,
-    footer: `${renderCloseButton(view)}<button type="submit" class="toolbar-btn toolbar-btn-primary">Create application</button>`,
+    footer: `${renderCloseButton(view, getTranslation)}<button type="submit" class="toolbar-btn toolbar-btn-primary">${escapeHtml(getTranslation("actions.createApplication"))}</button>`,
     formView: "create-card"
   })
 }
 
-function renderEditBasicsView(view, card) {
+function renderEditBasicsView(view, card, getTranslation) {
   const body = `
     <div class="form-grid">
       <div class="form-field">
-        <label for="company-input">Company</label>
+        <label for="company-input">${escapeHtml(getTranslation("fields.company"))}</label>
         <input id="company-input" name="company" type="text" value="${escapeHtml(card.company)}" required />
       </div>
       <div class="form-field">
-        <label for="role-input">Role</label>
+        <label for="role-input">${escapeHtml(getTranslation("fields.role"))}</label>
         <input id="role-input" name="role" type="text" value="${escapeHtml(card.role)}" required />
       </div>
       <div class="form-field">
-        <label for="job-url-input">Job URL</label>
+        <label for="job-url-input">${escapeHtml(getTranslation("fields.jobUrl"))}</label>
         <input id="job-url-input" name="jobUrl" type="text" inputmode="url" value="${escapeHtml(card.jobUrl)}" />
       </div>
       <div class="form-field">
-        <label for="location-input">Location</label>
+        <label for="location-input">${escapeHtml(getTranslation("fields.location"))}</label>
         <input id="location-input" name="location" type="text" value="${escapeHtml(card.location)}" />
       </div>
       <div class="form-field">
-        <label for="backlog-label-input">Backlog label</label>
-        <select id="backlog-label-input" name="backlogLabel">${renderOptions(backlogLabelOptions, card.backlogLabel)}</select>
+        <label for="backlog-label-input">${escapeHtml(getTranslation("fields.backlogLabel"))}</label>
+        <select id="backlog-label-input" name="backlogLabel">${renderOptions(backlogLabelOptions, card.backlogLabel, (value) => getLocalizedKanbanOptionLabel("backlog", value, getTranslation))}</select>
       </div>
       <div class="form-field-full">
-        <label for="notes-input">Notes</label>
+        <label for="notes-input">${escapeHtml(getTranslation("fields.notes"))}</label>
         <textarea id="notes-input" name="notes">${escapeHtml(card.notes)}</textarea>
       </div>
       <p class="modal-feedback form-field-full" data-modal-feedback></p>
@@ -320,82 +321,82 @@ function renderEditBasicsView(view, card) {
   `
 
   return renderModalShell({
-    kicker: "Edit basics",
+    kicker: getTranslation("modal.editBasics.kicker"),
     title: card.company,
-    subtitle: "Update core card context without changing the workflow column.",
+    subtitle: getTranslation("modal.editBasics.subtitle"),
     body,
-    footer: `${renderCloseButton(view)}<button type="submit" class="toolbar-btn toolbar-btn-primary">Save basics</button>`,
+    footer: `${renderCloseButton(view, getTranslation)}<button type="submit" class="toolbar-btn toolbar-btn-primary">${escapeHtml(getTranslation("actions.saveBasics"))}</button>`,
     formView: "edit-basics"
   })
 }
 
-function renderFitView(view, card) {
+function renderFitView(view, card, getTranslation) {
   const reviewedAt = card.fitAssessment.reviewedAt ?? ""
   const body = `
     <div class="form-grid">
       <div class="form-field">
-        <label for="fit-verdict-input">Verdict</label>
-        <select id="fit-verdict-input" name="verdict">${renderOptions(fitVerdictOptions, card.fitAssessment.verdict, { blankLabel: "Not reviewed" })}</select>
+        <label for="fit-verdict-input">${escapeHtml(getTranslation("fields.verdict"))}</label>
+        <select id="fit-verdict-input" name="verdict">${renderOptions(fitVerdictOptions, card.fitAssessment.verdict, (value) => getLocalizedKanbanOptionLabel("fit", value, getTranslation), { blankLabel: getTranslation("modal.editFit.blankVerdict") })}</select>
       </div>
       <div class="form-field">
-        <label for="reviewed-at-input">Reviewed date</label>
+        <label for="reviewed-at-input">${escapeHtml(getTranslation("fields.reviewedDate"))}</label>
         <input id="reviewed-at-input" name="reviewedAt" type="date" value="${escapeHtml(reviewedAt)}" />
       </div>
       <div class="form-field-full">
-        <label for="summary-input">Summary</label>
+        <label for="summary-input">${escapeHtml(getTranslation("fields.summary"))}</label>
         <textarea id="summary-input" name="summary">${escapeHtml(card.fitAssessment.summary)}</textarea>
       </div>
-      <p class="form-hint form-field-full">If you save a verdict or summary without a review date, today is used automatically.</p>
+      <p class="form-hint form-field-full">${escapeHtml(getTranslation("modal.editFit.hint"))}</p>
       <p class="modal-feedback form-field-full" data-modal-feedback></p>
     </div>
   `
 
   return renderModalShell({
-    kicker: "Edit fit",
+    kicker: getTranslation("modal.editFit.kicker"),
     title: card.company,
-    subtitle: "Capture structured verdicts for filtering-ready context and keep the explanation as text.",
+    subtitle: getTranslation("modal.editFit.subtitle"),
     body,
-    footer: `${renderCloseButton(view)}<button type="submit" class="toolbar-btn toolbar-btn-primary">Save fit</button>`,
+    footer: `${renderCloseButton(view, getTranslation)}<button type="submit" class="toolbar-btn toolbar-btn-primary">${escapeHtml(getTranslation("actions.saveFit"))}</button>`,
     formView: "edit-fit"
   })
 }
 
-function renderApplyView(view, card) {
+function renderApplyView(view, card, getTranslation) {
   const body = `
     <div class="form-grid">
       <div class="form-field">
-        <label for="applied-at-input">Applied date</label>
+        <label for="applied-at-input">${escapeHtml(getTranslation("fields.appliedDate"))}</label>
         <input id="applied-at-input" name="appliedAt" type="date" value="${escapeHtml(card.appliedAt ?? todayPlainDateString())}" required />
       </div>
-      <p class="form-hint form-field-full">Saving moves the card to Applied and inserts it at the top of that column.</p>
+      <p class="form-hint form-field-full">${escapeHtml(getTranslation("modal.apply.hint"))}</p>
       <p class="modal-feedback form-field-full" data-modal-feedback></p>
     </div>
   `
 
   return renderModalShell({
-    kicker: "Applied",
+    kicker: getTranslation("modal.apply.kicker"),
     title: `${card.company} · ${card.role}`,
-    subtitle: "Record the application date before moving the card forward.",
+    subtitle: getTranslation("modal.apply.subtitle"),
     body,
-    footer: `${renderCloseButton(view)}<button type="submit" class="toolbar-btn toolbar-btn-primary">Move to Applied</button>`,
+    footer: `${renderCloseButton(view, getTranslation)}<button type="submit" class="toolbar-btn toolbar-btn-primary">${escapeHtml(getTranslation("actions.moveToApplied"))}</button>`,
     formView: "apply-card"
   })
 }
 
-function renderStepView(view, card, step) {
+function renderStepView(view, card, step, getTranslation) {
   const isEditing = Boolean(step)
   const body = `
     <div class="form-grid">
       <div class="form-field">
-        <label for="stage-input">Stage</label>
-        <select id="stage-input" name="stage">${renderOptions(processStageOptions, step?.stage ?? "screening")}</select>
+        <label for="stage-input">${escapeHtml(getTranslation("fields.stage"))}</label>
+        <select id="stage-input" name="stage">${renderOptions(processStageOptions, step?.stage ?? "screening", (value) => getLocalizedKanbanOptionLabel("stage", value, getTranslation))}</select>
       </div>
       <div class="form-field">
-        <label for="status-input">Status</label>
-        <select id="status-input" name="status">${renderOptions(processStatusOptions, step?.status ?? "planned")}</select>
+        <label for="status-input">${escapeHtml(getTranslation("fields.status"))}</label>
+        <select id="status-input" name="status">${renderOptions(processStatusOptions, step?.status ?? "planned", (value) => getLocalizedKanbanOptionLabel("status", value, getTranslation))}</select>
       </div>
       <div class="form-field">
-        <label for="scheduled-at-input">Scheduled time</label>
+        <label for="scheduled-at-input">${escapeHtml(getTranslation("fields.scheduledTime"))}</label>
         <input
           id="scheduled-at-input"
           name="scheduledAt"
@@ -405,44 +406,44 @@ function renderStepView(view, card, step) {
         />
       </div>
       <div class="form-field">
-        <label for="contact-person-input">Contact person</label>
+        <label for="contact-person-input">${escapeHtml(getTranslation("fields.contactPerson"))}</label>
         <input id="contact-person-input" name="contactPerson" type="text" value="${escapeHtml(step?.contactPerson ?? "")}" />
       </div>
       <div class="form-field-full">
-        <label for="step-notes-input">Step notes</label>
+        <label for="step-notes-input">${escapeHtml(getTranslation("fields.stepNotes"))}</label>
         <textarea id="step-notes-input" name="stepNotes">${escapeHtml(step?.stepNotes ?? "")}</textarea>
       </div>
-      <p class="form-hint form-field-full">A new step moves the card into In Progress if it is not already there.</p>
+      <p class="form-hint form-field-full">${escapeHtml(getTranslation("modal.step.hint"))}</p>
       <p class="modal-feedback form-field-full" data-modal-feedback></p>
     </div>
   `
 
   return renderModalShell({
-    kicker: isEditing ? "Edit step" : "Add step",
+    kicker: isEditing ? getTranslation("modal.step.editKicker") : getTranslation("modal.step.addKicker"),
     title: `${card.company} · ${card.role}`,
-    subtitle: isEditing ? "Update the selected process step." : "Append the next process step to this application.",
+    subtitle: isEditing ? getTranslation("modal.step.editSubtitle") : getTranslation("modal.step.addSubtitle"),
     body,
-    footer: `${renderCloseButton(view)}<button type="submit" class="toolbar-btn toolbar-btn-primary">${isEditing ? "Save step" : "Add step"}</button>`,
+    footer: `${renderCloseButton(view, getTranslation)}<button type="submit" class="toolbar-btn toolbar-btn-primary">${escapeHtml(getTranslation(isEditing ? "actions.saveStep" : "actions.addStep"))}</button>`,
     formView: isEditing ? "edit-step" : "add-step"
   })
 }
 
-function renderCloseView(view, card) {
+function renderCloseView(view, card, getTranslation) {
   const isDiscard = view.mode === "discard"
   const options = isDiscard ? backlogCloseReasonOptions : closeReasonOptions
   const defaultReason = card.closeReason && options.some((option) => option.value === card.closeReason) ? card.closeReason : options[0].value
   const body = `
     <div class="form-grid">
       <div class="form-field">
-        <label for="close-reason-input">Reason</label>
-        <select id="close-reason-input" name="closeReason">${renderOptions(options, defaultReason)}</select>
+        <label for="close-reason-input">${escapeHtml(getTranslation("fields.reason"))}</label>
+        <select id="close-reason-input" name="closeReason">${renderOptions(options, defaultReason, (value) => getLocalizedKanbanOptionLabel("close", value, getTranslation))}</select>
       </div>
       <div class="form-field">
-        <label for="closed-at-input">Closed date</label>
+        <label for="closed-at-input">${escapeHtml(getTranslation("fields.closedDate"))}</label>
         <input id="closed-at-input" name="closedAt" type="date" value="${escapeHtml(card.closedAt ?? todayPlainDateString())}" required />
       </div>
       <div class="form-field-full">
-        <label for="close-note-input">Note</label>
+        <label for="close-note-input">${escapeHtml(getTranslation("fields.note"))}</label>
         <textarea id="close-note-input" name="closeNote">${escapeHtml(card.closeNote)}</textarea>
       </div>
       <p class="modal-feedback form-field-full" data-modal-feedback></p>
@@ -450,24 +451,24 @@ function renderCloseView(view, card) {
   `
 
   return renderModalShell({
-    kicker: isDiscard ? "Discard" : "Close",
+    kicker: isDiscard ? getTranslation("modal.close.discardKicker") : getTranslation("modal.close.closeKicker"),
     title: `${card.company} · ${card.role}`,
-    subtitle: isDiscard ? "Choose a self-decision reason before moving the card to Closed." : "Record why this application is closing.",
+    subtitle: isDiscard ? getTranslation("modal.close.discardSubtitle") : getTranslation("modal.close.closeSubtitle"),
     body,
-    footer: `${renderCloseButton(view)}<button type="submit" class="toolbar-btn toolbar-btn-primary">${isDiscard ? "Discard application" : "Close application"}</button>`,
+    footer: `${renderCloseButton(view, getTranslation)}<button type="submit" class="toolbar-btn toolbar-btn-primary">${escapeHtml(getTranslation(isDiscard ? "actions.discardApplication" : "actions.closeApplication"))}</button>`,
     formView: isDiscard ? "discard-card" : "close-card"
   })
 }
 
-function renderDeleteView(view, card) {
+function renderDeleteView(view, card, getTranslation) {
   const body = `
     <div class="form-grid">
       <div class="form-field-full">
-        <p class="danger-copy">Permanent delete removes the card and every process step from this browser immediately.</p>
-        <p class="form-hint">Type <strong>${escapeHtml(card.company)}</strong> to confirm.</p>
+        <p class="danger-copy">${escapeHtml(getTranslation("modal.delete.warning"))}</p>
+        <p class="form-hint">${escapeHtml(getTranslation("modal.delete.typeToConfirm"))} <strong>${escapeHtml(card.company)}</strong> ${escapeHtml(getTranslation("modal.delete.confirmSuffix"))}</p>
       </div>
       <div class="form-field-full">
-        <label for="delete-confirm-input">Company name</label>
+        <label for="delete-confirm-input">${escapeHtml(getTranslation("modal.delete.companyName"))}</label>
         <input id="delete-confirm-input" name="confirmCompany" type="text" required />
       </div>
       <p class="modal-feedback form-field-full" data-modal-feedback></p>
@@ -475,16 +476,16 @@ function renderDeleteView(view, card) {
   `
 
   return renderModalShell({
-    kicker: "Delete confirmation",
+    kicker: getTranslation("modal.delete.kicker"),
     title: `${card.company} · ${card.role}`,
-    subtitle: "This action cannot be undone.",
+    subtitle: getTranslation("modal.delete.subtitle"),
     body,
-    footer: `${renderCloseButton(view)}<button type="submit" class="toolbar-btn action-btn-danger">Delete permanently</button>`,
+    footer: `${renderCloseButton(view, getTranslation)}<button type="submit" class="toolbar-btn action-btn-danger">${escapeHtml(getTranslation("actions.deletePermanently"))}</button>`,
     formView: "delete-card"
   })
 }
 
-export function createModalController({ dialog, contentRoot, store, announce }) {
+export function createModalController({ dialog, contentRoot, store, announce, getTranslation }) {
   let currentView = null
 
   function close() {
@@ -503,6 +504,10 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
     if (!dialog.open) {
       dialog.showModal()
     }
+  }
+
+  function refresh() {
+    render()
   }
 
   function setFeedback(message, tone = "error") {
@@ -534,7 +539,7 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
     }
 
     if (currentView.type === "create-card") {
-      contentRoot.innerHTML = renderCreateCardView(currentView)
+      contentRoot.innerHTML = renderCreateCardView(currentView, getTranslation)
       return
     }
 
@@ -553,38 +558,38 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
         return
       }
 
-      contentRoot.innerHTML = renderDetailsView(card, columnId)
+      contentRoot.innerHTML = renderDetailsView(card, columnId, getTranslation)
       return
     }
 
     if (currentView.type === "edit-basics") {
-      contentRoot.innerHTML = renderEditBasicsView(currentView, card)
+      contentRoot.innerHTML = renderEditBasicsView(currentView, card, getTranslation)
       return
     }
 
     if (currentView.type === "edit-fit") {
-      contentRoot.innerHTML = renderFitView(currentView, card)
+      contentRoot.innerHTML = renderFitView(currentView, card, getTranslation)
       return
     }
 
     if (currentView.type === "apply-card") {
-      contentRoot.innerHTML = renderApplyView(currentView, card)
+      contentRoot.innerHTML = renderApplyView(currentView, card, getTranslation)
       return
     }
 
     if (currentView.type === "step-editor") {
       const step = currentView.stepId ? card.processSteps.find((item) => item.id === currentView.stepId) ?? null : null
-      contentRoot.innerHTML = renderStepView(currentView, card, step)
+      contentRoot.innerHTML = renderStepView(currentView, card, step, getTranslation)
       return
     }
 
     if (currentView.type === "close-card") {
-      contentRoot.innerHTML = renderCloseView(currentView, card)
+      contentRoot.innerHTML = renderCloseView(currentView, card, getTranslation)
       return
     }
 
     if (currentView.type === "delete-card") {
-      contentRoot.innerHTML = renderDeleteView(currentView, card)
+      contentRoot.innerHTML = renderDeleteView(currentView, card, getTranslation)
     }
   }
 
@@ -699,7 +704,7 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
       const role = normalizeShortText(formData.get("role"))
 
       if (!company || !role) {
-        setFeedback("Company and role are required.")
+        setFeedback(getTranslation("feedback.companyRoleRequired"))
         return
       }
 
@@ -712,11 +717,11 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
       })
 
       if (!createdCard) {
-        setFeedback("Could not create the application card.")
+        setFeedback(getTranslation("feedback.createFailed"))
         return
       }
 
-      finish(`Created ${createdCard.company} in Backlog.`)
+      finish(getTranslation("announcements.created", { company: createdCard.company }))
       return
     }
 
@@ -732,7 +737,7 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
       const role = normalizeShortText(formData.get("role"))
 
       if (!company || !role) {
-        setFeedback("Company and role are required.")
+        setFeedback(getTranslation("feedback.companyRoleRequired"))
         return
       }
 
@@ -746,11 +751,11 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
       })
 
       if (!updatedCard) {
-        setFeedback("Could not save the card changes.")
+        setFeedback(getTranslation("feedback.saveBasicsFailed"))
         return
       }
 
-      finish(`Saved basics for ${updatedCard.company}.`)
+      finish(getTranslation("announcements.savedBasics", { company: updatedCard.company }))
       return
     }
 
@@ -762,11 +767,11 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
       })
 
       if (!updatedCard) {
-        setFeedback("Could not save the fit assessment.")
+        setFeedback(getTranslation("feedback.saveFitFailed"))
         return
       }
 
-      finish(`Saved fit notes for ${updatedCard.company}.`)
+      finish(getTranslation("announcements.savedFit", { company: updatedCard.company }))
       return
     }
 
@@ -776,11 +781,11 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
       })
 
       if (!appliedCard) {
-        setFeedback("Could not move this card to Applied.")
+        setFeedback(getTranslation("feedback.applyFailed"))
         return
       }
 
-      finish(`Moved ${appliedCard.company} to Applied.`)
+      finish(getTranslation("announcements.movedApplied", { company: appliedCard.company }))
       return
     }
 
@@ -798,11 +803,15 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
         : store.addProcessStep(card.id, payload)
 
       if (!result) {
-        setFeedback("Could not save the process step.")
+        setFeedback(getTranslation("feedback.stepFailed"))
         return
       }
 
-      finish(currentView.stepId ? `Updated a step for ${card.company}.` : `Added a step for ${card.company}.`)
+      finish(
+        getTranslation(currentView.stepId ? "announcements.updatedStep" : "announcements.addedStep", {
+          company: card.company
+        })
+      )
       return
     }
 
@@ -814,11 +823,11 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
       })
 
       if (!closedCard) {
-        setFeedback("Could not close this application.")
+        setFeedback(getTranslation("feedback.closeFailed"))
         return
       }
 
-      finish(`Moved ${closedCard.company} to Closed.`)
+      finish(getTranslation("announcements.movedClosed", { company: closedCard.company }))
       return
     }
 
@@ -826,18 +835,18 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
       const confirmation = normalizeShortText(formData.get("confirmCompany"))
 
       if (confirmation !== card.company) {
-        setFeedback("Type the company name exactly to confirm deletion.")
+        setFeedback(getTranslation("feedback.deleteMismatch"))
         return
       }
 
       const deletedCard = store.deleteCard(card.id)
 
       if (!deletedCard) {
-        setFeedback("Could not delete this card.")
+        setFeedback(getTranslation("feedback.deleteFailed"))
         return
       }
 
-      announce(`Deleted ${deletedCard.company} permanently.`, "success")
+      announce(getTranslation("announcements.deleted", { company: deletedCard.company }), "success")
       close()
     }
   }
@@ -945,7 +954,7 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
       const reopenedCard = store.reopenCard(cardId)
 
       if (reopenedCard) {
-        announce(`Moved ${reopenedCard.company} back to Backlog.`, "success")
+        announce(getTranslation("announcements.reopened", { company: reopenedCard.company }), "success")
       }
 
       close()
@@ -961,6 +970,7 @@ export function createModalController({ dialog, contentRoot, store, announce }) 
 
   return {
     close,
+    refresh,
     openCreateCard,
     openCardDetails,
     openEditBasics,

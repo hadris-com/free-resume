@@ -59,9 +59,19 @@ body.job-kanban-body.theme-dark {
 }
 
 .kanban-topbar-controls {
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
+  gap: 0.7rem;
   justify-content: flex-end;
-  flex-wrap: wrap;
+}
+
+.kanban-topbar-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  width: 100%;
 }
 
 .topbar-actions,
@@ -76,6 +86,7 @@ body.job-kanban-body.theme-dark {
 
 .topbar-actions {
   justify-content: flex-end;
+  width: 100%;
 }
 
 .toolbar-btn,
@@ -608,6 +619,7 @@ body.job-kanban-body.theme-dark {
     flex-direction: column;
   }
 
+  .kanban-topbar-meta,
   .kanban-topbar-controls,
   .topbar-actions {
     justify-content: flex-start;

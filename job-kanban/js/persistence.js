@@ -1,6 +1,8 @@
 import { APP_ID, LOCAL_STORAGE_KEY, SCHEMA_VERSION } from "./schema.js"
 
-export function createPersistence({ getState, parseBoardPayload }) {
+export function createPersistence({ getState, parseBoardPayload, getTranslation = null }) {
+  const t = typeof getTranslation === "function" ? getTranslation : (key) => key
+
   function buildBoardPayload() {
     return {
       app: APP_ID,
@@ -54,7 +56,7 @@ export function createPersistence({ getState, parseBoardPayload }) {
 
   async function parseImportFile(file) {
     if (!file) {
-      throw new Error("Choose a JSON file to import.")
+      throw new Error(t("errors.importChooseFile"))
     }
 
     let payload
@@ -62,13 +64,13 @@ export function createPersistence({ getState, parseBoardPayload }) {
     try {
       payload = JSON.parse(await file.text())
     } catch {
-      throw new Error("That file is not valid JSON.")
+      throw new Error(t("errors.importInvalidJson"))
     }
 
     const parsedState = parseBoardPayload(payload)
 
     if (!parsedState) {
-      throw new Error("That JSON file does not match the supported job-kanban schema.")
+      throw new Error(t("errors.importSchemaMismatch"))
     }
 
     return parsedState
