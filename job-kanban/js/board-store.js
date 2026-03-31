@@ -1,5 +1,24 @@
-import { nowInstantString, todayPlainDateString } from "./dates.js"
-import { createEmptyBoardState } from "./schema.js"
+import {
+  normalizeDateInputValue,
+  normalizeDateTimeInputValue,
+  nowInstantString,
+  todayPlainDateString
+} from "./dates.js"
+import {
+  backlogLabelOptions,
+  closeReasonOptions,
+  createEmptyBoardState,
+  fitVerdictOptions,
+  processStageOptions,
+  processStatusOptions
+} from "./schema.js"
+import { normalizeHttpUrl } from "./url-sanitization.js"
+
+const backlogLabelValues = new Set(backlogLabelOptions.map((option) => option.value))
+const fitVerdictValues = new Set(fitVerdictOptions.map((option) => option.value))
+const processStageValues = new Set(processStageOptions.map((option) => option.value))
+const processStatusValues = new Set(processStatusOptions.map((option) => option.value))
+const closeReasonValues = new Set(closeReasonOptions.map((option) => option.value))
 
 function cloneState(value) {
   if (typeof structuredClone === "function") {
@@ -25,6 +44,16 @@ function sanitizeLongText(value) {
   return typeof value === "string" ? value.replace(/\r\n/g, "\n").trim() : ""
 }
 
+function sanitizeEnum(value, allowedValues, fallback = null) {
+  const normalizedValue = sanitizeShortText(value)
+
+  if (!normalizedValue) {
+    return fallback
+  }
+
+  return allowedValues.has(normalizedValue) ? normalizedValue : null
+}
+
 function removeCardFromAllColumns(draft, cardId) {
   for (const column of Object.values(draft.columns)) {
     column.cardIds = column.cardIds.filter((currentCardId) => currentCardId !== cardId)
@@ -38,15 +67,22 @@ function moveCardToColumn(draft, cardId, targetColumnId) {
 
 function buildEmptyCard(input) {
   const now = nowInstantString()
+  const company = sanitizeShortText(input.company)
+  const role = sanitizeShortText(input.role)
+  const backlogLabel = sanitizeEnum(input.backlogLabel, backlogLabelValues, "considering")
+
+  if (!company || !role || !backlogLabel) {
+    return null
+  }
 
   return {
     id: createId("card"),
-    company: sanitizeShortText(input.company),
-    role: sanitizeShortText(input.role),
-    jobUrl: sanitizeShortText(input.jobUrl),
+    company,
+    role,
+    jobUrl: normalizeHttpUrl(input.jobUrl),
     location: sanitizeShortText(input.location),
     notes: "",
-    backlogLabel: sanitizeShortText(input.backlogLabel) || "considering",
+    backlogLabel,
     fitAssessment: {
       verdict: null,
       summary: "",
@@ -64,12 +100,20 @@ function buildEmptyCard(input) {
 
 function buildProcessStep(input) {
   const now = nowInstantString()
+  const stage = sanitizeEnum(input.stage, processStageValues, "screening")
+  const status = sanitizeEnum(input.status, processStatusValues, "planned")
+  const scheduledAtInput = sanitizeShortText(input.scheduledAt)
+  const scheduledAt = scheduledAtInput ? normalizeDateTimeInputValue(scheduledAtInput) : null
+
+  if (!stage || !status || (scheduledAtInput && !scheduledAt)) {
+    return null
+  }
 
   return {
     id: createId("step"),
-    stage: sanitizeShortText(input.stage) || "screening",
-    status: sanitizeShortText(input.status) || "planned",
-    scheduledAt: sanitizeShortText(input.scheduledAt) || null,
+    stage,
+    status,
+    scheduledAt,
     contactPerson: sanitizeShortText(input.contactPerson),
     stepNotes: sanitizeLongText(input.stepNotes),
     createdAt: now,
@@ -78,9 +122,18 @@ function buildProcessStep(input) {
 }
 
 function applyFitAssessment(input) {
-  const verdict = sanitizeShortText(input.verdict) || null
+  const verdict = sanitizeEnum(input.verdict, fitVerdictValues, null)
   const summary = sanitizeLongText(input.summary)
-  const reviewedAt = sanitizeShortText(input.reviewedAt) || null
+  const reviewedAtInput = sanitizeShortText(input.reviewedAt)
+  const reviewedAt = reviewedAtInput ? normalizeDateInputValue(reviewedAtInput) : null
+
+  if (sanitizeShortText(input.verdict) && !verdict) {
+    return null
+  }
+
+  if (reviewedAtInput && !reviewedAt) {
+    return null
+  }
 
   if (!verdict && !summary && !reviewedAt) {
     return {
@@ -93,7 +146,7 @@ function applyFitAssessment(input) {
   return {
     verdict,
     summary,
-    reviewedAt: reviewedAt ?? todayPlainDateString()
+    reviewedAt: reviewedAt || todayPlainDateString()
   }
 }
 
@@ -146,6 +199,11 @@ export function createBoardStore(initialState = createEmptyBoardState()) {
   function createCard(input) {
     return commit((draft) => {
       const card = buildEmptyCard(input)
+
+      if (!card) {
+        return false
+      }
+
       draft.cardsById[card.id] = card
       moveCardToColumn(draft, card.id, "backlog")
       return card
@@ -162,12 +220,20 @@ export function createBoardStore(initialState = createEmptyBoardState()) {
         return false
       }
 
-      card.company = sanitizeShortText(input.company)
-      card.role = sanitizeShortText(input.role)
-      card.jobUrl = sanitizeShortText(input.jobUrl)
+      const company = sanitizeShortText(input.company)
+      const role = sanitizeShortText(input.role)
+      const backlogLabel = sanitizeEnum(input.backlogLabel, backlogLabelValues, "considering")
+
+      if (!company || !role || !backlogLabel) {
+        return false
+      }
+
+      card.company = company
+      card.role = role
+      card.jobUrl = normalizeHttpUrl(input.jobUrl)
       card.location = sanitizeShortText(input.location)
       card.notes = sanitizeLongText(input.notes)
-      card.backlogLabel = sanitizeShortText(input.backlogLabel) || "considering"
+      card.backlogLabel = backlogLabel
       card.updatedAt = nowInstantString()
 
       return card
@@ -185,7 +251,13 @@ export function createBoardStore(initialState = createEmptyBoardState()) {
         return false
       }
 
-      card.fitAssessment = applyFitAssessment(input)
+      const fitAssessment = applyFitAssessment(input)
+
+      if (!fitAssessment) {
+        return false
+      }
+
+      card.fitAssessment = fitAssessment
       card.updatedAt = nowInstantString()
 
       return card
@@ -203,7 +275,14 @@ export function createBoardStore(initialState = createEmptyBoardState()) {
         return false
       }
 
-      card.appliedAt = sanitizeShortText(input.appliedAt) || todayPlainDateString()
+      const appliedAtInput = sanitizeShortText(input.appliedAt)
+      const appliedAt = appliedAtInput ? normalizeDateInputValue(appliedAtInput) : todayPlainDateString()
+
+      if (appliedAtInput && !appliedAt) {
+        return false
+      }
+
+      card.appliedAt = appliedAt || todayPlainDateString()
       card.updatedAt = nowInstantString()
       moveCardToColumn(draft, cardId, "applied")
 
@@ -222,7 +301,13 @@ export function createBoardStore(initialState = createEmptyBoardState()) {
         return false
       }
 
-      card.processSteps.unshift(buildProcessStep(input))
+      const step = buildProcessStep(input)
+
+      if (!step) {
+        return false
+      }
+
+      card.processSteps.unshift(step)
       card.updatedAt = nowInstantString()
       moveCardToColumn(draft, cardId, "in_progress")
 
@@ -242,9 +327,18 @@ export function createBoardStore(initialState = createEmptyBoardState()) {
         return false
       }
 
-      step.stage = sanitizeShortText(input.stage) || step.stage
-      step.status = sanitizeShortText(input.status) || step.status
-      step.scheduledAt = sanitizeShortText(input.scheduledAt) || null
+      const stage = sanitizeEnum(input.stage, processStageValues, step.stage)
+      const status = sanitizeEnum(input.status, processStatusValues, step.status)
+      const scheduledAtInput = sanitizeShortText(input.scheduledAt)
+      const scheduledAt = scheduledAtInput ? normalizeDateTimeInputValue(scheduledAtInput) : null
+
+      if (!stage || !status || (scheduledAtInput && !scheduledAt)) {
+        return false
+      }
+
+      step.stage = stage
+      step.status = status
+      step.scheduledAt = scheduledAt
       step.contactPerson = sanitizeShortText(input.contactPerson)
       step.stepNotes = sanitizeLongText(input.stepNotes)
       step.updatedAt = nowInstantString()
@@ -266,9 +360,21 @@ export function createBoardStore(initialState = createEmptyBoardState()) {
         return false
       }
 
-      card.closeReason = sanitizeShortText(input.closeReason) || null
+      const closeReason = sanitizeEnum(input.closeReason, closeReasonValues, null)
+      const closedAtInput = sanitizeShortText(input.closedAt)
+      const closedAt = closedAtInput ? normalizeDateInputValue(closedAtInput) : todayPlainDateString()
+
+      if (sanitizeShortText(input.closeReason) && !closeReason) {
+        return false
+      }
+
+      if (closedAtInput && !closedAt) {
+        return false
+      }
+
+      card.closeReason = closeReason
       card.closeNote = sanitizeLongText(input.closeNote)
-      card.closedAt = sanitizeShortText(input.closedAt) || todayPlainDateString()
+      card.closedAt = closedAt || todayPlainDateString()
       card.updatedAt = nowInstantString()
       moveCardToColumn(draft, cardId, "closed")
 

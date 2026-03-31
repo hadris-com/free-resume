@@ -20,6 +20,39 @@ test("createCard inserts the newest card at the top of Backlog", () => {
   assert.equal(store.getState().cardsById[secondCard.id].backlogLabel, "considering")
 })
 
+test("createCard and updateBasics sanitize unsafe job URLs", () => {
+  const store = createBoardStore()
+  const card = store.createCard({
+    company: "Acme Labs",
+    role: "Frontend Engineer",
+    jobUrl: "javascript:alert(1)"
+  })
+
+  assert.equal(card.jobUrl, "")
+
+  const updatedCard = store.updateBasics(card.id, {
+    company: "Acme Labs",
+    role: "Frontend Engineer",
+    jobUrl: "https://example.com/jobs/frontend",
+    location: "Remote",
+    backlogLabel: "considering",
+    notes: ""
+  })
+
+  assert.equal(updatedCard.jobUrl, "https://example.com/jobs/frontend")
+
+  store.updateBasics(card.id, {
+    company: "Acme Labs",
+    role: "Frontend Engineer",
+    jobUrl: "data:text/html,<script>alert(1)</script>",
+    location: "Remote",
+    backlogLabel: "considering",
+    notes: ""
+  })
+
+  assert.equal(store.getState().cardsById[card.id].jobUrl, "")
+})
+
 test("applyCard moves a card into Applied and stores the applied date", () => {
   const store = createBoardStore()
   const card = store.createCard({
@@ -110,6 +143,71 @@ test("addProcessStep prepends new steps and editProcessStep only changes the tar
   assert.equal(steps[1].status, "completed")
   assert.equal(steps[1].scheduledAt, null)
   assert.equal(steps[1].stepNotes, "Panel completed.")
+})
+
+test("date-like fields are validated before being committed to state", () => {
+  const store = createBoardStore()
+  const card = store.createCard({
+    company: "Northwind",
+    role: "Platform Engineer"
+  })
+
+  assert.equal(store.updateFit(card.id, { verdict: "ship-it", summary: "", reviewedAt: "" }), null)
+  assert.equal(store.updateFit(card.id, { verdict: "strong", summary: "", reviewedAt: "2026-02-30" }), null)
+  assert.deepEqual(store.getState().cardsById[card.id].fitAssessment, {
+    verdict: null,
+    summary: "",
+    reviewedAt: null
+  })
+
+  assert.equal(store.applyCard(card.id, { appliedAt: "2026-02-30" }), null)
+  assert.equal(store.getCardColumnId(card.id), "backlog")
+  assert.equal(store.getState().cardsById[card.id].appliedAt, null)
+
+  assert.equal(
+    store.addProcessStep(card.id, {
+      stage: "screening",
+      status: "planned",
+      scheduledAt: "2026-03-99T09:00",
+      contactPerson: "Jordan Lee",
+      stepNotes: "Bad schedule."
+    }),
+    null
+  )
+  assert.equal(store.getState().cardsById[card.id].processSteps.length, 0)
+
+  store.applyCard(card.id, { appliedAt: "2026-03-07" })
+  assert.equal(
+    store.closeCard(card.id, {
+      closeReason: "rejected",
+      closeNote: "Bad close date.",
+      closedAt: "2026-02-30"
+    }),
+    null
+  )
+  assert.equal(store.getCardColumnId(card.id), "applied")
+  assert.equal(store.getState().cardsById[card.id].closedAt, null)
+
+  store.addProcessStep(card.id, {
+    stage: "screening",
+    status: "planned",
+    scheduledAt: "2026-03-10T09:00",
+    contactPerson: "Jordan Lee",
+    stepNotes: "Valid schedule."
+  })
+  const stepId = store.getState().cardsById[card.id].processSteps[0].id
+
+  assert.equal(
+    store.editProcessStep(card.id, stepId, {
+      stage: "screening",
+      status: "completed",
+      scheduledAt: "not-a-date",
+      contactPerson: "Jordan Lee",
+      stepNotes: "Invalid edit."
+    }),
+    null
+  )
+  assert.equal(store.getState().cardsById[card.id].processSteps[0].scheduledAt, "2026-03-10T09:00")
 })
 
 test("deleteCard removes both the stored card and its column reference", () => {

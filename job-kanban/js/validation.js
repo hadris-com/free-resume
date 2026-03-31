@@ -11,6 +11,7 @@ import {
   processStageOptions,
   processStatusOptions
 } from "./schema.js"
+import { normalizeHttpUrl } from "./url-sanitization.js"
 
 const backlogLabelValues = new Set(backlogLabelOptions.map((option) => option.value))
 const fitVerdictValues = new Set(fitVerdictOptions.map((option) => option.value))
@@ -146,7 +147,7 @@ function normalizeCard(source) {
     id,
     company,
     role,
-    jobUrl: normalizeText(source.jobUrl),
+    jobUrl: normalizeHttpUrl(source.jobUrl),
     location: normalizeText(source.location),
     notes: normalizeLongText(source.notes),
     backlogLabel,

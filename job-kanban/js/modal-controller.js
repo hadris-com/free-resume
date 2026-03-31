@@ -15,6 +15,7 @@ import {
   processStageOptions,
   processStatusOptions
 } from "./schema.js"
+import { normalizeHttpUrl } from "./url-sanitization.js"
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -92,11 +93,16 @@ function renderDetailItem(label, value, { full = false, rich = false, isLink = f
   let detailMarkup = `<span class="detail-empty">Not set</span>`
 
   if (value) {
-    detailMarkup = isLink
-      ? `<a class="detail-link" href="${escapeHtml(value)}" target="_blank" rel="noreferrer noopener">${escapeHtml(value)}</a>`
-      : rich
+    if (isLink) {
+      const safeUrl = normalizeHttpUrl(value)
+      detailMarkup = safeUrl
+        ? `<a class="detail-link" href="${escapeHtml(safeUrl)}" target="_blank" rel="noreferrer noopener">${escapeHtml(value)}</a>`
+        : escapeHtml(value)
+    } else {
+      detailMarkup = rich
         ? `<div class="detail-rich-text">${escapeHtml(value)}</div>`
         : escapeHtml(value)
+    }
   }
 
   return `

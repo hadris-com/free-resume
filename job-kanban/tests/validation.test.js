@@ -91,6 +91,20 @@ test("parseBoardPayload normalizes a valid snapshot", () => {
   assert.equal(parsed.cardsById["card-1"].processSteps[0].stepNotes, "Intro call booked.")
 })
 
+test("parseBoardPayload strips job URLs with unsafe protocols instead of rejecting the snapshot", () => {
+  const state = buildValidState()
+
+  state.cardsById["card-1"] = {
+    ...state.cardsById["card-1"],
+    jobUrl: "javascript:alert(1)"
+  }
+
+  const parsed = parseBoardPayload(buildPayload(state))
+
+  assert.ok(parsed)
+  assert.equal(parsed.cardsById["card-1"].jobUrl, "")
+})
+
 test("parseBoardPayload rejects snapshots with duplicate column references", () => {
   const state = buildValidState()
 
