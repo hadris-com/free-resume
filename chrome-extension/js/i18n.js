@@ -132,6 +132,7 @@ const translations = {
     "privacy.complaint": "Right to lodge a complaint",
     "privacy.complaintDetail": "If you believe your data protection rights have been violated, you have the right to lodge a complaint with a supervisory authority in the EU member state of your habitual residence, place of work, or place of the alleged infringement.",
     "privacy.lastUpdated": "Last updated: February 2026",
+    "footer.jobKanban": "Job Kanban",
     "privacy.footer": "Privacy",
     "privacy.close": "Close"
   },
@@ -268,6 +269,7 @@ const translations = {
     "privacy.complaint": "Derecho a presentar una reclamación",
     "privacy.complaintDetail": "Si consideras que se han vulnerado tus derechos de protección de datos, tienes derecho a presentar una reclamación ante una autoridad de control en el Estado miembro de la UE de tu residencia habitual, lugar de trabajo o lugar de la presunta infracción.",
     "privacy.lastUpdated": "Última actualización: febrero de 2026",
+    "footer.jobKanban": "Job Kanban",
     "privacy.footer": "Privacidad",
     "privacy.close": "Cerrar"
   },
@@ -404,6 +406,7 @@ const translations = {
     "privacy.complaint": "Beschwerderecht",
     "privacy.complaintDetail": "Wenn du der Meinung bist, dass deine Datenschutzrechte verletzt wurden, hast du das Recht, eine Beschwerde bei einer Aufsichtsbehörde im EU-Mitgliedstaat deines gewöhnlichen Aufenthaltsorts, deines Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes einzureichen.",
     "privacy.lastUpdated": "Letzte Aktualisierung: Februar 2026",
+    "footer.jobKanban": "Job Kanban",
     "privacy.footer": "Datenschutz",
     "privacy.close": "Schließen"
   }
