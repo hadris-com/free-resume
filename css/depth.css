@@ -247,15 +247,173 @@
     }
   }
 
-  /* Controls get a little physical weight. */
-  input:not([type="range"]),
-  textarea,
-  .custom-select-trigger {
-    box-shadow: 0 1px 1px rgba(15, 23, 42, 0.04);
+  /* ======== Segmented controls ======== */
+
+  /* Equal segments let the thumb slide with no measuring. Without :has() the plain style stays. */
+  @supports selector(:has(*)) {
+    .cv-lang-switch,
+    .page-size-switch,
+    .view-switch {
+      --segment-count: 1;
+      --segment-index: 0;
+      --segment-inset: 2px;
+      position: relative;
+      isolation: isolate;
+      display: inline-grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      padding: var(--segment-inset);
+      border-radius: var(--ui-radius-md);
+      background: var(--ui-track);
+    }
+
+    :is(.cv-lang-switch, .page-size-switch, .view-switch):has(> :nth-child(2):last-child) {
+      --segment-count: 2;
+    }
+
+    :is(.cv-lang-switch, .page-size-switch, .view-switch):has(> :nth-child(3):last-child) {
+      --segment-count: 3;
+    }
+
+    :is(.cv-lang-switch, .page-size-switch, .view-switch):has(> :nth-child(2).active) {
+      --segment-index: 1;
+    }
+
+    :is(.cv-lang-switch, .page-size-switch, .view-switch):has(> :nth-child(3).active) {
+      --segment-index: 2;
+    }
+
+    .cv-lang-switch::before,
+    .page-size-switch::before,
+    .view-switch::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset-block: var(--segment-inset);
+      inset-inline-start: var(--segment-inset);
+      width: calc((100% - var(--segment-inset) * 2) / var(--segment-count));
+      border-radius: calc(var(--ui-radius-md) - var(--segment-inset));
+      background: var(--ui-thumb);
+      box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.16);
+      transform: translateX(calc(100% * var(--segment-index)));
+      transition: transform var(--ui-dur-2) var(--ui-ease), scale var(--ui-dur-1) var(--ui-ease);
+    }
+
+    :is(.cv-lang-switch, .page-size-switch, .view-switch):has(> .active:active)::before {
+      scale: 0.96;
+    }
+
+    .cv-lang-btn,
+    .page-size-btn,
+    .view-btn {
+      padding-inline: var(--ui-space-3);
+      text-align: center;
+    }
+
+    .cv-lang-btn.active,
+    .page-size-btn.active,
+    .view-btn.active,
+    body.theme-dark .cv-lang-btn.active,
+    body.theme-dark .page-size-btn.active,
+    body.theme-dark .view-btn.active {
+      background: transparent;
+      box-shadow: none;
+      color: var(--ui-on-thumb);
+    }
+
+    .cv-lang-btn:not(.active):hover,
+    .page-size-btn:not(.active):hover,
+    .view-btn:not(.active):hover {
+      background: var(--ui-hover);
+    }
+
+    .cv-lang-btn:not(.active):active,
+    .page-size-btn:not(.active):active,
+    .view-btn:not(.active):active {
+      background: var(--ui-press);
+    }
   }
 
-  #pdf-btn {
+  /* ======== Controls: hover and press ======== */
+
+  /* Scoped to the interface: buttons on the paper, such as the location toggle, are content. */
+  :is(.topbar, .editor-panel, .preview-toolbar, .app-footer, .privacy-modal, .notice) :is(button, a) {
+    transition:
+      background-color var(--ui-dur-1) var(--ui-ease),
+      border-color var(--ui-dur-1) var(--ui-ease),
+      box-shadow var(--ui-dur-1) var(--ui-ease),
+      color var(--ui-dur-1) var(--ui-ease),
+      scale var(--ui-dur-1) var(--ui-ease);
+  }
+
+  :is(.topbar, .editor-panel, .preview-toolbar, .app-footer, .privacy-modal, .notice) :is(button, a):not(:disabled):active {
+    scale: 0.96;
+  }
+
+  /* Shrinking a wide row looks like a glitch: its fill answers instead. */
+  :is(.editor-panel, .topbar) :is(.add-row, .repeat-item-toggle, .more-menu-item, .custom-select-option, .custom-select-trigger):not(:disabled):active {
+    scale: none;
+  }
+
+  .primary-btn {
     box-shadow: 0 1px 2px rgba(0, 60, 140, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .primary-btn:active {
+    background: color-mix(in srgb, var(--ui-accent-fill), #000000 22%);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .text-btn:hover,
+  .icon-btn:hover,
+  .lang-btn:hover,
+  .footer-link:hover,
+  .privacy-link:hover,
+  .collapse-btn:hover,
+  .remove-icon-btn:hover,
+  .privacy-modal-close:hover,
+  .skill-level-toggle:hover,
+  .repeat-item-toggle:hover,
+  .custom-select-option:hover,
+  .custom-select-option:focus-visible,
+  .more-menu-item:hover,
+  .more-menu-item:focus-visible,
+  .add-btn:hover,
+  .remove-btn:hover,
+  .notice-action:hover {
+    background: var(--ui-hover);
+    color: var(--ui-text);
+  }
+
+  .text-btn:active,
+  .icon-btn:active,
+  .lang-btn:active,
+  .footer-link:active,
+  .privacy-link:active,
+  .collapse-btn:active,
+  .remove-icon-btn:active,
+  .privacy-modal-close:active,
+  .skill-level-toggle:active,
+  .repeat-item-toggle:active,
+  .custom-select-option:active,
+  .more-menu-item:active,
+  .add-btn:active,
+  .remove-btn:active,
+  .notice-action:active {
+    background: var(--ui-press);
+    color: var(--ui-text);
+  }
+
+  .notice-action:hover,
+  .notice-action:active {
+    color: var(--ui-accent);
+  }
+
+  /* Removing is the one action worth a warning color, and only as it is about to happen. */
+  [data-action^="remove-"]:hover,
+  [data-action^="remove-"]:active {
+    background: var(--ui-danger-soft);
+    color: var(--ui-danger);
   }
 
   /* ---- Accent marks what is on or being acted on ---- */
@@ -285,5 +443,150 @@
   .custom-select.is-open .custom-select-trigger {
     border-color: var(--ui-accent);
     box-shadow: 0 0 0 3px var(--ui-accent-ring);
+  }
+
+  /* ---- Fields ---- */
+  input:not([type="range"]),
+  textarea,
+  .custom-select-trigger {
+    box-shadow: 0 1px 1px rgba(15, 23, 42, 0.04);
+    transition:
+      background-color var(--ui-dur-1) var(--ui-ease),
+      border-color var(--ui-dur-1) var(--ui-ease),
+      box-shadow var(--ui-dur-1) var(--ui-ease);
+  }
+
+  input:not([type="range"]):hover,
+  textarea:hover,
+  .custom-select-trigger:hover {
+    border-color: color-mix(in srgb, var(--ui-control-border), var(--ui-text) 22%);
+  }
+
+  .custom-select-trigger:active {
+    background: color-mix(in srgb, var(--ui-control), var(--ui-text) 6%);
+  }
+
+  /* Transparent outline: forced-colors mode draws it, where box shadows disappear. */
+  input:not([type="range"]):focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    border-color: var(--ui-accent);
+    box-shadow: 0 0 0 3px var(--ui-accent-ring);
+  }
+
+  /* ======== Motion ======== */
+
+  /* ---- Expand and collapse ---- */
+
+  /*
+   * ui-controls.js sets an inline max-height, which only the transition needs. At rest an open
+   * body has no limit, so it follows its content and never lags behind or spills over a neighbor.
+   */
+  .panel-section:not(.is-collapsed):not(.is-animating) > .section-body,
+  .repeat-item:not(.is-collapsed):not(.is-animating) > .repeat-item-body {
+    max-height: none !important;
+  }
+
+  .panel-section.is-animating > .section-body,
+  .repeat-item.is-animating > .repeat-item-body {
+    overflow: hidden;
+  }
+
+  .is-collapsable {
+    transition:
+      max-height var(--ui-dur-3) var(--ui-ease),
+      opacity var(--ui-dur-2) var(--ui-ease),
+      transform var(--ui-dur-3) var(--ui-ease);
+  }
+
+  .section-heading-row,
+  .repeat-item-head {
+    transition: margin-block-end var(--ui-dur-3) var(--ui-ease);
+  }
+
+  .collapse-icon,
+  .custom-select-chevron {
+    transition: transform var(--ui-dur-2) var(--ui-ease);
+  }
+
+  /* ---- Things that appear ---- */
+  @keyframes ui-pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+  }
+
+  @keyframes ui-rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  @keyframes ui-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .more-menu-list {
+    transform-origin: top right;
+    animation: ui-pop-in var(--ui-dur-2) var(--ui-ease);
+  }
+
+  .custom-select.is-open .custom-select-menu {
+    transform-origin: top center;
+    animation: ui-pop-in var(--ui-dur-2) var(--ui-ease);
+  }
+
+  .custom-select.open-up .custom-select-menu {
+    transform-origin: bottom center;
+  }
+
+  .notice {
+    animation: ui-rise-in var(--ui-dur-3) var(--ui-ease);
+  }
+
+  .privacy-modal[open] {
+    animation: ui-rise-in var(--ui-dur-3) var(--ui-ease);
+  }
+
+  .privacy-modal[open]::backdrop {
+    animation: ui-fade-in var(--ui-dur-3) var(--ui-ease);
+  }
+
+  /* ---- Saved: the text is the live region, so the check mark carries the motion ---- */
+  #save-status-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    animation: ui-fade-in var(--ui-dur-3) var(--ui-ease);
+  }
+
+  #save-status-text::before {
+    content: "";
+    width: 0.32em;
+    height: 0.64em;
+    margin-block-start: -0.14em;
+    margin-inline-start: 0.1em;
+    border-inline-end: 1.5px solid var(--ui-accent);
+    border-block-end: 1.5px solid var(--ui-accent);
+    transform: rotate(45deg);
+  }
+
+  /* ======== Reduced motion ======== */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --ui-dur-1: 0ms;
+      --ui-dur-2: 0ms;
+      --ui-dur-3: 0ms;
+    }
+
+    :is(.topbar, .editor-panel, .preview-toolbar, .app-footer, .privacy-modal, .notice) :is(button, a):not(:disabled):active,
+    :is(.cv-lang-switch, .page-size-switch, .view-switch):has(> .active:active)::before {
+      scale: none;
+    }
   }
 }
