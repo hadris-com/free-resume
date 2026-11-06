@@ -59,7 +59,9 @@ const refs = {
   educationList: document.getElementById("education-list"),
   skillsList: document.getElementById("skills-list"),
   languagesList: document.getElementById("languages-list"),
-  blankPill: document.getElementById("blank-pill"),
+  moreMenu: document.getElementById("more-menu"),
+  moreMenuTrigger: document.getElementById("more-menu-trigger"),
+  moreMenuList: document.getElementById("more-menu-list"),
   editorPanel: document.querySelector(".editor-panel"),
   nameSizeSlider: document.getElementById("name-size-slider"),
   nameSizeOutput: document.getElementById("name-size-output"),
@@ -149,7 +151,6 @@ function renderPreview() {
   refs.resumePreview.style.setProperty("--page-width", `${widthPx}px`);
   refs.resumePreview.style.setProperty("--page-height", `${heightPx}px`);
   refs.resumePreview.style.setProperty("--name-font-scale", state.nameFontSize / 100);
-  refs.blankPill.hidden = !isResumeBlank();
   insertPageBreakMarkers();
   uiControls.syncCollapsibleHeights();
   saveDraftToLocalStorage();
@@ -205,6 +206,7 @@ function init() {
   window.addEventListener("beforeprint", fillPrintPages);
   window.addEventListener("afterprint", restorePrintPages);
   document.addEventListener("click", handleClick);
+  refs.moreMenu?.addEventListener("keydown", uiControls.handleMoreMenuKeydown);
 
   refs.privacyModal?.addEventListener("click", (event) => {
     if (event.target === refs.privacyModal) {

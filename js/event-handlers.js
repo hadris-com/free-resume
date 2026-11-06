@@ -38,7 +38,9 @@ export function createEventHandlers({
     setLanguageLevelSelectOpen,
     setCollapsibleState,
     syncCollapsibleHeights,
-    syncSectionToggles
+    syncSectionToggles,
+    toggleMoreMenu,
+    closeMoreMenu
   } = uiControls;
 
   // Deep copy so later edits never leak into a pending undo.
@@ -209,10 +211,24 @@ export function createEventHandlers({
       closeLanguageLevelSelects();
     }
 
+    if (!event.target.closest(".more-menu")) {
+      closeMoreMenu();
+    }
+
     const trigger = event.target.closest("button");
 
     if (!trigger) {
       return;
+    }
+
+    if (trigger.dataset.action === "toggle-more-menu") {
+      toggleMoreMenu();
+      return;
+    }
+
+    // A menu item closes the menu, then runs as usual below.
+    if (trigger.closest(".more-menu-list")) {
+      closeMoreMenu({ restoreFocus: true });
     }
 
     if (trigger.dataset.action === "toggle-template-select") {

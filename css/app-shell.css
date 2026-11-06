@@ -62,35 +62,105 @@ body {
   color: var(--ui-on-accent);
 }
 
-.ghost-btn {
-  border: 1px solid var(--ui-control-border);
-  background: var(--ui-surface);
-  color: var(--ui-text);
+.primary-btn {
+  border: 0;
   border-radius: var(--ui-radius-md);
   padding: var(--ui-space-2) var(--ui-space-3);
+  background: var(--ui-accent-fill);
+  color: var(--ui-on-accent);
   font-size: var(--ui-text-sm);
   font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ui-space-2);
+  white-space: nowrap;
   cursor: pointer;
 }
 
-.ghost-btn:hover {
+.primary-btn:hover {
+  background: color-mix(in srgb, var(--ui-accent-fill), #000000 12%);
+}
+
+.text-btn {
+  border: 0;
+  border-radius: var(--ui-radius-md);
+  padding: var(--ui-space-2);
+  background: transparent;
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.text-btn:hover {
+  color: var(--ui-text);
+}
+
+.text-btn[aria-pressed="true"] {
+  color: var(--ui-accent);
+}
+
+/* ---- More menu ---- */
+.more-menu {
+  position: relative;
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: var(--ui-radius-md);
+  padding: 0;
+  background: transparent;
+  color: var(--ui-text);
+  font-size: var(--ui-text-lg);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.icon-btn:hover,
+.icon-btn[aria-expanded="true"] {
   background: var(--ui-fill);
 }
 
-.ghost-btn:active {
-  border-color: transparent;
-  background: var(--ui-accent-fill);
-  color: var(--ui-on-accent);
+.more-menu-list {
+  position: absolute;
+  inset-block-start: calc(100% + var(--ui-space-1));
+  inset-inline-end: 0;
+  min-width: 13rem;
+  border: 1px solid var(--ui-separator);
+  border-radius: var(--ui-radius-md);
+  padding: var(--ui-space-1);
+  background: var(--ui-surface);
+  box-shadow: var(--ui-shadow);
 }
 
-.theme-dot {
-  width: var(--ui-space-3);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: currentColor;
+.more-menu-item {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: var(--ui-radius-sm);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  background: transparent;
+  color: var(--ui-text);
+  font-size: var(--ui-text-sm);
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.more-menu-item:hover,
+.more-menu-item:focus-visible {
+  background: var(--ui-fill);
+}
+
+.more-menu-item:focus-visible {
+  outline-offset: -2px;
+}
+
+.more-menu-separator {
+  margin: var(--ui-space-1) var(--ui-space-2);
+  border-block-start: 1px solid var(--ui-separator);
 }
 
 .editor-panel {

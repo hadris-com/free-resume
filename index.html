@@ -52,10 +52,41 @@
             <button type="button" class="lang-btn" data-lang="de">DE</button>
           </div>
 
-          <button id="theme-toggle" type="button" class="ghost-btn" aria-pressed="false">
-            <span class="theme-dot" aria-hidden="true"></span>
-            <span data-role="theme-label" data-i18n="actions.darkMode">Dark mode</span>
+          <button id="sample-btn" type="button" class="text-btn" aria-pressed="false" data-i18n="actions.sample" hidden>
+            Sample
           </button>
+          <button id="pdf-btn" type="button" class="primary-btn" data-i18n="actions.pdf">
+            Print PDF
+          </button>
+
+          <div class="more-menu" id="more-menu">
+            <input id="raw-file-input" type="file" accept=".json,application/json" hidden />
+            <button
+              type="button"
+              class="icon-btn"
+              id="more-menu-trigger"
+              data-action="toggle-more-menu"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-controls="more-menu-list"
+              aria-label="More actions"
+              data-i18n-aria-label="actions.more"
+            >
+              <span aria-hidden="true">&hellip;</span>
+            </button>
+            <div class="more-menu-list" id="more-menu-list" role="menu" aria-labelledby="more-menu-trigger" hidden>
+              <button id="upload-raw-btn" type="button" class="more-menu-item" role="menuitem" tabindex="-1" data-i18n="actions.uploadRaw">
+                Upload raw CV
+              </button>
+              <button id="download-raw-btn" type="button" class="more-menu-item" role="menuitem" tabindex="-1" data-i18n="actions.downloadRaw">
+                Download raw CV
+              </button>
+              <div class="more-menu-separator" role="separator"></div>
+              <button id="theme-toggle" type="button" class="more-menu-item" role="menuitem" tabindex="-1">
+                <span data-role="theme-label" data-i18n="actions.darkMode">Dark mode</span>
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -281,39 +312,20 @@
 
         <section class="preview-panel" aria-label="Resume preview">
           <div class="preview-toolbar">
-            <div class="preview-meta">
-              <span class="pill" data-i18n="preview.live">Live preview</span>
-              <span id="blank-pill" class="pill muted" data-i18n="preview.blank">Starts blank</span>
-              <div class="cv-lang-control" role="group" aria-label="CV language">
-                <span class="cv-lang-label" data-i18n="fields.cvLanguage">CV language</span>
-                <div class="cv-lang-switch" role="group" aria-label="CV language options">
-                  <button type="button" class="cv-lang-btn active" data-cv-lang="en" aria-pressed="true">EN</button>
-                  <button type="button" class="cv-lang-btn" data-cv-lang="es" aria-pressed="false">ES</button>
-                  <button type="button" class="cv-lang-btn" data-cv-lang="de" aria-pressed="false">DE</button>
-                </div>
-              </div>
-              <div class="page-size-control" role="group" aria-label="Page size">
-                <span class="page-size-label" data-i18n="fields.pageSize">Page size</span>
-                <div class="page-size-switch" role="group" aria-label="Page size options">
-                  <button type="button" class="page-size-btn active" data-page-size="a4" aria-pressed="true" data-i18n="options.pageSizeA4">A4</button>
-                  <button type="button" class="page-size-btn" data-page-size="letter" aria-pressed="false" data-i18n="options.pageSizeLetter">Letter</button>
-                </div>
+            <div class="cv-lang-control" role="group" aria-labelledby="cv-lang-label">
+              <span class="cv-lang-label" id="cv-lang-label" data-i18n="fields.cvLanguage">CV language</span>
+              <div class="cv-lang-switch">
+                <button type="button" class="cv-lang-btn active" data-cv-lang="en" aria-pressed="true">EN</button>
+                <button type="button" class="cv-lang-btn" data-cv-lang="es" aria-pressed="false">ES</button>
+                <button type="button" class="cv-lang-btn" data-cv-lang="de" aria-pressed="false">DE</button>
               </div>
             </div>
-            <div class="preview-actions">
-              <input id="raw-file-input" type="file" accept=".json,application/json" hidden />
-              <button id="sample-btn" type="button" class="ghost-btn" aria-pressed="false" data-i18n="actions.sample">
-                Sample
-              </button>
-              <button id="upload-raw-btn" type="button" class="ghost-btn" data-i18n="actions.uploadRaw">
-                Upload raw CV
-              </button>
-              <button id="download-raw-btn" type="button" class="ghost-btn" data-i18n="actions.downloadRaw">
-                Download raw CV
-              </button>
-              <button id="pdf-btn" type="button" class="ghost-btn" data-i18n="actions.pdf">
-                Print PDF
-              </button>
+            <div class="page-size-control" role="group" aria-labelledby="page-size-label">
+              <span class="page-size-label" id="page-size-label" data-i18n="fields.pageSize">Page size</span>
+              <div class="page-size-switch">
+                <button type="button" class="page-size-btn active" data-page-size="a4" aria-pressed="true" data-i18n="options.pageSizeA4">A4</button>
+                <button type="button" class="page-size-btn" data-page-size="letter" aria-pressed="false" data-i18n="options.pageSizeLetter">Letter</button>
+              </div>
             </div>
           </div>
 

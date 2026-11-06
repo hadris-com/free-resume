@@ -60,7 +60,6 @@ export function createUiControls({ state, refs, getUiTranslation }) {
 
   function applyTheme() {
     document.body.classList.toggle("theme-dark", state.theme === "dark");
-    refs.themeToggle.setAttribute("aria-pressed", String(state.theme === "dark"));
   }
 
   function applyI18n() {
@@ -77,6 +76,13 @@ export function createUiControls({ state, refs, getUiTranslation }) {
       const key = element.getAttribute("data-i18n-placeholder");
       if (key) {
         element.setAttribute("placeholder", getUiTranslation(key));
+      }
+    });
+
+    document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+      const key = element.getAttribute("data-i18n-aria-label");
+      if (key) {
+        element.setAttribute("aria-label", getUiTranslation(key));
       }
     });
 
@@ -250,6 +256,70 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     });
   }
 
+  function setMoreMenuOpen(open) {
+    if (!refs.moreMenuList || !refs.moreMenuTrigger) {
+      return;
+    }
+    refs.moreMenuList.hidden = !open;
+    refs.moreMenuTrigger.setAttribute("aria-expanded", String(open));
+    if (open) {
+      refs.moreMenuList.querySelector("[role='menuitem']")?.focus();
+    }
+  }
+
+  function toggleMoreMenu() {
+    setMoreMenuOpen(refs.moreMenuList?.hidden === true);
+  }
+
+  function closeMoreMenu({ restoreFocus = false } = {}) {
+    if (!refs.moreMenuList || refs.moreMenuList.hidden) {
+      return;
+    }
+    setMoreMenuOpen(false);
+    if (restoreFocus) {
+      refs.moreMenuTrigger.focus();
+    }
+  }
+
+  function handleMoreMenuKeydown(event) {
+    const { moreMenuList, moreMenuTrigger } = refs;
+    const isOpen = !moreMenuList.hidden;
+
+    if (!isOpen) {
+      if (event.target === moreMenuTrigger && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
+        event.preventDefault();
+        setMoreMenuOpen(true);
+      }
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeMoreMenu({ restoreFocus: true });
+      return;
+    }
+
+    // Tab leaves the menu from the trigger's place in the page, as if the menu had not been open.
+    if (event.key === "Tab") {
+      closeMoreMenu({ restoreFocus: true });
+      return;
+    }
+
+    const items = [...moreMenuList.querySelectorAll("[role='menuitem']")];
+    const current = items.indexOf(document.activeElement);
+    const targets = {
+      ArrowDown: (current + 1) % items.length,
+      ArrowUp: (current - 1 + items.length) % items.length,
+      Home: 0,
+      End: items.length - 1
+    };
+
+    if (event.key in targets) {
+      event.preventDefault();
+      items[targets[event.key]]?.focus();
+    }
+  }
+
   return {
     applyTheme,
     applyI18n,
@@ -263,6 +333,9 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     setLanguageLevelSelectOpen,
     closeLanguageLevelSelects,
     setCollapsibleState,
-    syncCollapsibleHeights
+    syncCollapsibleHeights,
+    toggleMoreMenu,
+    closeMoreMenu,
+    handleMoreMenuKeydown
   };
 }
