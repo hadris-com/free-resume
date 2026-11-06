@@ -121,9 +121,10 @@ const { renderTemplate, getTemplateClasses, isResumeBlank } = createPreviewRende
   normalizeSkillLevel
 });
 
-// Editor renderers generate repeatable editor sections (experience, education, etc.).
+// Notices show transient messages, with an optional Undo action.
 const { showNotice } = createNotices({ getUiTranslation });
 
+// Editor renderers generate repeatable editor sections (experience, education, etc.).
 const { renderDynamicEditors } = createEditorRenderers({
   state,
   refs,
