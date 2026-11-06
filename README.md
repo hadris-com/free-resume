@@ -4,6 +4,16 @@ A modern, template-driven resume web application.
 
 ✨ English, Spanish & German UI · 🌗 Light & dark mode · 🎨 Multiple templates · 🛠️ Skills with per-skill levels
 
+## 📸 Screenshots
+
+<!-- Keep these current: update docs/screenshots/ whenever the interface changes, using the Sample resume. -->
+
+![Free Resume on desktop, in light mode](docs/screenshots/desktop.jpg)
+
+| Dark mode | Mobile |
+| --- | --- |
+| ![Free Resume on desktop, in dark mode](docs/screenshots/desktop-dark.jpg) | <img src="docs/screenshots/mobile.jpg" alt="Free Resume on a phone" width="280"> |
+
 ---
 
 ## 🚀 Run locally
