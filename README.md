@@ -42,6 +42,7 @@ Then visit `http://localhost:5500`.
 2. In repository settings, set **Pages → Source** to **GitHub Actions**.
 3. Push to `main` (or trigger **Deploy Free Resume** manually from Actions).
 4. GitHub Actions publishes the site using `.github/workflows/deploy-pages.yml`.
+5. At deploy time `scripts/stamp-version.sh` stamps every JS/CSS reference (including module imports) with `?v=<commit SHA>`, so versions are never edited by hand and browsers never mix old and new files.
 
 ## 📝 Notes
 

@@ -25,6 +25,9 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      - name: Stamp asset versions
+        run: sh scripts/stamp-version.sh "${GITHUB_SHA}" .
+
       - name: Upload static artifact
         uses: actions/upload-pages-artifact@v3
         with:
