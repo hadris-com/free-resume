@@ -1,0 +1,137 @@
+/*
+ * The template gallery and the first-run state. Screen only: neither is part of the resume.
+ * Loaded after depth.css, so it can use the --ui-elev-* tokens and override the plain select.
+ */
+@media screen {
+  /* ======== Template gallery ======== */
+
+  /* ---- Trigger: the current template, thumbnail and name ---- */
+  .template-trigger {
+    justify-content: flex-start;
+    padding-block: var(--ui-space-2);
+    padding-inline: var(--ui-space-2) var(--ui-space-3);
+    text-align: start;
+  }
+
+  .template-trigger-thumb {
+    flex: none;
+    width: 2.25rem;
+    height: auto;
+    aspect-ratio: 320 / 453;
+    border-radius: 3px;
+    background: #fdfdfc;
+    box-shadow: var(--ui-elev-1);
+  }
+
+  .template-trigger-name {
+    flex: 1;
+    min-width: 0;
+    font-weight: 500;
+  }
+
+  /* ---- Gallery: a popover over the sections below, scrolling on its own ---- */
+  .template-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ui-space-3);
+    max-height: max(20rem, calc(100dvh - 15rem));
+    padding: var(--ui-space-3);
+    border-radius: var(--ui-radius-lg);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .custom-select.is-open .template-gallery {
+    display: grid;
+  }
+
+  /* The sticky top bar is taller here. */
+  @media (max-width: 760px) {
+    .template-gallery {
+      max-height: max(20rem, calc(100dvh - 18.5rem));
+    }
+  }
+
+  /* ---- A template: the sheet of paper and its name ---- */
+  .template-option {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-space-2);
+    min-width: 0;
+    padding: var(--ui-space-1);
+    border: 0;
+    border-radius: var(--ui-radius-md);
+    background: transparent;
+    color: var(--ui-text);
+    font-size: var(--ui-text-sm);
+    text-align: center;
+    cursor: pointer;
+  }
+
+  /* The paper is light in either theme, so it is its own color while the image loads. */
+  .template-option-thumb {
+    position: relative;
+    display: block;
+    border-radius: 4px;
+    background: #fdfdfc;
+    box-shadow: var(--ui-elev-1);
+    transition:
+      box-shadow var(--ui-dur-1) var(--ui-ease),
+      transform var(--ui-dur-2) var(--ui-ease);
+  }
+
+  .template-option-thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 320 / 453;
+    border-radius: inherit;
+  }
+
+  .template-option-name {
+    overflow-wrap: anywhere;
+    line-height: 1.25;
+  }
+
+  .template-option:hover .template-option-thumb {
+    box-shadow: var(--ui-elev-2);
+    transform: translateY(-2px);
+  }
+
+  .template-option:active .template-option-thumb {
+    box-shadow: var(--ui-elev-1);
+    transform: none;
+  }
+
+  /* Selected rings the sheet; keyboard focus outlines the whole option, so the two stay apart. */
+  .template-option[aria-selected="true"] {
+    color: var(--ui-accent-on-soft);
+    font-weight: 600;
+  }
+
+  .template-option[aria-selected="true"] .template-option-thumb {
+    outline: 2px solid transparent; /* Forced-colors mode draws it, where box shadows disappear. */
+    box-shadow: 0 0 0 2px var(--ui-raised), 0 0 0 4px var(--ui-accent);
+  }
+
+  .template-option[aria-selected="true"] .template-option-thumb::after {
+    content: "";
+    position: absolute;
+    inset-block-start: var(--ui-space-1);
+    inset-inline-end: var(--ui-space-1);
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5.5 10.5 3 3 6-7'/%3E%3C/svg%3E") center / contain no-repeat,
+      var(--ui-accent-fill);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    animation: ui-pop-in var(--ui-dur-2) var(--ui-ease);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .template-option:hover .template-option-thumb {
+      transform: none;
+    }
+  }
+}

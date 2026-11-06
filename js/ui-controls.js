@@ -174,6 +174,12 @@ export function createUiControls({ state, refs, getUiTranslation }) {
       refs.templateSelectValue.textContent = selectedLabel;
     }
 
+    const selectedThumb = refs.templateSelectMenu.querySelector(`[data-value="${state.template}"] img`);
+    const thumbSrc = selectedThumb?.getAttribute("src");
+    if (refs.templateSelectThumb && thumbSrc && refs.templateSelectThumb.getAttribute("src") !== thumbSrc) {
+      refs.templateSelectThumb.setAttribute("src", thumbSrc);
+    }
+
     refs.templateSelectTrigger.setAttribute(
       "aria-expanded",
       String(refs.templateSelectWrapper?.classList.contains("is-open"))
@@ -184,18 +190,79 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     }
   }
 
-  function closeTemplateSelect() {
-    refs.templateSelectWrapper?.classList.remove("is-open");
+  function isTemplateSelectOpen() {
+    return refs.templateSelectWrapper?.classList.contains("is-open") === true;
+  }
+
+  function closeTemplateSelect({ restoreFocus = false } = {}) {
+    if (!isTemplateSelectOpen()) {
+      return;
+    }
+    refs.templateSelectWrapper.classList.remove("is-open");
     refs.templateSelectTrigger?.setAttribute("aria-expanded", "false");
+    if (restoreFocus) {
+      refs.templateSelectTrigger?.focus();
+    }
+  }
+
+  // Focus lands on the current template, which also scrolls it into view inside the gallery.
+  function openTemplateSelect() {
+    refs.templateSelectWrapper.classList.add("is-open");
+    refs.templateSelectTrigger.setAttribute("aria-expanded", "true");
+    refs.templateSelectMenu?.querySelector("[aria-selected='true']")?.focus();
   }
 
   function toggleTemplateSelect() {
     if (!refs.templateSelectWrapper || !refs.templateSelectTrigger) {
       return;
     }
-    const nextOpen = !refs.templateSelectWrapper.classList.contains("is-open");
-    refs.templateSelectWrapper.classList.toggle("is-open", nextOpen);
-    refs.templateSelectTrigger.setAttribute("aria-expanded", String(nextOpen));
+    if (isTemplateSelectOpen()) {
+      closeTemplateSelect({ restoreFocus: true });
+    } else {
+      openTemplateSelect();
+    }
+  }
+
+  // Enter and Space need no handling: an option is a button, so they click it.
+  function handleTemplateSelectKeydown(event) {
+    if (!isTemplateSelectOpen()) {
+      if (event.target === refs.templateSelectTrigger && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
+        event.preventDefault();
+        openTemplateSelect();
+      }
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeTemplateSelect({ restoreFocus: true });
+      return;
+    }
+
+    // Tab leaves from the trigger's place in the page, as in the more menu.
+    if (event.key === "Tab") {
+      closeTemplateSelect({ restoreFocus: true });
+      return;
+    }
+
+    const options = [...refs.templateSelectMenu.querySelectorAll("[role='option']")];
+    const current = options.indexOf(document.activeElement);
+    const columns = window.getComputedStyle(refs.templateSelectMenu).gridTemplateColumns.split(" ").length;
+    const targets = {
+      ArrowRight: current + 1,
+      ArrowLeft: current - 1,
+      ArrowDown: current + columns,
+      ArrowUp: current - columns,
+      Home: 0,
+      End: options.length - 1
+    };
+
+    if (event.key in targets) {
+      event.preventDefault();
+      // With focus outside the options, as after a click on the gallery's padding, arrows enter at the current template.
+      const next = current === -1 ? refs.templateSelectMenu.querySelector("[aria-selected='true']") : options[targets[event.key]];
+      next?.focus();
+    }
   }
 
   function updateSelectMenuPlacement(wrapper) {
@@ -482,6 +549,7 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     syncTemplateSelectUI,
     closeTemplateSelect,
     toggleTemplateSelect,
+    handleTemplateSelectKeydown,
     setSkillLevelSelectOpen,
     closeSkillLevelSelects,
     setLanguageLevelSelectOpen,

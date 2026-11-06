@@ -315,7 +315,7 @@ export function createEventHandlers({
         syncTemplateSelectUI();
         renderPreview();
       }
-      closeTemplateSelect();
+      closeTemplateSelect({ restoreFocus: true });
       return;
     }
 

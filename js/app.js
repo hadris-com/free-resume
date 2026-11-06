@@ -48,6 +48,7 @@ const refs = {
   templateSelectTrigger: document.getElementById("template-select-trigger"),
   templateSelectValue: document.getElementById("template-select-value"),
   templateSelectMenu: document.getElementById("template-select-menu"),
+  templateSelectThumb: document.getElementById("template-select-thumb"),
   themeToggle: document.getElementById("theme-toggle"),
   downloadRawBtn: document.getElementById("download-raw-btn"),
   uploadRawBtn: document.getElementById("upload-raw-btn"),
@@ -219,6 +220,7 @@ function init() {
   window.addEventListener("afterprint", restorePrintPages);
   document.addEventListener("click", handleClick);
   refs.moreMenu?.addEventListener("keydown", uiControls.handleMoreMenuKeydown);
+  refs.templateSelectWrapper?.addEventListener("keydown", uiControls.handleTemplateSelectKeydown);
   document.fonts?.ready.then(syncPaperFit);
 
   if ("ResizeObserver" in window && refs.previewPanel) {
