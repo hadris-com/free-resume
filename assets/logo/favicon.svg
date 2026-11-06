@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Free Resume">
+  <defs>
+    <linearGradient id="tile" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#2a93ff"/>
+      <stop offset="1" stop-color="#0058d0"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#tile)" d="M8 0H24C28.75 0 32 3.25 32 8V24C32 28.75 28.75 32 24 32H8C3.25 32 0 28.75 0 24V8C0 3.25 3.25 0 8 0Z"/>
+  <path fill="#fff" d="M9.5 5H19L25 11V25A2 2 0 0 1 23 27H9.5A2 2 0 0 1 7.5 25V7A2 2 0 0 1 9.5 5Z"/>
+  <path fill="#a9c6f2" d="M19 5L25 11H20.5A1.5 1.5 0 0 1 19 9.5Z"/>
+  <rect x="10.5" y="14" width="11" height="2.4" rx="1.2" fill="#1d1d1f"/>
+  <rect x="10.5" y="19.2" width="7.5" height="2.4" rx="1.2" fill="#8d97a6"/>
+</svg>
