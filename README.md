@@ -10,9 +10,13 @@ A modern, template-driven resume web application.
 
 ![Free Resume on desktop, in light mode](docs/screenshots/desktop.jpg)
 
-| Dark mode | Mobile |
+| Dark mode | Editing an entry |
 | --- | --- |
-| ![Free Resume on desktop, in dark mode](docs/screenshots/desktop-dark.jpg) | <img src="docs/screenshots/mobile.jpg" alt="Free Resume on a phone" width="280"> |
+| ![Free Resume on desktop, in dark mode](docs/screenshots/desktop-dark.jpg) | ![An experience entry open in the editor](docs/screenshots/desktop-entry.jpg) |
+
+| Mobile, editing | Mobile, preview |
+| --- | --- |
+| <img src="docs/screenshots/mobile.jpg" alt="The editor on a phone" width="280"> | <img src="docs/screenshots/mobile-preview.jpg" alt="The resume preview on a phone" width="280"> |
 
 ---
 
