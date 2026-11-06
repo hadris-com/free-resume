@@ -146,7 +146,13 @@ const translations = {
     "entries.newExperience": "New experience",
     "entries.newEducation": "New education",
     "actions.moveUp": "Move up",
-    "actions.moveDown": "Move down"
+    "actions.moveDown": "Move down",
+
+    // First-run state
+    "firstRun.title": "Start your resume",
+    "firstRun.hint": "Type in the editor and this page fills in as you go.",
+    "firstRun.useSample": "Use the sample resume",
+    "firstRun.import": "Import a JSON file"
   },
   es: {
     "brand.title": "Free Resume",
@@ -295,7 +301,13 @@ const translations = {
     "entries.newExperience": "Nueva experiencia",
     "entries.newEducation": "Nueva educación",
     "actions.moveUp": "Subir",
-    "actions.moveDown": "Bajar"
+    "actions.moveDown": "Bajar",
+
+    // First-run state
+    "firstRun.title": "Empieza tu currículum",
+    "firstRun.hint": "Escribe en el editor y esta página se irá completando.",
+    "firstRun.useSample": "Usar el currículum de ejemplo",
+    "firstRun.import": "Importar un archivo JSON"
   },
   de: {
     "brand.title": "Free Resume",
@@ -444,7 +456,13 @@ const translations = {
     "entries.newExperience": "Neue Erfahrung",
     "entries.newEducation": "Neue Ausbildung",
     "actions.moveUp": "Nach oben",
-    "actions.moveDown": "Nach unten"
+    "actions.moveDown": "Nach unten",
+
+    // First-run state
+    "firstRun.title": "Beginne deinen Lebenslauf",
+    "firstRun.hint": "Schreibe im Editor, und diese Seite füllt sich nach und nach.",
+    "firstRun.useSample": "Beispiel-Lebenslauf verwenden",
+    "firstRun.import": "JSON-Datei importieren"
   }
 };
 

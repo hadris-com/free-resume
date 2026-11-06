@@ -1,0 +1,260 @@
+/*
+ * The template gallery and the first-run state. Screen only: neither is part of the resume.
+ * Loaded after depth.css, so it can use the --ui-elev-* tokens and override the plain select.
+ */
+@media screen {
+  /* ======== Template gallery ======== */
+
+  /* ---- Trigger: the current template, thumbnail and name ---- */
+  .template-trigger {
+    justify-content: flex-start;
+    padding-block: var(--ui-space-2);
+    padding-inline: var(--ui-space-2) var(--ui-space-3);
+    text-align: start;
+  }
+
+  .template-trigger-thumb {
+    flex: none;
+    width: 2.25rem;
+    height: auto;
+    aspect-ratio: 320 / 453;
+    border-radius: 3px;
+    background: #fdfdfc;
+    box-shadow: var(--ui-elev-1);
+  }
+
+  .template-trigger-name {
+    flex: 1;
+    min-width: 0;
+    font-weight: 500;
+  }
+
+  /* ---- Gallery: a popover over the sections below, scrolling on its own ---- */
+  .template-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ui-space-3);
+    max-height: max(20rem, calc(100dvh - 15rem));
+    padding: var(--ui-space-3);
+    border-radius: var(--ui-radius-lg);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .custom-select.is-open .template-gallery {
+    display: grid;
+  }
+
+  /* The sticky top bar is taller here. */
+  @media (max-width: 760px) {
+    .template-gallery {
+      max-height: max(20rem, calc(100dvh - 18.5rem));
+    }
+  }
+
+  /* ---- A template: the sheet of paper and its name ---- */
+  .template-option {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-space-2);
+    min-width: 0;
+    padding: var(--ui-space-1);
+    border: 0;
+    border-radius: var(--ui-radius-md);
+    background: transparent;
+    color: var(--ui-text);
+    font-size: var(--ui-text-sm);
+    text-align: center;
+    cursor: pointer;
+  }
+
+  /* The paper is light in either theme, so it is its own color while the image loads. */
+  .template-option-thumb {
+    position: relative;
+    display: block;
+    border-radius: 4px;
+    background: #fdfdfc;
+    box-shadow: var(--ui-elev-1);
+    transition:
+      box-shadow var(--ui-dur-1) var(--ui-ease),
+      transform var(--ui-dur-2) var(--ui-ease);
+  }
+
+  .template-option-thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 320 / 453;
+    border-radius: inherit;
+  }
+
+  .template-option-name {
+    overflow-wrap: anywhere;
+    line-height: 1.25;
+  }
+
+  .template-option:hover .template-option-thumb {
+    box-shadow: var(--ui-elev-2);
+    transform: translateY(-2px);
+  }
+
+  .template-option:active .template-option-thumb {
+    box-shadow: var(--ui-elev-1);
+    transform: none;
+  }
+
+  /* Selected rings the sheet; keyboard focus outlines the whole option, so the two stay apart. */
+  .template-option[aria-selected="true"] {
+    color: var(--ui-accent-on-soft);
+    font-weight: 600;
+  }
+
+  .template-option[aria-selected="true"] .template-option-thumb {
+    outline: 2px solid transparent; /* Forced-colors mode draws it, where box shadows disappear. */
+    box-shadow: 0 0 0 2px var(--ui-raised), 0 0 0 4px var(--ui-accent);
+  }
+
+  .template-option[aria-selected="true"] .template-option-thumb::after {
+    content: "";
+    position: absolute;
+    inset-block-start: var(--ui-space-1);
+    inset-inline-end: var(--ui-space-1);
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5.5 10.5 3 3 6-7'/%3E%3C/svg%3E") center / contain no-repeat,
+      var(--ui-accent-fill);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    animation: ui-pop-in var(--ui-dur-2) var(--ui-ease);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .template-option:hover .template-option-thumb {
+      transform: none;
+    }
+  }
+
+  /* ======== First run ======== */
+
+  /*
+   * A card resting on the blank sheet, below the sheet's "Your Name" heading. The sheet stays: it
+   * shows the chosen template, and it is what typing fills in. The wrapper takes up no height, so
+   * the paper sits exactly where it does with content. Under the toolbar, which stays on top.
+   */
+  .first-run {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    height: 0;
+  }
+
+  .first-run-card {
+    flex: none;
+    align-self: flex-start;
+    width: min(21rem, 100% - var(--ui-space-5));
+    margin-block-start: calc(13rem * var(--paper-scale, 1));
+    padding: var(--ui-space-5);
+    border-radius: var(--ui-radius-lg);
+    background: var(--ui-raised);
+    box-shadow: var(--ui-elev-3);
+    color: var(--ui-text);
+    text-align: center;
+    animation: ui-rise-in var(--ui-dur-3) var(--ui-ease);
+  }
+
+  .first-run.is-leaving {
+    pointer-events: none;
+  }
+
+  .first-run.is-leaving .first-run-card {
+    animation: first-run-leave var(--ui-dur-2) var(--ui-ease) forwards;
+  }
+
+  @keyframes first-run-leave {
+    to {
+      opacity: 0;
+      transform: translateY(4px) scale(0.98);
+    }
+  }
+
+  .first-run-title {
+    margin: 0;
+    font-size: var(--ui-text-xl);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .first-run-hint {
+    margin-block: var(--ui-space-2) var(--ui-space-5);
+    margin-inline: 0;
+    color: var(--ui-text-secondary);
+    font-size: var(--ui-text-md);
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .first-run-actions {
+    display: grid;
+    gap: var(--ui-space-2);
+  }
+
+  .first-run-actions button {
+    min-height: 2.5rem;
+    white-space: normal;
+    font-size: var(--ui-text-md);
+    transition:
+      background-color var(--ui-dur-1) var(--ui-ease),
+      box-shadow var(--ui-dur-1) var(--ui-ease),
+      scale var(--ui-dur-1) var(--ui-ease);
+  }
+
+  .first-run-actions button:active {
+    scale: 0.98;
+  }
+
+  .first-run-secondary {
+    padding: var(--ui-space-2) var(--ui-space-3);
+    border: 0;
+    border-radius: var(--ui-radius-md);
+    background: var(--ui-hover);
+    color: var(--ui-text);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .first-run-secondary:hover {
+    background: var(--ui-press);
+  }
+
+  /* The card offers Sample while it shows. The Edit view on a phone has no paper, so the bar keeps it. */
+  @media (min-width: 761px) {
+    body.is-first-run #sample-btn {
+      display: none;
+    }
+  }
+
+  @media (max-width: 760px) {
+    body.is-first-run:has(.workspace[data-view="preview"]) #sample-btn {
+      display: none;
+    }
+
+    .first-run-actions button {
+      min-height: 44px;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .first-run-actions button {
+      min-height: 44px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .first-run-actions button:active {
+      scale: none;
+    }
+  }
+}
