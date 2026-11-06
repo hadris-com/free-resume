@@ -41,6 +41,32 @@ export function createEventHandlers({
     syncSectionToggles
   } = uiControls;
 
+  // Deep copy so later edits never leak into a pending undo.
+  function takeSnapshot() {
+    return structuredClone(state);
+  }
+
+  function restoreSnapshot(snapshot) {
+    Object.assign(state, structuredClone(snapshot));
+    syncStaticInputsFromState();
+    applyTheme();
+    applyI18n();
+    renderDynamicEditors();
+    renderPreview();
+  }
+
+  function showUndoNotice(message, snapshot) {
+    showNotice({ message, onUndo: () => restoreSnapshot(snapshot) });
+  }
+
+  function removeListItem(listName, index) {
+    const snapshot = takeSnapshot();
+    state[listName].splice(index, 1);
+    renderDynamicEditors();
+    renderPreview();
+    showUndoNotice(getUiTranslation("notices.entryRemoved"), snapshot);
+  }
+
   async function handleRawFileChange(event) {
     const target = event.target;
 
@@ -62,6 +88,7 @@ export function createEventHandlers({
         throw new Error("Invalid raw resume payload");
       }
 
+      const snapshot = takeSnapshot();
       applyImportedState(importedState);
       setSampleModeEnabled(false);
       syncStaticInputsFromState();
@@ -70,6 +97,7 @@ export function createEventHandlers({
       renderDynamicEditors();
       renderPreview();
       syncSampleButtonState();
+      showUndoNotice(getUiTranslation("notices.resumeImported"), snapshot);
     } catch (error) {
       console.error(error);
       showNotice({ message: getUiTranslation("errors.invalidRawFile"), isError: true });
@@ -309,9 +337,7 @@ export function createEventHandlers({
     if (trigger.dataset.action === "remove-experience") {
       const index = Number(trigger.dataset.index);
       if (!Number.isNaN(index)) {
-        state.experience.splice(index, 1);
-        renderDynamicEditors();
-        renderPreview();
+        removeListItem("experience", index);
       }
       return;
     }
@@ -330,9 +356,7 @@ export function createEventHandlers({
     if (trigger.dataset.action === "remove-education") {
       const index = Number(trigger.dataset.index);
       if (!Number.isNaN(index)) {
-        state.education.splice(index, 1);
-        renderDynamicEditors();
-        renderPreview();
+        removeListItem("education", index);
       }
       return;
     }
@@ -351,9 +375,7 @@ export function createEventHandlers({
     if (trigger.dataset.action === "remove-skill") {
       const index = Number(trigger.dataset.index);
       if (!Number.isNaN(index)) {
-        state.skills.splice(index, 1);
-        renderDynamicEditors();
-        renderPreview();
+        removeListItem("skills", index);
       }
       return;
     }
@@ -382,9 +404,7 @@ export function createEventHandlers({
     if (trigger.dataset.action === "remove-language") {
       const index = Number(trigger.dataset.index);
       if (!Number.isNaN(index)) {
-        state.languages.splice(index, 1);
-        renderDynamicEditors();
-        renderPreview();
+        removeListItem("languages", index);
       }
       return;
     }
