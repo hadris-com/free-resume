@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Free Resume">
+  <defs>
+    <linearGradient id="tile" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#2a93ff"/>
+      <stop offset="1" stop-color="#0058d0"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="page" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef3fb"/>
+    </linearGradient>
+    <linearGradient id="fold" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#b5cdf0"/>
+      <stop offset="1" stop-color="#e3edfb"/>
+    </linearGradient>
+    <filter id="lift" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#00266b" flood-opacity="0.34"/>
+    </filter>
+  </defs>
+
+  <path fill="url(#tile)" d="M128 0H384C460 0 512 52 512 128V384C512 460 460 512 384 512H128C52 512 0 460 0 384V128C0 52 52 0 128 0Z"/>
+  <path fill="url(#sheen)" d="M128 0H384C460 0 512 52 512 128V384C512 460 460 512 384 512H128C52 512 0 460 0 384V128C0 52 52 0 128 0Z"/>
+
+  <g filter="url(#lift)">
+    <path fill="url(#page)" d="M170 92H288L376 180V392A28 28 0 0 1 348 420H170A28 28 0 0 1 142 392V120A28 28 0 0 1 170 92Z"/>
+  </g>
+  <path fill="url(#fold)" d="M288 92L376 180H312A24 24 0 0 1 288 156Z"/>
+
+  <circle cx="198" cy="172" r="30" fill="#0a6fe8"/>
+  <rect x="172" y="238" width="172" height="20" rx="10" fill="#1d1d1f"/>
+  <rect x="172" y="284" width="172" height="20" rx="10" fill="#b4bcc9"/>
+  <rect x="172" y="330" width="112" height="20" rx="10" fill="#b4bcc9"/>
+</svg>
