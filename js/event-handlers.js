@@ -59,8 +59,20 @@ export function createEventHandlers({
     showNotice({ message, onUndo: () => restoreSnapshot(snapshot) });
   }
 
+  // Sample mode holds throwaway content: the first real edit makes the content the user's own.
+  let sampleBackup = null;
+
+  function leaveSampleMode() {
+    if (getSampleModeEnabled()) {
+      setSampleModeEnabled(false);
+      sampleBackup = null;
+      syncSampleButtonState();
+    }
+  }
+
   function removeListItem(listName, index) {
     const snapshot = takeSnapshot();
+    leaveSampleMode();
     state[listName].splice(index, 1);
     renderDynamicEditors();
     renderPreview();
@@ -88,9 +100,11 @@ export function createEventHandlers({
         throw new Error("Invalid raw resume payload");
       }
 
-      const snapshot = takeSnapshot();
+      // Undoing an import in sample mode returns to the user's own content, not the sample.
+      const snapshot = getSampleModeEnabled() && sampleBackup ? sampleBackup : takeSnapshot();
       applyImportedState(importedState);
       setSampleModeEnabled(false);
+      sampleBackup = null;
       syncStaticInputsFromState();
       applyTheme();
       applyI18n();
@@ -124,6 +138,7 @@ export function createEventHandlers({
     }
 
     if (target.dataset.profile) {
+      leaveSampleMode();
       state.profile[target.dataset.profile] = target.value;
       syncCollapsibleHeights();
       renderPreview();
@@ -131,6 +146,7 @@ export function createEventHandlers({
     }
 
     if (target.dataset.field === "summary") {
+      leaveSampleMode();
       state.summary = target.value;
       syncCollapsibleHeights();
       renderPreview();
@@ -143,6 +159,7 @@ export function createEventHandlers({
       const key = target.dataset.key;
 
       if (!Number.isNaN(index) && state[listName]?.[index]) {
+        leaveSampleMode();
         state[listName][index][key] =
           target instanceof HTMLInputElement && target.type === "checkbox" ? target.checked : target.value;
         syncCollapsibleHeights();
@@ -229,6 +246,7 @@ export function createEventHandlers({
       const index = Number(trigger.getAttribute("data-index"));
       const value = trigger.getAttribute("data-value");
       if (!Number.isNaN(index) && value && state.skills[index]) {
+        leaveSampleMode();
         state.skills[index].level = value;
         renderDynamicEditors();
         renderPreview();
@@ -252,6 +270,7 @@ export function createEventHandlers({
       const index = Number(trigger.getAttribute("data-index"));
       const value = trigger.getAttribute("data-value");
       if (!Number.isNaN(index) && value && state.languages[index]) {
+        leaveSampleMode();
         state.languages[index].level = value;
         renderDynamicEditors();
         renderPreview();
@@ -291,6 +310,7 @@ export function createEventHandlers({
     }
 
     if (trigger.id === "add-experience-btn" || trigger.dataset.action === "add-experience") {
+      leaveSampleMode();
       state.experience.push(createExperience());
       renderDynamicEditors();
       renderPreview();
@@ -298,6 +318,7 @@ export function createEventHandlers({
     }
 
     if (trigger.id === "add-education-btn") {
+      leaveSampleMode();
       state.education.push(createEducation());
       renderDynamicEditors();
       renderPreview();
@@ -305,6 +326,7 @@ export function createEventHandlers({
     }
 
     if (trigger.id === "add-skill-btn" || trigger.dataset.action === "add-skill") {
+      leaveSampleMode();
       state.skills.push(createSkill());
       renderDynamicEditors();
       renderPreview();
@@ -317,10 +339,19 @@ export function createEventHandlers({
     }
 
     if (trigger.id === "sample-btn") {
-      const nextState = getSampleModeEnabled() ? buildEmptyResumeState() : buildSampleResumeState();
-
-      applyImportedState(nextState);
-      setSampleModeEnabled(!getSampleModeEnabled());
+      if (getSampleModeEnabled()) {
+        // Leaving sample mode puts back exactly what was there before, keeping current language and theme.
+        const { uiLang, cvLang, theme } = state;
+        const previous = sampleBackup ?? buildEmptyResumeState();
+        Object.assign(state, structuredClone(previous), { uiLang, cvLang, theme });
+        sampleBackup = null;
+        setSampleModeEnabled(false);
+      } else {
+        sampleBackup = takeSnapshot();
+        applyImportedState(buildSampleResumeState());
+        setSampleModeEnabled(true);
+      }
+      applyTheme();
       syncStaticInputsFromState();
       applyI18n();
       renderDynamicEditors();
@@ -395,6 +426,7 @@ export function createEventHandlers({
     }
 
     if (trigger.id === "add-language-btn" || trigger.dataset.action === "add-language") {
+      leaveSampleMode();
       state.languages.push(createLanguage());
       renderDynamicEditors();
       renderPreview();

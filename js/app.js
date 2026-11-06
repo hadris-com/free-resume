@@ -78,7 +78,7 @@ const { sanitizeResumeState, validateResumeShape } = createResumeNormalization({
 });
 
 // Persistence handles localStorage draft lifecycle + raw JSON import/export.
-const { parseRawResumePayload, loadDraftFromLocalStorage, saveDraftToLocalStorage, downloadRawResume } = createPersistence({
+const { parseRawResumePayload, loadDraftFromLocalStorage, saveDraftToLocalStorage: persistDraftToLocalStorage, downloadRawResume } = createPersistence({
   getState: () => state,
   sanitizeResumeState,
   validateResumeShape
@@ -102,7 +102,8 @@ const { syncStaticInputsFromState, applyImportedState, syncSampleButtonState } =
   state,
   refs,
   uiControls,
-  getSampleModeEnabled: () => sampleModeEnabled
+  getSampleModeEnabled: () => sampleModeEnabled,
+  isResumeBlank: () => isResumeBlank()
 });
 
 // Print helpers manage print-specific behavior and page-break markers.
@@ -131,6 +132,13 @@ const { renderDynamicEditors } = createEditorRenderers({
   normalizeSkillLevel
 });
 
+// Sample content is never persisted: a reload after loading the sample returns to the user's own draft.
+function saveDraftToLocalStorage() {
+  if (!sampleModeEnabled) {
+    persistDraftToLocalStorage();
+  }
+}
+
 // Rebuild preview DOM from current state and persist draft after every render.
 function renderPreview() {
   const { widthPx, heightPx } = getPageMetrics(state.pageSize);
@@ -144,6 +152,7 @@ function renderPreview() {
   insertPageBreakMarkers();
   uiControls.syncEditorPanelHeight();
   saveDraftToLocalStorage();
+  syncSampleButtonState();
 }
 
 // Event handlers orchestrate user actions across all modules.
