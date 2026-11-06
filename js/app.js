@@ -55,11 +55,15 @@ const refs = {
   rawFileInput: document.getElementById("raw-file-input"),
   resumePreview: document.getElementById("resume-preview"),
   previewPanel: document.querySelector(".preview-panel"),
+  workspace: document.getElementById("workspace"),
+  saveStatusText: document.getElementById("save-status-text"),
   experienceList: document.getElementById("experience-list"),
   educationList: document.getElementById("education-list"),
   skillsList: document.getElementById("skills-list"),
   languagesList: document.getElementById("languages-list"),
-  blankPill: document.getElementById("blank-pill"),
+  moreMenu: document.getElementById("more-menu"),
+  moreMenuTrigger: document.getElementById("more-menu-trigger"),
+  moreMenuList: document.getElementById("more-menu-list"),
   editorPanel: document.querySelector(".editor-panel"),
   nameSizeSlider: document.getElementById("name-size-slider"),
   nameSizeOutput: document.getElementById("name-size-output"),
@@ -67,6 +71,9 @@ const refs = {
 };
 
 let sampleModeEnabled = false;
+
+// The bootstrap render saves too: on a blank resume, that is not news until the user changes something.
+let saveStatusEnabled = false;
 
 // i18n getters resolve labels against the currently selected UI/CV language.
 const getUiTranslation = createUiTranslationGetter(() => state.uiLang);
@@ -135,9 +142,13 @@ const { renderDynamicEditors } = createEditorRenderers({
 
 // Sample content is never persisted: a reload after loading the sample returns to the user's own draft.
 function saveDraftToLocalStorage() {
-  if (!sampleModeEnabled) {
-    persistDraftToLocalStorage();
+  if (sampleModeEnabled) {
+    uiControls.setSaveStatusVisible(false);
+    return;
   }
+
+  const saved = persistDraftToLocalStorage();
+  uiControls.setSaveStatusVisible(saved && saveStatusEnabled);
 }
 
 // Rebuild preview DOM from current state and persist draft after every render.
@@ -149,9 +160,9 @@ function renderPreview() {
   refs.resumePreview.style.setProperty("--page-width", `${widthPx}px`);
   refs.resumePreview.style.setProperty("--page-height", `${heightPx}px`);
   refs.resumePreview.style.setProperty("--name-font-scale", state.nameFontSize / 100);
-  refs.blankPill.hidden = !isResumeBlank();
   insertPageBreakMarkers();
-  uiControls.syncEditorPanelHeight();
+  uiControls.syncCollapsibleHeights();
+  uiControls.syncPaperFit();
   saveDraftToLocalStorage();
   syncSampleButtonState();
 }
@@ -182,12 +193,13 @@ const { handleRawFileChange, handleInput, handleClick } = createEventHandlers({
 
 // App bootstrap: load draft, sync UI, render once, then attach listeners.
 function init() {
-  const { applyTheme, applyI18n, syncSectionToggles, syncEditorPanelHeight } = uiControls;
+  const { applyTheme, applyI18n, syncSectionToggles, syncCollapsibleHeights, syncPaperFit } = uiControls;
 
   const savedDraft = loadDraftFromLocalStorage();
   if (savedDraft) {
     applyImportedState(savedDraft);
   }
+  saveStatusEnabled = !isResumeBlank();
 
   syncStaticInputsFromState();
 
@@ -197,20 +209,20 @@ function init() {
   renderPreview();
   syncSampleButtonState();
   syncSectionToggles();
+  saveStatusEnabled = true;
 
   refs.rawFileInput?.addEventListener("change", handleRawFileChange);
   refs.editorPanel.addEventListener("input", handleInput);
   refs.editorPanel.addEventListener("change", handleInput);
-  window.addEventListener("resize", syncEditorPanelHeight);
+  window.addEventListener("resize", syncCollapsibleHeights);
   window.addEventListener("beforeprint", fillPrintPages);
   window.addEventListener("afterprint", restorePrintPages);
   document.addEventListener("click", handleClick);
+  refs.moreMenu?.addEventListener("keydown", uiControls.handleMoreMenuKeydown);
+  document.fonts?.ready.then(syncPaperFit);
 
   if ("ResizeObserver" in window && refs.previewPanel) {
-    const previewPanelObserver = new ResizeObserver(() => {
-      syncEditorPanelHeight();
-    });
-    previewPanelObserver.observe(refs.previewPanel);
+    new ResizeObserver(syncPaperFit).observe(refs.previewPanel);
   }
 
   refs.privacyModal?.addEventListener("click", (event) => {

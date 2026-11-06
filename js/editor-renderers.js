@@ -1,4 +1,5 @@
-import { escapeAttr, escapeHtml, hasText, toBoolean } from "./utils.js";
+import { buildEntrySummary } from "./entry-summary.js";
+import { escapeAttr, escapeHtml, toBoolean } from "./utils.js";
 
 export function createEditorRenderers({
   state,
@@ -7,9 +8,57 @@ export function createEditorRenderers({
   skillLevels,
   normalizeSkillLevel
 }) {
+  const removeIcon = `
+                <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path
+                    d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
+                    fill="currentColor"
+                  />
+                </svg>`;
+
+  function moveButtons(listName, index, total) {
+    const upLabel = getUiTranslation("actions.moveUp");
+    const downLabel = getUiTranslation("actions.moveDown");
+    return `
+              <button type="button" class="remove-icon-btn move-btn move-up" data-action="move-item" data-list="${listName}" data-index="${index}" data-direction="-1" aria-label="${upLabel}" title="${upLabel}"${index === 0 ? " disabled" : ""}>
+                <span class="move-icon" aria-hidden="true"></span>
+              </button>
+              <button type="button" class="remove-icon-btn move-btn move-down" data-action="move-item" data-list="${listName}" data-index="${index}" data-direction="1" aria-label="${downLabel}" title="${downLabel}"${index === total - 1 ? " disabled" : ""}>
+                <span class="move-icon" aria-hidden="true"></span>
+              </button>`;
+  }
+
+  function removeButton(action, index, extraClass = "") {
+    const label = getUiTranslation("actions.remove");
+    return `
+              <button type="button" class="${extraClass}remove-icon-btn" data-action="${action}" data-index="${index}" aria-label="${label}" title="${label}">${removeIcon}
+              </button>`;
+  }
+
+  // One quiet row: the single add control for a list, whether it is empty or not.
+  function addRow(action, labelKey) {
+    return `<button type="button" class="add-row" data-action="${action}"><span class="add-row-plus" aria-hidden="true">+</span>${getUiTranslation(labelKey)}</button>`;
+  }
+
+  function entryHead(listName, item, index, total, isCollapsed) {
+    const summary = buildEntrySummary(listName, item, getUiTranslation);
+    return `
+          <div class="repeat-item-head">
+            <button type="button" class="repeat-item-toggle${isCollapsed ? " is-collapsed" : ""}" data-action="toggle-${listName}" data-index="${index}" aria-expanded="${!isCollapsed}">
+              <span class="collapse-icon" aria-hidden="true"></span>
+              <span class="repeat-item-summary">
+                <span class="repeat-item-title${summary.isEmpty ? " is-placeholder" : ""}">${escapeHtml(summary.title)}</span>
+                <span class="repeat-item-dates">${escapeHtml(summary.dates)}</span>
+              </span>
+            </button>
+            <div class="repeat-item-actions">${moveButtons(listName, index, total)}${removeButton(`remove-${listName}`, index)}
+            </div>
+          </div>`;
+  }
+
   function renderExperienceEditor() {
     if (!state.experience.length) {
-      refs.experienceList.innerHTML = `<p class="empty-list">${getUiTranslation("empty.experienceEditor")}</p>`;
+      refs.experienceList.innerHTML = addRow("add-experience", "actions.addExperience");
       return;
     }
 
@@ -17,46 +66,10 @@ export function createEditorRenderers({
       .map(
         (item, index) => {
           const isCollapsed = toBoolean(item.isCollapsed, false);
-          const toggleLabel = isCollapsed ? getUiTranslation("actions.expand") : getUiTranslation("actions.collapse");
-          const roleLabel = hasText(item.role) ? escapeHtml(item.role) : "";
-          const companyLabel = hasText(item.company) ? escapeHtml(item.company) : "";
-          const titleLabel = roleLabel && companyLabel
-            ? `${roleLabel} ${getUiTranslation("labels.at")} ${companyLabel}`
-            : roleLabel || companyLabel || `${getUiTranslation("fields.experience")} ${index + 1}`;
 
           return `
         <article class="repeat-item${isCollapsed ? " is-collapsed" : ""}">
-          <div class="repeat-item-head">
-            <p class="repeat-item-title">${titleLabel}</p>
-            <div class="repeat-item-actions">
-              <button
-                type="button"
-                class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
-                data-action="toggle-experience"
-                data-index="${index}"
-                aria-expanded="${!isCollapsed}"
-                aria-label="${toggleLabel}"
-                title="${toggleLabel}"
-              >
-                <span class="collapse-icon" aria-hidden="true"></span>
-              </button>
-              <button
-                type="button"
-                class="remove-icon-btn"
-                data-action="remove-experience"
-                data-index="${index}"
-                aria-label="${getUiTranslation("actions.remove")}"
-                title="${getUiTranslation("actions.remove")}"
-              >
-                <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path
-                    d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
+          ${entryHead("experience", item, index, state.experience.length, isCollapsed)}
 
           <div class="repeat-item-body is-collapsable" aria-hidden="${isCollapsed}">
             <div class="repeat-item-grid experience-grid">
@@ -93,13 +106,12 @@ export function createEditorRenderers({
       )
       .join("");
 
-    const bottomAddBtn = `<button type="button" class="add-btn add-btn-bottom" data-action="add-experience">${getUiTranslation("actions.addExperience")}</button>`;
-    refs.experienceList.innerHTML += bottomAddBtn;
+    refs.experienceList.innerHTML += addRow("add-experience", "actions.addExperience");
   }
 
   function renderEducationEditor() {
     if (!state.education.length) {
-      refs.educationList.innerHTML = `<p class="empty-list">${getUiTranslation("empty.educationEditor")}</p>`;
+      refs.educationList.innerHTML = addRow("add-education", "actions.addEducation");
       return;
     }
 
@@ -107,46 +119,10 @@ export function createEditorRenderers({
       .map(
         (item, index) => {
           const isCollapsed = toBoolean(item.isCollapsed, false);
-          const toggleLabel = isCollapsed ? getUiTranslation("actions.expand") : getUiTranslation("actions.collapse");
-          const degreeLabel = hasText(item.degree) ? escapeHtml(item.degree) : "";
-          const schoolLabel = hasText(item.school) ? escapeHtml(item.school) : "";
-          const titleLabel = degreeLabel && schoolLabel
-            ? `${degreeLabel} ${getUiTranslation("labels.at")} ${schoolLabel}`
-            : degreeLabel || schoolLabel || `${getUiTranslation("fields.education")} ${index + 1}`;
 
           return `
         <article class="repeat-item${isCollapsed ? " is-collapsed" : ""}">
-          <div class="repeat-item-head">
-            <p class="repeat-item-title">${titleLabel}</p>
-            <div class="repeat-item-actions">
-              <button
-                type="button"
-                class="collapse-btn${isCollapsed ? " is-collapsed" : ""}"
-                data-action="toggle-education"
-                data-index="${index}"
-                aria-expanded="${!isCollapsed}"
-                aria-label="${toggleLabel}"
-                title="${toggleLabel}"
-              >
-                <span class="collapse-icon" aria-hidden="true"></span>
-              </button>
-              <button
-                type="button"
-                class="remove-icon-btn"
-                data-action="remove-education"
-                data-index="${index}"
-                aria-label="${getUiTranslation("actions.remove")}"
-                title="${getUiTranslation("actions.remove")}"
-              >
-                <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path
-                    d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
+          ${entryHead("education", item, index, state.education.length, isCollapsed)}
 
           <div class="repeat-item-body is-collapsable" aria-hidden="${isCollapsed}">
             <div class="repeat-item-grid">
@@ -177,11 +153,13 @@ export function createEditorRenderers({
         }
       )
       .join("");
+
+    refs.educationList.innerHTML += addRow("add-education", "actions.addEducation");
   }
 
   function renderSkillsEditor() {
     if (!state.skills.length) {
-      refs.skillsList.innerHTML = `<p class="empty-list">${getUiTranslation("empty.skillsEditor")}</p>`;
+      refs.skillsList.innerHTML = addRow("add-skill", "actions.addSkill");
       return;
     }
 
@@ -207,22 +185,7 @@ export function createEditorRenderers({
 
           return `
         <article class="repeat-item skill-item">
-          <div class="skill-item-actions">
-            <button
-              type="button"
-              class="remove-btn remove-icon-btn"
-              data-action="remove-skill"
-              data-index="${index}"
-              aria-label="${getUiTranslation("actions.remove")}"
-              title="${getUiTranslation("actions.remove")}"
-            >
-              <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                  fill="currentColor"
-                />
-              </svg>
-            </button>
+          <div class="skill-item-actions">${moveButtons("skills", index, state.skills.length)}${removeButton("remove-skill", index, "remove-btn ")}
           </div>
 
           <div class="repeat-item-body">
@@ -265,13 +228,13 @@ export function createEditorRenderers({
       )
       .join("");
 
-    const bottomAddBtn = `<button type="button" class="add-btn add-btn-bottom" data-action="add-skill">${getUiTranslation("actions.addSkill")}</button>`;
+    const bottomAddBtn = addRow("add-skill", "actions.addSkill");
     refs.skillsList.innerHTML = `${toggleMarkup}${skillsMarkup}${bottomAddBtn}`;
   }
 
   function renderLanguagesEditor() {
     if (!state.languages.length) {
-      refs.languagesList.innerHTML = `<p class="empty-list">${getUiTranslation("empty.languagesEditor")}</p>`;
+      refs.languagesList.innerHTML = addRow("add-language", "actions.addLanguage");
       return;
     }
 
@@ -297,22 +260,7 @@ export function createEditorRenderers({
 
           return `
         <article class="repeat-item skill-item">
-          <div class="skill-item-actions">
-            <button
-              type="button"
-              class="remove-btn remove-icon-btn"
-              data-action="remove-language"
-              data-index="${index}"
-              aria-label="${getUiTranslation("actions.remove")}"
-              title="${getUiTranslation("actions.remove")}"
-            >
-              <svg class="remove-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  d="M9 3h6l1 2h4v2h-2l-1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 7H4V5h4l1-2zm0 6v9h2V9H9zm4 0v9h2V9h-2z"
-                  fill="currentColor"
-                />
-              </svg>
-            </button>
+          <div class="skill-item-actions">${moveButtons("languages", index, state.languages.length)}${removeButton("remove-language", index, "remove-btn ")}
           </div>
 
           <div class="repeat-item-body">
@@ -355,7 +303,7 @@ export function createEditorRenderers({
       )
       .join("");
 
-    const bottomAddBtn = `<button type="button" class="add-btn add-btn-bottom" data-action="add-language">${getUiTranslation("actions.addLanguage")}</button>`;
+    const bottomAddBtn = addRow("add-language", "actions.addLanguage");
     refs.languagesList.innerHTML = `${toggleMarkup}${languagesMarkup}${bottomAddBtn}`;
   }
 

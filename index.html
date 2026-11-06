@@ -26,13 +26,14 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='6' y='2' width='20' height='28' rx='2' fill='%23334155'/><rect x='10' y='7' width='12' height='2' rx='1' fill='%23e2e8f0'/><rect x='10' y='12' width='10' height='1.5' rx='.75' fill='%2394a3b8'/><rect x='10' y='16' width='12' height='1.5' rx='.75' fill='%2394a3b8'/><rect x='10' y='20' width='8' height='1.5' rx='.75' fill='%2394a3b8'/></svg>" />
     <link rel="stylesheet" href="./css/fonts.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/foundation.css?v=20261106-1" />
-    <link rel="stylesheet" href="./css/app-shell.css?v=20261106-1" />
-    <link rel="stylesheet" href="./css/editor.css?v=20261106-1" />
-    <link rel="stylesheet" href="./css/resume-preview.css?v=20261106-1" />
+    <link rel="stylesheet" href="./css/app-shell.css?v=20261106-5" />
+    <link rel="stylesheet" href="./css/editor.css?v=20261106-3" />
+    <link rel="stylesheet" href="./css/resume-preview.css?v=20261106-5" />
     <link rel="stylesheet" href="./css/templates/berlin.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/templates/aurora.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/templates/atelier.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/templates/alpine.css?v=20260307-1" />
+    <link rel="stylesheet" href="./css/paper-fit.css?v=20261106-5" />
     <link rel="stylesheet" href="./css/templates/variants.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/print.css?v=20260307-2" />
     <link rel="stylesheet" href="./css/notices.css?v=20260307-1" />
@@ -42,24 +43,57 @@
       <header class="topbar">
         <div class="brand">
           <h1 data-i18n="brand.title">Free Resume</h1>
-          <p data-i18n="brand.subtitle">Design-forward multilingual resume builder</p>
         </div>
 
-        <div class="topbar-controls">
-          <div class="lang-switch" role="group" aria-label="Language">
-            <button type="button" class="lang-btn active" data-lang="en">EN</button>
-            <button type="button" class="lang-btn" data-lang="es">ES</button>
-            <button type="button" class="lang-btn" data-lang="de">DE</button>
-          </div>
+        <p class="save-status" role="status" aria-live="polite">
+          <span id="save-status-text" data-i18n="notices.savedInBrowser" hidden>Saved in this browser</span>
+        </p>
 
-          <button id="theme-toggle" type="button" class="ghost-btn" aria-pressed="false">
-            <span class="theme-dot" aria-hidden="true"></span>
-            <span data-role="theme-label" data-i18n="actions.darkMode">Dark mode</span>
+        <div class="topbar-controls">
+          <button id="sample-btn" type="button" class="text-btn" aria-pressed="false" data-i18n="actions.sample" hidden>
+            Sample
           </button>
+          <button id="pdf-btn" type="button" class="primary-btn" data-i18n="actions.pdf">
+            Print PDF
+          </button>
+
+          <div class="more-menu" id="more-menu">
+            <input id="raw-file-input" type="file" accept=".json,application/json" hidden />
+            <button
+              type="button"
+              class="icon-btn"
+              id="more-menu-trigger"
+              data-action="toggle-more-menu"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-controls="more-menu-list"
+              aria-label="More actions"
+              data-i18n-aria-label="actions.more"
+            >
+              <span aria-hidden="true">&hellip;</span>
+            </button>
+            <div class="more-menu-list" id="more-menu-list" role="menu" aria-labelledby="more-menu-trigger" hidden>
+              <button id="upload-raw-btn" type="button" class="more-menu-item" role="menuitem" tabindex="-1" data-i18n="actions.uploadRaw">
+                Upload raw CV
+              </button>
+              <button id="download-raw-btn" type="button" class="more-menu-item" role="menuitem" tabindex="-1" data-i18n="actions.downloadRaw">
+                Download raw CV
+              </button>
+              <div class="more-menu-separator" role="separator"></div>
+              <button id="theme-toggle" type="button" class="more-menu-item" role="menuitem" tabindex="-1">
+                <span data-role="theme-label" data-i18n="actions.darkMode">Dark mode</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="view-switch" role="group" aria-label="View" data-i18n-aria-label="preview.viewLabel">
+          <button type="button" class="view-btn active" data-view="edit" aria-pressed="true" data-i18n="preview.viewEdit">Edit</button>
+          <button type="button" class="view-btn" data-view="preview" aria-pressed="false" data-i18n="preview.viewPreview">Preview</button>
         </div>
       </header>
 
-      <main class="workspace">
+      <main class="workspace" id="workspace" data-view="edit">
         <aside class="editor-panel" aria-label="Resume editor">
           <section class="panel-section">
             <div class="section-heading-row">
@@ -190,9 +224,6 @@
             <div class="section-heading-row">
               <h2 data-i18n="fields.experience">Experience</h2>
               <div class="section-heading-actions">
-                <button id="add-experience-btn" type="button" class="add-btn" data-i18n="actions.addExperience">
-                  Add experience
-                </button>
                 <button
                   type="button"
                   class="collapse-btn section-toggle"
@@ -213,9 +244,6 @@
             <div class="section-heading-row">
               <h2 data-i18n="fields.education">Education</h2>
               <div class="section-heading-actions">
-                <button id="add-education-btn" type="button" class="add-btn" data-i18n="actions.addEducation">
-                  Add education
-                </button>
                 <button
                   type="button"
                   class="collapse-btn section-toggle"
@@ -236,9 +264,6 @@
             <div class="section-heading-row">
               <h2 data-i18n="fields.skills">Skills</h2>
               <div class="section-heading-actions">
-                <button id="add-skill-btn" type="button" class="add-btn" data-i18n="actions.addSkill">
-                  Add skill
-                </button>
                 <button
                   type="button"
                   class="collapse-btn section-toggle"
@@ -259,9 +284,6 @@
             <div class="section-heading-row">
               <h2 data-i18n="fields.languages">Languages</h2>
               <div class="section-heading-actions">
-                <button id="add-language-btn" type="button" class="add-btn" data-i18n="actions.addLanguage">
-                  Add language
-                </button>
                 <button
                   type="button"
                   class="collapse-btn section-toggle"
@@ -281,39 +303,20 @@
 
         <section class="preview-panel" aria-label="Resume preview">
           <div class="preview-toolbar">
-            <div class="preview-meta">
-              <span class="pill" data-i18n="preview.live">Live preview</span>
-              <span id="blank-pill" class="pill muted" data-i18n="preview.blank">Starts blank</span>
-              <div class="cv-lang-control" role="group" aria-label="CV language">
-                <span class="cv-lang-label" data-i18n="fields.cvLanguage">CV language</span>
-                <div class="cv-lang-switch" role="group" aria-label="CV language options">
-                  <button type="button" class="cv-lang-btn active" data-cv-lang="en" aria-pressed="true">EN</button>
-                  <button type="button" class="cv-lang-btn" data-cv-lang="es" aria-pressed="false">ES</button>
-                  <button type="button" class="cv-lang-btn" data-cv-lang="de" aria-pressed="false">DE</button>
-                </div>
-              </div>
-              <div class="page-size-control" role="group" aria-label="Page size">
-                <span class="page-size-label" data-i18n="fields.pageSize">Page size</span>
-                <div class="page-size-switch" role="group" aria-label="Page size options">
-                  <button type="button" class="page-size-btn active" data-page-size="a4" aria-pressed="true" data-i18n="options.pageSizeA4">A4</button>
-                  <button type="button" class="page-size-btn" data-page-size="letter" aria-pressed="false" data-i18n="options.pageSizeLetter">Letter</button>
-                </div>
+            <div class="cv-lang-control" role="group" aria-labelledby="cv-lang-label">
+              <span class="cv-lang-label" id="cv-lang-label" data-i18n="fields.cvLanguage">CV language</span>
+              <div class="cv-lang-switch">
+                <button type="button" class="cv-lang-btn active" data-cv-lang="en" aria-pressed="true">EN</button>
+                <button type="button" class="cv-lang-btn" data-cv-lang="es" aria-pressed="false">ES</button>
+                <button type="button" class="cv-lang-btn" data-cv-lang="de" aria-pressed="false">DE</button>
               </div>
             </div>
-            <div class="preview-actions">
-              <input id="raw-file-input" type="file" accept=".json,application/json" hidden />
-              <button id="sample-btn" type="button" class="ghost-btn" aria-pressed="false" data-i18n="actions.sample">
-                Sample
-              </button>
-              <button id="upload-raw-btn" type="button" class="ghost-btn" data-i18n="actions.uploadRaw">
-                Upload raw CV
-              </button>
-              <button id="download-raw-btn" type="button" class="ghost-btn" data-i18n="actions.downloadRaw">
-                Download raw CV
-              </button>
-              <button id="pdf-btn" type="button" class="ghost-btn" data-i18n="actions.pdf">
-                Print PDF
-              </button>
+            <div class="page-size-control" role="group" aria-labelledby="page-size-label">
+              <span class="page-size-label" id="page-size-label" data-i18n="fields.pageSize">Page size</span>
+              <div class="page-size-switch">
+                <button type="button" class="page-size-btn active" data-page-size="a4" aria-pressed="true" data-i18n="options.pageSizeA4">A4</button>
+                <button type="button" class="page-size-btn" data-page-size="letter" aria-pressed="false" data-i18n="options.pageSizeLetter">Letter</button>
+              </div>
             </div>
           </div>
 
@@ -322,16 +325,24 @@
       </main>
 
       <footer class="app-footer">
-        <a
-          class="footer-link"
-          href="https://job.hadris.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-i18n="footer.jobKanban"
-        >
-          Job Kanban
-        </a>
-        <button type="button" class="privacy-link" id="privacy-btn" data-i18n="privacy.footer">Privacy</button>
+        <div class="lang-switch" role="group" aria-labelledby="ui-lang-label">
+          <span class="lang-switch-label" id="ui-lang-label" data-i18n="fields.interfaceLanguage">Interface language</span>
+          <button type="button" class="lang-btn active" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="es">ES</button>
+          <button type="button" class="lang-btn" data-lang="de">DE</button>
+        </div>
+        <div class="footer-links">
+          <a
+            class="footer-link"
+            href="https://job.hadris.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-i18n="footer.jobKanban"
+          >
+            Job Kanban
+          </a>
+          <button type="button" class="privacy-link" id="privacy-btn" data-i18n="privacy.footer">Privacy</button>
+        </div>
       </footer>
     </div>
 
@@ -394,6 +405,6 @@
       </div>
     </dialog>
 
-    <script type="module" src="./js/app.js?v=20260307-5"></script>
+    <script type="module" src="./js/app.js?v=20261106-5"></script>
   </body>
 </html>

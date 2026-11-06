@@ -1,58 +1,24 @@
 .preview-panel {
-  padding: var(--ui-space-4);
+  padding-block: 0 var(--ui-space-5);
+  padding-inline: var(--ui-space-4);
 }
 
 .preview-toolbar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: start;
-  gap: var(--ui-space-3);
-  margin-block-end: var(--ui-space-3);
-}
-
-.preview-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--ui-space-3);
-  flex-wrap: nowrap;
-  white-space: nowrap;
-  overflow-x: auto;
-  padding-block: var(--ui-space-1);
-  scrollbar-width: thin;
-}
-
-.preview-meta > * {
-  flex: 0 0 auto;
-}
-
-.preview-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  align-items: center;
-  gap: var(--ui-space-2);
-}
-
-.preview-actions .ghost-btn {
-  width: 100%;
   justify-content: center;
-  min-height: 2.2rem;
-  white-space: nowrap;
+  gap: var(--ui-space-2) var(--ui-space-5);
+  padding-block: var(--ui-space-3);
+  background: var(--ui-bg);
 }
 
-.preview-actions .ghost-btn[aria-pressed="true"] {
-  border-color: var(--ui-accent);
-  color: var(--ui-accent);
-}
-
-.pill {
-  font-size: var(--ui-text-sm);
-  font-weight: 500;
-  color: var(--ui-text);
-}
-
-.pill.muted {
-  font-weight: 400;
-  color: var(--ui-text-secondary);
+@media screen and (min-width: 761px) {
+  .preview-toolbar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 3;
+  }
 }
 
 .cv-lang-control,
@@ -69,7 +35,8 @@
 }
 
 .cv-lang-switch,
-.page-size-switch {
+.page-size-switch,
+.view-switch {
   display: inline-flex;
   align-items: center;
   padding: var(--ui-space-1);
@@ -78,7 +45,8 @@
 }
 
 .cv-lang-btn,
-.page-size-btn {
+.page-size-btn,
+.view-btn {
   font-size: var(--ui-text-sm);
   font-weight: 500;
   border: 0;
@@ -90,9 +58,17 @@
 }
 
 .cv-lang-btn.active,
-.page-size-btn.active {
-  background: var(--ui-accent-fill);
-  color: var(--ui-on-accent);
+.page-size-btn.active,
+.view-btn.active {
+  background: var(--ui-control);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+/* In dark mode the control colour equals the track, so the selection needs the stronger fill. */
+body.theme-dark .cv-lang-btn.active,
+body.theme-dark .page-size-btn.active,
+body.theme-dark .view-btn.active {
+  background: var(--ui-fill-strong);
 }
 
 .resume-preview {
@@ -356,54 +332,4 @@
   width: 0.8rem;
   height: 0.8rem;
   display: block;
-}
-
-@media screen and (max-width: 1180px) {
-  .resume-page {
-    min-height: auto;
-  }
-}
-
-@media screen and (max-width: 760px) {
-  .preview-meta {
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: var(--ui-space-2);
-    white-space: normal;
-    overflow-x: visible;
-  }
-
-  .preview-meta > * {
-    min-width: 0;
-    justify-self: start;
-  }
-
-  .cv-lang-control,
-  .page-size-control {
-    width: auto;
-    max-width: 100%;
-    justify-content: flex-start;
-  }
-
-  .cv-lang-switch,
-  .page-size-switch {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-
-  .preview-actions {
-    width: 100%;
-    grid-template-columns: 1fr;
-  }
-
-  .preview-actions .ghost-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .resume-page {
-    border-radius: 12px;
-    padding: 1.1rem;
-  }
 }

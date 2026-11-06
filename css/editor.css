@@ -163,7 +163,7 @@ textarea {
 
 .field-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--ui-space-3);
 }
 
@@ -245,10 +245,6 @@ textarea {
   overflow: hidden;
 }
 
-.panel-section.is-collapsed .section-heading-actions .add-btn {
-  display: none;
-}
-
 .add-btn,
 .remove-btn {
   border: 1px solid transparent;
@@ -283,6 +279,7 @@ textarea {
 
 .repeat-list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--ui-space-2);
 }
 
@@ -395,6 +392,112 @@ textarea {
   margin-block-end: 0;
 }
 
+/* The whole summary row is the expand/collapse control. */
+.repeat-item-toggle {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+  border: 0;
+  border-radius: var(--ui-radius-sm);
+  background: transparent;
+  padding: var(--ui-space-1);
+  margin: calc(var(--ui-space-1) * -1);
+  color: var(--ui-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.repeat-item-toggle:hover .collapse-icon {
+  color: var(--ui-text);
+}
+
+.repeat-item-toggle .collapse-icon {
+  flex: none;
+  color: var(--ui-text-secondary);
+}
+
+.repeat-item-toggle.is-collapsed .collapse-icon {
+  transform: rotate(-45deg);
+}
+
+.repeat-item-summary {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--ui-space-2);
+}
+
+.repeat-item-summary .repeat-item-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.repeat-item-title.is-placeholder {
+  color: var(--ui-text-secondary);
+  font-weight: 500;
+}
+
+.repeat-item-dates {
+  flex: none;
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-text-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.move-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+.move-icon {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+}
+
+.move-up .move-icon {
+  transform: translateY(2px) rotate(-135deg);
+}
+
+.move-down .move-icon {
+  transform: translateY(-2px) rotate(45deg);
+}
+
+/* The one quiet add control, used for empty and non-empty lists alike. */
+.add-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+  width: 100%;
+  border: 0;
+  border-radius: var(--ui-radius-md);
+  background: transparent;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  color: var(--ui-accent);
+  font: inherit;
+  font-size: var(--ui-text-sm);
+  font-weight: 500;
+  text-align: start;
+  cursor: pointer;
+}
+
+.add-row:hover {
+  background: var(--ui-fill);
+}
+
+.add-row-plus {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
 .repeat-item-actions {
   display: inline-flex;
   align-items: center;
@@ -494,6 +597,16 @@ textarea {
 }
 
 @media screen and (max-width: 760px) {
+  .repeat-item-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .repeat-item-summary .repeat-item-title {
+    max-width: 100%;
+  }
+
   .field-grid,
   .repeat-item-grid,
   .repeat-item-grid.experience-grid {
@@ -512,4 +625,26 @@ textarea {
   .custom-select-option {
     font-size: 16px;
   }
+}
+
+/* A long entry title truncates instead of widening the sidebar. */
+.repeat-item {
+  min-width: 0;
+}
+
+.repeat-item-head,
+.repeat-item-summary {
+  min-width: 0;
+}
+
+.repeat-item-summary {
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.repeat-item-summary .repeat-item-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -1,0 +1,63 @@
+/*
+ * How the paper sits in the app's paper area, on screen. Scoped to .app-shell: the
+ * extension's renderer loads resume-preview.css too and has its own page around the paper.
+ *
+ * The page is always laid out at its real width and scaled down when the area is narrower,
+ * so it keeps its layout and its page-break markers: a transform leaves the measurements in
+ * insertPageBreakMarkers alone. syncPaperFit in ui-controls.js sets --paper-scale and
+ * --paper-height. Nothing here applies to print, which lays the page out on its own.
+ */
+@media screen {
+  .app-shell .resume-preview {
+    display: block;
+    justify-items: start; /* The base place-items: center would also center the page in a block box. */
+    width: calc(var(--page-width, 794px) * var(--paper-scale, 1));
+    height: var(--paper-height, auto);
+    margin-inline: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  .app-shell .resume-page {
+    width: var(--page-width, 794px);
+    transform: scale(var(--paper-scale, 1));
+    transform-origin: 0 0;
+  }
+}
+
+/*
+ * The templates turn single-column by viewport width, which would reflow the page inside
+ * its scaled box: put back their page layout. This file loads after the templates and
+ * before variants.css, so at equal specificity the variants keep their own columns.
+ */
+@media screen and (max-width: 760px) {
+  .template-berlin .resume-columns {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .template-alpine .alpine-body {
+    grid-template-columns: 1fr 2.2fr;
+  }
+
+  .template-atelier .atelier-grid {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  }
+
+  .template-aurora .aurora-shell {
+    grid-template-columns: 1.1fr 1.8fr;
+  }
+
+  .template-aurora .aurora-banner {
+    padding-block: 1.8rem;
+    padding-inline: 2rem;
+  }
+
+  .template-aurora .aurora-side,
+  .template-aurora .aurora-main {
+    padding: 1.4rem;
+  }
+}
