@@ -1,3 +1,4 @@
+import { getPageMetrics } from "./page-layout.js";
 import { toBoolean } from "./utils.js";
 
 export function createUiControls({ state, refs, getUiTranslation }) {
@@ -60,7 +61,6 @@ export function createUiControls({ state, refs, getUiTranslation }) {
 
   function applyTheme() {
     document.body.classList.toggle("theme-dark", state.theme === "dark");
-    refs.themeToggle.setAttribute("aria-pressed", String(state.theme === "dark"));
   }
 
   function applyI18n() {
@@ -77,6 +77,13 @@ export function createUiControls({ state, refs, getUiTranslation }) {
       const key = element.getAttribute("data-i18n-placeholder");
       if (key) {
         element.setAttribute("placeholder", getUiTranslation(key));
+      }
+    });
+
+    document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+      const key = element.getAttribute("data-i18n-aria-label");
+      if (key) {
+        element.setAttribute("aria-label", getUiTranslation(key));
       }
     });
 
@@ -250,24 +257,114 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     });
   }
 
-  function syncEditorPanelHeight() {
-    if (!refs.editorPanel || !refs.previewPanel) {
+  function setMoreMenuOpen(open) {
+    if (!refs.moreMenuList || !refs.moreMenuTrigger) {
+      return;
+    }
+    refs.moreMenuList.hidden = !open;
+    refs.moreMenuTrigger.setAttribute("aria-expanded", String(open));
+    if (open) {
+      refs.moreMenuList.querySelector("[role='menuitem']")?.focus();
+    }
+  }
+
+  function toggleMoreMenu() {
+    setMoreMenuOpen(refs.moreMenuList?.hidden === true);
+  }
+
+  function closeMoreMenu({ restoreFocus = false } = {}) {
+    if (!refs.moreMenuList || refs.moreMenuList.hidden) {
+      return;
+    }
+    setMoreMenuOpen(false);
+    if (restoreFocus) {
+      refs.moreMenuTrigger.focus();
+    }
+  }
+
+  function handleMoreMenuKeydown(event) {
+    const { moreMenuList, moreMenuTrigger } = refs;
+    const isOpen = !moreMenuList.hidden;
+
+    if (!isOpen) {
+      if (event.target === moreMenuTrigger && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
+        event.preventDefault();
+        setMoreMenuOpen(true);
+      }
       return;
     }
 
-    syncCollapsibleHeights();
-
-    const isDesktop = window.matchMedia("(min-width: 1181px)").matches;
-    if (!isDesktop) {
-      refs.editorPanel.style.height = "";
-      refs.editorPanel.style.maxHeight = "";
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeMoreMenu({ restoreFocus: true });
       return;
     }
 
-    const previewHeight = Math.round(refs.previewPanel.getBoundingClientRect().height);
-    if (previewHeight > 0) {
-      refs.editorPanel.style.height = `${previewHeight}px`;
-      refs.editorPanel.style.maxHeight = `${previewHeight}px`;
+    // Tab leaves the menu from the trigger's place in the page, as if the menu had not been open.
+    if (event.key === "Tab") {
+      closeMoreMenu({ restoreFocus: true });
+      return;
+    }
+
+    const items = [...moreMenuList.querySelectorAll("[role='menuitem']")];
+    const current = items.indexOf(document.activeElement);
+    const targets = {
+      ArrowDown: (current + 1) % items.length,
+      ArrowUp: (current - 1 + items.length) % items.length,
+      Home: 0,
+      End: items.length - 1
+    };
+
+    if (event.key in targets) {
+      event.preventDefault();
+      items[targets[event.key]]?.focus();
+    }
+  }
+
+  // Scale the page's real width down to the paper area. Layout and print are untouched: see paper-fit.css.
+  function syncPaperFit() {
+    const { previewPanel, resumePreview } = refs;
+    const page = resumePreview?.querySelector(".resume-page");
+    if (!previewPanel || !page) {
+      return;
+    }
+
+    const panelStyle = window.getComputedStyle(previewPanel);
+    const available =
+      previewPanel.clientWidth -
+      (Number.parseFloat(panelStyle.paddingLeft) || 0) -
+      (Number.parseFloat(panelStyle.paddingRight) || 0);
+    const { widthPx } = getPageMetrics(state.pageSize);
+    const scale = available > 0 ? Math.min(1, available / widthPx) : 1;
+
+    resumePreview.style.setProperty("--paper-scale", String(scale));
+    resumePreview.style.setProperty("--paper-height", `${Math.ceil(page.offsetHeight * scale)}px`);
+  }
+
+  // The choice lasts for this page load; each view keeps its own scroll position.
+  const mobileViewScroll = { edit: 0, preview: 0 };
+
+  function setMobileView(view) {
+    const workspace = refs.workspace;
+    const current = workspace?.dataset.view;
+    if (!workspace || !(view in mobileViewScroll) || view === current) {
+      return;
+    }
+
+    mobileViewScroll[current] = window.scrollY;
+    workspace.dataset.view = view;
+    document.querySelectorAll(".view-btn").forEach((button) => {
+      const isActive = button.dataset.view === view;
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+    window.scrollTo(0, mobileViewScroll[view]);
+  }
+
+  // The live region stays in place and its text stays the same: only a change of state is announced.
+  function setSaveStatusVisible(visible) {
+    if (refs.saveStatusText) {
+      refs.saveStatusText.hidden = !visible;
     }
   }
 
@@ -285,6 +382,11 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     closeLanguageLevelSelects,
     setCollapsibleState,
     syncCollapsibleHeights,
-    syncEditorPanelHeight
+    toggleMoreMenu,
+    closeMoreMenu,
+    handleMoreMenuKeydown,
+    syncPaperFit,
+    setMobileView,
+    setSaveStatusVisible
   };
 }

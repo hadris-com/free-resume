@@ -98,8 +98,10 @@ export function createPersistence({ getState, sanitizeResumeState, validateResum
   function saveDraftToLocalStorage() {
     try {
       window.localStorage.setItem(localDraftConfig.key, JSON.stringify(buildRawResumePayload()));
+      return true;
     } catch (error) {
       console.warn("Could not save draft to localStorage", error);
+      return false;
     }
   }
 
