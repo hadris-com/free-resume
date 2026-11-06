@@ -10,12 +10,6 @@ body {
   color: var(--text-main);
 }
 
-.app-shell {
-  width: min(1480px, 100% - 2.5rem);
-  margin-block: var(--ui-space-3) var(--ui-space-5);
-  margin-inline: auto;
-}
-
 .topbar {
   display: flex;
   align-items: center;
@@ -105,23 +99,13 @@ body {
   background: currentColor;
 }
 
-.workspace {
-  display: grid;
-  gap: var(--ui-space-4);
-  align-items: start;
-  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
-}
-
 .editor-panel {
-  border-radius: var(--ui-radius-lg);
   background: var(--ui-surface);
 }
 
-/* Border stays, transparent: it is part of the box width the paper is laid out in. */
 .preview-panel {
   position: relative;
   z-index: 1;
-  border: 1px solid transparent;
 }
 
 /* ---- Footer ---- */
@@ -271,17 +255,47 @@ body {
   }
 }
 
-@media screen and (max-width: 1180px) {
+/*
+ * Screen only: on paper the whole page flows, so print.css never has to undo any of this.
+ * Top bar, then editor and paper side by side, each with its own scroll.
+ */
+@media screen and (min-width: 761px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .app-shell {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100dvh;
+  }
+
   .workspace {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: clamp(320px, 34vw, 460px) minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  /* Beats the auto height and visible overflow editor.css sets at up to 1180px. */
+  .workspace > .editor-panel {
+    height: 100%;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-inline-end: 1px solid var(--ui-separator);
+  }
+
+  .preview-panel {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
   }
 }
 
 @media screen and (max-width: 760px) {
-  .app-shell {
-    width: calc(100% - 1rem);
-  }
-
   .topbar {
     flex-direction: column;
     align-items: stretch;

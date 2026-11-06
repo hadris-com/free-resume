@@ -1,5 +1,6 @@
 .preview-panel {
-  padding: var(--ui-space-4);
+  padding-block: 0 var(--ui-space-5);
+  padding-inline: var(--ui-space-4);
 }
 
 .preview-toolbar {
@@ -7,7 +8,16 @@
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: var(--ui-space-3);
-  margin-block-end: var(--ui-space-3);
+  padding-block: var(--ui-space-3);
+  background: var(--ui-bg);
+}
+
+@media screen and (min-width: 761px) {
+  .preview-toolbar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 3;
+  }
 }
 
 .preview-meta {
@@ -356,12 +366,6 @@
   width: 0.8rem;
   height: 0.8rem;
   display: block;
-}
-
-@media screen and (max-width: 1180px) {
-  .resume-page {
-    min-height: auto;
-  }
 }
 
 @media screen and (max-width: 760px) {

@@ -1,0 +1,20 @@
+/*
+ * How the paper sits in the app's paper area, on screen. Scoped to .app-shell: the
+ * extension's renderer loads resume-preview.css too and has its own page around the paper.
+ * The frame around the page goes, so the paper lies directly on the neutral background.
+ */
+@media screen {
+  .app-shell .resume-preview {
+    display: block;
+    width: min(var(--page-width, 794px), 100%);
+    margin-inline: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .app-shell .resume-page {
+    width: 100%;
+  }
+}

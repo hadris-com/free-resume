@@ -151,7 +151,7 @@ function renderPreview() {
   refs.resumePreview.style.setProperty("--name-font-scale", state.nameFontSize / 100);
   refs.blankPill.hidden = !isResumeBlank();
   insertPageBreakMarkers();
-  uiControls.syncEditorPanelHeight();
+  uiControls.syncCollapsibleHeights();
   saveDraftToLocalStorage();
   syncSampleButtonState();
 }
@@ -182,7 +182,7 @@ const { handleRawFileChange, handleInput, handleClick } = createEventHandlers({
 
 // App bootstrap: load draft, sync UI, render once, then attach listeners.
 function init() {
-  const { applyTheme, applyI18n, syncSectionToggles, syncEditorPanelHeight } = uiControls;
+  const { applyTheme, applyI18n, syncSectionToggles, syncCollapsibleHeights } = uiControls;
 
   const savedDraft = loadDraftFromLocalStorage();
   if (savedDraft) {
@@ -201,17 +201,10 @@ function init() {
   refs.rawFileInput?.addEventListener("change", handleRawFileChange);
   refs.editorPanel.addEventListener("input", handleInput);
   refs.editorPanel.addEventListener("change", handleInput);
-  window.addEventListener("resize", syncEditorPanelHeight);
+  window.addEventListener("resize", syncCollapsibleHeights);
   window.addEventListener("beforeprint", fillPrintPages);
   window.addEventListener("afterprint", restorePrintPages);
   document.addEventListener("click", handleClick);
-
-  if ("ResizeObserver" in window && refs.previewPanel) {
-    const previewPanelObserver = new ResizeObserver(() => {
-      syncEditorPanelHeight();
-    });
-    previewPanelObserver.observe(refs.previewPanel);
-  }
 
   refs.privacyModal?.addEventListener("click", (event) => {
     if (event.target === refs.privacyModal) {

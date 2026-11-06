@@ -250,27 +250,6 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     });
   }
 
-  function syncEditorPanelHeight() {
-    if (!refs.editorPanel || !refs.previewPanel) {
-      return;
-    }
-
-    syncCollapsibleHeights();
-
-    const isDesktop = window.matchMedia("(min-width: 1181px)").matches;
-    if (!isDesktop) {
-      refs.editorPanel.style.height = "";
-      refs.editorPanel.style.maxHeight = "";
-      return;
-    }
-
-    const previewHeight = Math.round(refs.previewPanel.getBoundingClientRect().height);
-    if (previewHeight > 0) {
-      refs.editorPanel.style.height = `${previewHeight}px`;
-      refs.editorPanel.style.maxHeight = `${previewHeight}px`;
-    }
-  }
-
   return {
     applyTheme,
     applyI18n,
@@ -284,7 +263,6 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     setLanguageLevelSelectOpen,
     closeLanguageLevelSelects,
     setCollapsibleState,
-    syncCollapsibleHeights,
-    syncEditorPanelHeight
+    syncCollapsibleHeights
   };
 }
