@@ -1,6 +1,6 @@
 body {
-  font-family: var(--font-body);
-  color: var(--text-main);
+  font-family: var(--font-ui);
+  color: var(--ui-text);
   background:
     radial-gradient(circle at 14% 20%, var(--bg-1) 0%, transparent 35%),
     radial-gradient(circle at 90% 82%, var(--bg-2) 0%, transparent 45%),
@@ -12,6 +12,12 @@ body.theme-dark {
     radial-gradient(circle at 12% 20%, var(--bg-1) 0%, transparent 38%),
     radial-gradient(circle at 92% 84%, var(--bg-2) 0%, transparent 44%),
     linear-gradient(120deg, var(--bg-0), #060b13 46%, #0a131d);
+}
+
+/* The paper inherits from body: pin what it inherited before the interface font. */
+.resume-preview {
+  font-family: var(--font-body);
+  color: var(--text-main);
 }
 
 .bg-noise {
