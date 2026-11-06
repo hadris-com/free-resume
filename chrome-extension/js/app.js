@@ -1,6 +1,7 @@
 import { createEditorRenderers } from "./editor-renderers.js";
 import { createEventHandlers } from "./event-handlers.js";
 import { createCvTranslationGetter, createUiTranslationGetter } from "./i18n.js";
+import { createNotices } from "./notices.js";
 import { createPersistence } from "./persistence.js";
 import { getPageMetrics } from "./page-layout.js";
 import { createPrintHelpers } from "./print-helpers.js";
@@ -77,7 +78,7 @@ const { sanitizeResumeState, validateResumeShape } = createResumeNormalization({
 });
 
 // Persistence handles localStorage draft lifecycle + raw JSON import/export.
-const { parseRawResumePayload, loadDraftFromLocalStorage, saveDraftToLocalStorage, downloadRawResume } = createPersistence({
+const { parseRawResumePayload, loadDraftFromLocalStorage, saveDraftToLocalStorage: persistDraftToLocalStorage, downloadRawResume } = createPersistence({
   getState: () => state,
   sanitizeResumeState,
   validateResumeShape
@@ -101,7 +102,8 @@ const { syncStaticInputsFromState, applyImportedState, syncSampleButtonState } =
   state,
   refs,
   uiControls,
-  getSampleModeEnabled: () => sampleModeEnabled
+  getSampleModeEnabled: () => sampleModeEnabled,
+  isResumeBlank: () => isResumeBlank()
 });
 
 // Print helpers manage print-specific behavior and page-break markers.
@@ -120,6 +122,8 @@ const { renderTemplate, getTemplateClasses, isResumeBlank } = createPreviewRende
 });
 
 // Editor renderers generate repeatable editor sections (experience, education, etc.).
+const { showNotice } = createNotices({ getUiTranslation });
+
 const { renderDynamicEditors } = createEditorRenderers({
   state,
   refs,
@@ -127,6 +131,13 @@ const { renderDynamicEditors } = createEditorRenderers({
   skillLevels,
   normalizeSkillLevel
 });
+
+// Sample content is never persisted: a reload after loading the sample returns to the user's own draft.
+function saveDraftToLocalStorage() {
+  if (!sampleModeEnabled) {
+    persistDraftToLocalStorage();
+  }
+}
 
 // Rebuild preview DOM from current state and persist draft after every render.
 function renderPreview() {
@@ -141,6 +152,7 @@ function renderPreview() {
   insertPageBreakMarkers();
   uiControls.syncEditorPanelHeight();
   saveDraftToLocalStorage();
+  syncSampleButtonState();
 }
 
 // Event handlers orchestrate user actions across all modules.
@@ -163,7 +175,8 @@ const { handleRawFileChange, handleInput, handleClick } = createEventHandlers({
   buildSampleResumeState,
   downloadRawResume,
   saveDraftToLocalStorage,
-  openPdfDialog
+  openPdfDialog,
+  showNotice
 });
 
 // App bootstrap: load draft, sync UI, render once, then attach listeners.

@@ -1,6 +1,6 @@
 import { toBoolean } from "./utils.js";
 
-export function createStateSync({ state, refs, uiControls, getSampleModeEnabled }) {
+export function createStateSync({ state, refs, uiControls, getSampleModeEnabled, isResumeBlank }) {
   function syncStaticInputsFromState() {
     refs.templateSelect.value = state.template;
     uiControls.syncTemplateSelectUI();
@@ -61,6 +61,8 @@ export function createStateSync({ state, refs, uiControls, getSampleModeEnabled 
       return;
     }
 
+    // Sample is offered only on a blank resume (or while it is on, to turn it off again).
+    refs.sampleBtn.hidden = !(getSampleModeEnabled() || isResumeBlank());
     refs.sampleBtn.setAttribute("aria-pressed", String(getSampleModeEnabled()));
   }
 
