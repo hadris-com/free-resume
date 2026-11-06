@@ -120,7 +120,7 @@ select {
   border-radius: 12px;
   border: 1px solid var(--input-border);
   background: var(--paper-bg);
-  box-shadow: var(--panel-shadow);
+  box-shadow: var(--ui-shadow);
   padding: 0.35rem;
   display: none;
 }

@@ -1,17 +1,7 @@
 body {
   font-family: var(--font-ui);
   color: var(--ui-text);
-  background:
-    radial-gradient(circle at 14% 20%, var(--bg-1) 0%, transparent 35%),
-    radial-gradient(circle at 90% 82%, var(--bg-2) 0%, transparent 45%),
-    linear-gradient(120deg, var(--bg-0), #f8fafc 42%, #f5f5f4);
-}
-
-body.theme-dark {
-  background:
-    radial-gradient(circle at 12% 20%, var(--bg-1) 0%, transparent 38%),
-    radial-gradient(circle at 92% 84%, var(--bg-2) 0%, transparent 44%),
-    linear-gradient(120deg, var(--bg-0), #060b13 46%, #0a131d);
+  background: var(--ui-bg);
 }
 
 /* The paper inherits from body: pin what it inherited before the interface font. */
@@ -20,22 +10,7 @@ body.theme-dark {
   color: var(--text-main);
 }
 
-.bg-noise {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.06;
-  background-image: radial-gradient(circle, #000 1px, transparent 1px);
-  background-size: 4px 4px;
-}
-
-body.theme-dark .bg-noise {
-  background-image: radial-gradient(circle, #fff 1px, transparent 1px);
-}
-
 .app-shell {
-  position: relative;
-  z-index: 1;
   width: min(1480px, 100% - 2.5rem);
   margin-block: 1.2rem 1.4rem;
   margin-inline: auto;
@@ -50,13 +25,8 @@ body.theme-dark .bg-noise {
   padding-block: 1.1rem;
   padding-inline: 1.3rem;
   border-radius: 20px;
-  border: 1px solid var(--panel-glass-border);
-  background: linear-gradient(160deg, var(--panel-bg-top), var(--panel-bg-bottom));
-  -webkit-backdrop-filter: var(--panel-blur);
-  backdrop-filter: var(--panel-blur);
-  box-shadow:
-    inset 0 1px 0 var(--panel-glass-highlight),
-    var(--panel-shadow);
+  border: 1px solid var(--ui-separator);
+  background: var(--ui-surface);
 }
 
 .brand h1 {
@@ -150,13 +120,8 @@ body.theme-dark .theme-dot {
 .editor-panel,
 .preview-panel {
   border-radius: 22px;
-  border: 1px solid var(--panel-glass-border);
-  background: linear-gradient(160deg, var(--panel-bg-top), var(--panel-bg-bottom));
-  -webkit-backdrop-filter: var(--panel-blur);
-  backdrop-filter: var(--panel-blur);
-  box-shadow:
-    inset 0 1px 0 var(--panel-glass-highlight),
-    var(--panel-shadow);
+  border: 1px solid var(--ui-separator);
+  background: var(--ui-surface);
 }
 
 .preview-panel {
@@ -205,14 +170,9 @@ body.theme-dark .theme-dot {
 
 /* ---- Privacy Modal ---- */
 .privacy-modal {
-  border: 1px solid var(--panel-glass-border);
+  border: 1px solid var(--ui-separator);
   border-radius: 22px;
-  background: linear-gradient(160deg, var(--panel-bg-top), var(--panel-bg-bottom));
-  -webkit-backdrop-filter: var(--panel-blur);
-  backdrop-filter: var(--panel-blur);
-  box-shadow:
-    inset 0 1px 0 var(--panel-glass-highlight),
-    var(--panel-shadow);
+  background: var(--ui-surface);
   color: var(--text-main);
   max-width: min(600px, calc(100% - 2rem));
   max-height: calc(100dvh - 4rem);
@@ -221,8 +181,7 @@ body.theme-dark .theme-dot {
 }
 
 .privacy-modal::backdrop {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .privacy-modal-content {
