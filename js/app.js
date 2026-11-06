@@ -72,7 +72,7 @@ const refs = {
 
 let sampleModeEnabled = false;
 
-// The bootstrap render saves too: with no draft yet, that is not news until the user changes something.
+// The bootstrap render saves too: on a blank resume, that is not news until the user changes something.
 let saveStatusEnabled = false;
 
 // i18n getters resolve labels against the currently selected UI/CV language.
@@ -198,8 +198,8 @@ function init() {
   const savedDraft = loadDraftFromLocalStorage();
   if (savedDraft) {
     applyImportedState(savedDraft);
-    saveStatusEnabled = true;
   }
+  saveStatusEnabled = !isResumeBlank();
 
   syncStaticInputsFromState();
 

@@ -374,7 +374,7 @@ body {
     scrollbar-gutter: stable;
   }
 
-  .view-switch {
+  .topbar .view-switch {
     display: none;
   }
 }

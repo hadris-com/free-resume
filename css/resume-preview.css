@@ -64,6 +64,13 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
 }
 
+/* In dark mode the control colour equals the track, so the selection needs the stronger fill. */
+body.theme-dark .cv-lang-btn.active,
+body.theme-dark .page-size-btn.active,
+body.theme-dark .view-btn.active {
+  background: var(--ui-fill-strong);
+}
+
 .resume-preview {
   display: grid;
   place-items: center;
