@@ -1,5 +1,7 @@
-import { buildEntrySummary } from "./entry-summary.js";
+import { buildEntrySummary, isPresentValue } from "./entry-summary.js";
 import { createFactories } from "./factories.js";
+import { autosizeHighlight, highlightRowMarkup } from "./highlight-rows.js";
+import { createCvTranslationGetter } from "./i18n.js";
 import { resolvePageSize } from "./page-layout.js";
 import { templateCatalog } from "./preview-renderers.js";
 import { toBoolean } from "./utils.js";
@@ -157,6 +159,17 @@ export function createEventHandlers({
       return;
     }
 
+    if (target.dataset.presentToggle !== undefined && target instanceof HTMLInputElement) {
+      setPresent(Number(target.dataset.index), target);
+      return;
+    }
+
+    if (target.dataset.highlight !== undefined && target instanceof HTMLTextAreaElement) {
+      autosizeHighlight(target);
+      commitHighlights(target.closest(".highlights-list"));
+      return;
+    }
+
     if (target.dataset.list && target.dataset.key) {
       const listName = target.dataset.list;
       const index = Number(target.dataset.index);
@@ -197,6 +210,175 @@ export function createEventHandlers({
     title.classList.toggle("is-placeholder", summary.isEmpty);
     row.querySelector(".repeat-item-dates").textContent = summary.dates;
   }
+
+  // ---- Experience dates: the Present switch stores plain text in `end`, so the JSON format is unchanged ----
+  const endBeforePresent = new WeakMap();
+  const getCvTranslation = createCvTranslationGetter(() => state.cvLang);
+
+  function setPresent(index, toggle) {
+    const item = state.experience[index];
+    const endInput = toggle.closest(".repeat-item-body")?.querySelector('input[data-key="end"]');
+    if (!item || !endInput) {
+      return;
+    }
+    leaveSampleMode();
+    if (toggle.checked) {
+      if (!isPresentValue(item.end)) {
+        endBeforePresent.set(item, item.end);
+        item.end = getCvTranslation("placeholders.present");
+      }
+    } else if (isPresentValue(item.end)) {
+      item.end = endBeforePresent.get(item) ?? "";
+      endBeforePresent.delete(item);
+    }
+    endInput.value = item.end;
+    endInput.disabled = toggle.checked;
+    updateEntryRow("experience", index, endInput);
+    renderPreview();
+  }
+
+  // ---- Experience highlights: one textarea row per line, stored back as a newline-separated string ----
+  function highlightRows(list) {
+    return Array.from(list.querySelectorAll(".highlight-input"));
+  }
+
+  function commitHighlights(list) {
+    const item = list && state.experience[Number(list.dataset.index)];
+    if (!item) {
+      return;
+    }
+    leaveSampleMode();
+    item.bullets = highlightRows(list)
+      .map((input) => input.value)
+      .filter((line) => line.trim() !== "")
+      .join("\n");
+    renderPreview();
+    syncCollapsibleHeights();
+  }
+
+  function renumberHighlights(list) {
+    const label = getUiTranslation("fields.highlightItem");
+    highlightRows(list).forEach((input, i) => input.setAttribute("aria-label", `${label} ${i + 1}`));
+  }
+
+  function insertHighlightAfter(row, text) {
+    const holder = document.createElement("div");
+    holder.innerHTML = highlightRowMarkup(getUiTranslation, text, 0);
+    const created = holder.firstElementChild;
+    row.after(created);
+    return created.querySelector(".highlight-input");
+  }
+
+  function focusHighlight(input, caret = input.value.length) {
+    autosizeHighlight(input);
+    input.focus();
+    input.setSelectionRange(caret, caret);
+  }
+
+  function removeHighlightRow(row, { focus = true } = {}) {
+    const list = row.parentElement;
+    const rows = Array.from(list.children);
+    if (rows.length === 1) {
+      const only = row.querySelector(".highlight-input");
+      only.value = "";
+      autosizeHighlight(only);
+      if (focus) {
+        only.focus();
+      }
+    } else {
+      const neighbour = row.previousElementSibling || row.nextElementSibling;
+      const toPrevious = Boolean(row.previousElementSibling);
+      row.remove();
+      renumberHighlights(list);
+      if (focus) {
+        const input = neighbour.querySelector(".highlight-input");
+        focusHighlight(input, toPrevious ? input.value.length : 0);
+      }
+    }
+    commitHighlights(list);
+  }
+
+  function handleHighlightKeydown(event) {
+    const input = event.target;
+    if (!(input instanceof HTMLTextAreaElement) || input.dataset.highlight === undefined || event.isComposing) {
+      return;
+    }
+    const row = input.closest(".highlight-row");
+    const list = row.parentElement;
+
+    if (event.key === "Enter" && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      event.preventDefault();
+      const caret = input.selectionStart;
+      const rest = input.value.slice(input.selectionEnd);
+      input.value = input.value.slice(0, caret);
+      const created = insertHighlightAfter(row, rest);
+      renumberHighlights(list);
+      autosizeHighlight(input);
+      focusHighlight(created, 0);
+      commitHighlights(list);
+      return;
+    }
+
+    if (event.key === "Backspace" && input.value === "" && list.children.length > 1 && row.previousElementSibling) {
+      event.preventDefault();
+      removeHighlightRow(row);
+    }
+  }
+
+  // Pasted multi-line text becomes several rows; stray list markers are dropped.
+  function handleHighlightPaste(event) {
+    const input = event.target;
+    if (!(input instanceof HTMLTextAreaElement) || input.dataset.highlight === undefined) {
+      return;
+    }
+    const text = event.clipboardData?.getData("text") ?? "";
+    if (!/[\r\n]/.test(text)) {
+      return;
+    }
+    event.preventDefault();
+    const lines = text
+      .split(/\r?\n/)
+      .map((line) => line.replace(/^\s*[-•*·]\s+/, "").trim())
+      .filter(Boolean);
+    if (!lines.length) {
+      return;
+    }
+    const row = input.closest(".highlight-row");
+    const list = row.parentElement;
+    const before = input.value.slice(0, input.selectionStart);
+    const after = input.value.slice(input.selectionEnd);
+    input.value = before + lines[0];
+    let last = input;
+    let caret = input.value.length;
+    lines.slice(1).forEach((line, i, rest) => {
+      const isLast = i === rest.length - 1;
+      last = insertHighlightAfter(last.closest(".highlight-row"), isLast ? line + after : line);
+      caret = line.length;
+    });
+    if (lines.length === 1) {
+      input.value += after;
+    }
+    renumberHighlights(list);
+    highlightRows(list).forEach(autosizeHighlight);
+    focusHighlight(last, caret);
+    commitHighlights(list);
+  }
+
+  [refs.experienceList].forEach((container) => {
+    container?.addEventListener("keydown", handleHighlightKeydown);
+    container?.addEventListener("paste", handleHighlightPaste);
+    // Rows measured while hidden (collapsed or another mobile tab) get their real height once used.
+    container?.addEventListener("focusin", (event) => {
+      if (event.target instanceof HTMLTextAreaElement && event.target.dataset.highlight !== undefined) {
+        autosizeHighlight(event.target);
+      }
+    });
+  });
+
+  // Wrapping changes with the panel width, so re-measure the rows.
+  window.addEventListener("resize", () => {
+    refs.experienceList?.querySelectorAll(".highlight-input").forEach(autosizeHighlight);
+  });
 
   const listContainers = () => ({
     experience: refs.experienceList,
@@ -285,6 +467,21 @@ export function createEventHandlers({
     const trigger = event.target.closest("button");
 
     if (!trigger) {
+      return;
+    }
+
+    if (trigger.dataset.action === "remove-highlight") {
+      // detail 0 means keyboard-activated: keep focus in the list. A tap or click should not summon a keyboard.
+      removeHighlightRow(trigger.closest(".highlight-row"), { focus: event.detail === 0 });
+      return;
+    }
+
+    if (trigger.dataset.action === "add-highlight") {
+      const list = trigger.parentElement.querySelector(".highlights-list");
+      const last = list.lastElementChild;
+      const created = insertHighlightAfter(last, "");
+      renumberHighlights(list);
+      focusHighlight(created, 0);
       return;
     }
 
