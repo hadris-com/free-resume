@@ -479,7 +479,21 @@ textarea {
 
 @media screen and (max-width: 760px) {
   .field-grid,
-  .repeat-item-grid {
+  .repeat-item-grid,
+  .repeat-item-grid.experience-grid {
     grid-template-columns: 1fr;
+  }
+
+  .repeat-item-grid .field-span-2 {
+    grid-column: auto;
+  }
+
+  /* iOS zooms the page when a focused field is below 16px. */
+  input,
+  textarea,
+  select,
+  .custom-select-trigger,
+  .custom-select-option {
+    font-size: 16px;
   }
 }

@@ -78,6 +78,13 @@ body {
   min-height: 100%;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
