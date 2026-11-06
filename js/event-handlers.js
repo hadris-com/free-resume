@@ -40,7 +40,8 @@ export function createEventHandlers({
     syncCollapsibleHeights,
     syncSectionToggles,
     toggleMoreMenu,
-    closeMoreMenu
+    closeMoreMenu,
+    setMobileView
   } = uiControls;
 
   // Deep copy so later edits never leak into a pending undo.
@@ -223,6 +224,11 @@ export function createEventHandlers({
 
     if (trigger.dataset.action === "toggle-more-menu") {
       toggleMoreMenu();
+      return;
+    }
+
+    if (trigger.dataset.view) {
+      setMobileView(trigger.dataset.view);
       return;
     }
 

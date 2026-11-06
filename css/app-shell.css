@@ -366,4 +366,39 @@ body {
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
   }
+
+  .view-switch {
+    display: none;
+  }
+}
+
+/* One view at a time under the shared page scroll, with the bar kept in reach. */
+@media screen and (max-width: 760px) {
+  .topbar {
+    position: sticky;
+    inset-block-start: 0;
+    flex-wrap: wrap;
+    gap: var(--ui-space-2);
+    padding-inline: var(--ui-space-3);
+  }
+
+  .view-switch {
+    order: 1;
+  }
+
+  /*
+   * Out of sight but still laid out: editor section heights and page-break markers are
+   * measured while the other view is showing, and display: none would measure them as 0.
+   */
+  .workspace[data-view="edit"] > .preview-panel,
+  .workspace[data-view="preview"] > .editor-panel {
+    height: 0;
+    padding-block: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+
+  .preview-panel {
+    overflow-x: clip;
+  }
 }

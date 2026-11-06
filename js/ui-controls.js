@@ -1,3 +1,4 @@
+import { getPageMetrics } from "./page-layout.js";
 import { toBoolean } from "./utils.js";
 
 export function createUiControls({ state, refs, getUiTranslation }) {
@@ -320,6 +321,46 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     }
   }
 
+  // Scale the page's real width down to the paper area. Layout and print are untouched: see paper-fit.css.
+  function syncPaperFit() {
+    const { previewPanel, resumePreview } = refs;
+    const page = resumePreview?.querySelector(".resume-page");
+    if (!previewPanel || !page) {
+      return;
+    }
+
+    const panelStyle = window.getComputedStyle(previewPanel);
+    const available =
+      previewPanel.clientWidth -
+      (Number.parseFloat(panelStyle.paddingLeft) || 0) -
+      (Number.parseFloat(panelStyle.paddingRight) || 0);
+    const { widthPx } = getPageMetrics(state.pageSize);
+    const scale = available > 0 ? Math.min(1, available / widthPx) : 1;
+
+    resumePreview.style.setProperty("--paper-scale", String(scale));
+    resumePreview.style.setProperty("--paper-height", `${Math.ceil(page.offsetHeight * scale)}px`);
+  }
+
+  // The choice lasts for this page load; each view keeps its own scroll position.
+  const mobileViewScroll = { edit: 0, preview: 0 };
+
+  function setMobileView(view) {
+    const workspace = refs.workspace;
+    const current = workspace?.dataset.view;
+    if (!workspace || !(view in mobileViewScroll) || view === current) {
+      return;
+    }
+
+    mobileViewScroll[current] = window.scrollY;
+    workspace.dataset.view = view;
+    document.querySelectorAll(".view-btn").forEach((button) => {
+      const isActive = button.dataset.view === view;
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+    window.scrollTo(0, mobileViewScroll[view]);
+  }
+
   return {
     applyTheme,
     applyI18n,
@@ -336,6 +377,8 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     syncCollapsibleHeights,
     toggleMoreMenu,
     closeMoreMenu,
-    handleMoreMenuKeydown
+    handleMoreMenuKeydown,
+    syncPaperFit,
+    setMobileView
   };
 }

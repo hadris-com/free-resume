@@ -55,6 +55,7 @@ const refs = {
   rawFileInput: document.getElementById("raw-file-input"),
   resumePreview: document.getElementById("resume-preview"),
   previewPanel: document.querySelector(".preview-panel"),
+  workspace: document.getElementById("workspace"),
   experienceList: document.getElementById("experience-list"),
   educationList: document.getElementById("education-list"),
   skillsList: document.getElementById("skills-list"),
@@ -153,6 +154,7 @@ function renderPreview() {
   refs.resumePreview.style.setProperty("--name-font-scale", state.nameFontSize / 100);
   insertPageBreakMarkers();
   uiControls.syncCollapsibleHeights();
+  uiControls.syncPaperFit();
   saveDraftToLocalStorage();
   syncSampleButtonState();
 }
@@ -183,7 +185,7 @@ const { handleRawFileChange, handleInput, handleClick } = createEventHandlers({
 
 // App bootstrap: load draft, sync UI, render once, then attach listeners.
 function init() {
-  const { applyTheme, applyI18n, syncSectionToggles, syncCollapsibleHeights } = uiControls;
+  const { applyTheme, applyI18n, syncSectionToggles, syncCollapsibleHeights, syncPaperFit } = uiControls;
 
   const savedDraft = loadDraftFromLocalStorage();
   if (savedDraft) {
@@ -207,6 +209,11 @@ function init() {
   window.addEventListener("afterprint", restorePrintPages);
   document.addEventListener("click", handleClick);
   refs.moreMenu?.addEventListener("keydown", uiControls.handleMoreMenuKeydown);
+  document.fonts?.ready.then(syncPaperFit);
+
+  if ("ResizeObserver" in window && refs.previewPanel) {
+    new ResizeObserver(syncPaperFit).observe(refs.previewPanel);
+  }
 
   refs.privacyModal?.addEventListener("click", (event) => {
     if (event.target === refs.privacyModal) {
