@@ -425,3 +425,93 @@ body {
     overflow-x: clip;
   }
 }
+
+/* ---- Theme item in the more menu ---- */
+#theme-toggle.more-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+}
+
+.theme-icon {
+  flex: none;
+  color: var(--ui-text-secondary);
+}
+
+.theme-icon-sun {
+  display: none;
+}
+
+body.theme-dark .theme-icon-sun {
+  display: block;
+}
+
+body.theme-dark .theme-icon-moon {
+  display: none;
+}
+
+/* ---- Privacy: plain text under headings ---- */
+.privacy-section + .privacy-section {
+  border-block-start: 0;
+}
+
+.privacy-section {
+  padding-block: var(--ui-space-2);
+}
+
+/* ---- Footer: one discreet line ---- */
+.app-footer {
+  flex-wrap: nowrap;
+  border-block-start-color: transparent;
+}
+
+.app-footer .lang-switch-label,
+.app-footer .lang-btn,
+.app-footer .footer-link,
+.app-footer .privacy-link {
+  font-size: 0.75rem;
+}
+
+@media screen and (max-width: 760px) {
+  .lang-switch-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+}
+
+/* ---- Touch targets: small screens and coarse pointers reach 44px ---- */
+@media screen and (max-width: 760px), (pointer: coarse) {
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .primary-btn,
+  .text-btn,
+  .more-menu-item,
+  .privacy-modal-close,
+  .lang-btn,
+  .footer-link,
+  .privacy-link,
+  .view-btn,
+  .cv-lang-btn,
+  .page-size-btn {
+    min-height: 44px;
+  }
+
+  .lang-btn,
+  .view-btn,
+  .cv-lang-btn,
+  .page-size-btn {
+    min-width: 44px;
+  }
+
+  .footer-link,
+  .privacy-link {
+    display: inline-flex;
+    align-items: center;
+  }
+}
