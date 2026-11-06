@@ -14,6 +14,7 @@
     /* A cool tint, just short of neutral: the workspace reads as a place, not as blank gray. */
     --ui-stage: #e4e8f0;
     --ui-stage-light: #f2f4f9;
+    --ui-page-gap: #ccd2de;
     --ui-bg: #f2f4f8;
     --ui-panel: #fafbfd;
     --ui-raised: #ffffff;
@@ -38,6 +39,7 @@
   body.theme-dark {
     --ui-stage: #141416;
     --ui-stage-light: #1d1d20;
+    --ui-page-gap: #141416;
     --ui-bg: #17171a;
     --ui-panel: #1e1e21;
     --ui-surface: #242427;
@@ -137,10 +139,6 @@
   .resume-preview .resume-page {
     border-radius: 6px;
     box-shadow: var(--ui-elev-paper);
-  }
-
-  .page-break-line {
-    border-block-start: 1px dashed rgba(128, 128, 128, 0.32);
   }
 
   /* Chrome floats above the stage. */
