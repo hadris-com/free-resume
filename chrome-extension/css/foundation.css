@@ -37,6 +37,12 @@
   --ui-radius-md: 10px;
   --ui-radius-lg: 14px;
 
+  /* One easing throughout. Durations: hover and press, a change of state, a change of layout. */
+  --ui-ease: cubic-bezier(0.2, 0, 0, 1);
+  --ui-dur-1: 120ms;
+  --ui-dur-2: 200ms;
+  --ui-dur-3: 280ms;
+
   /* ---- Resume paper: read by resume-preview.css, templates and print.css ---- */
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Manrope", "Segoe UI", sans-serif;

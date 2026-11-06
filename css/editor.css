@@ -167,39 +167,6 @@ textarea {
   gap: var(--ui-space-3);
 }
 
-.name-field-group {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--ui-space-2);
-  grid-column: 1 / -1;
-}
-
-.name-field-label {
-  flex: 65;
-  min-width: 0;
-}
-
-.name-size-inline {
-  flex: 35;
-  display: flex;
-  align-items: center;
-  gap: var(--ui-space-1);
-  padding-block-end: var(--ui-space-1);
-}
-
-.name-size-inline input[type="range"] {
-  flex: 1;
-  min-width: 0;
-  cursor: pointer;
-}
-
-.name-size-inline output {
-  font-size: var(--ui-text-sm);
-  font-variant-numeric: tabular-nums;
-  color: var(--muted);
-  min-width: 4ch;
-}
-
 .section-heading-row {
   display: flex;
   align-items: center;
@@ -647,4 +614,108 @@ textarea {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* ---- Section identity ---- */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+  min-width: 0;
+}
+
+.section-icon {
+  flex: none;
+  box-sizing: content-box;
+  padding: 5px;
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-fill);
+  color: var(--ui-text-secondary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.panel-section h2 {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.section-heading-row {
+  margin-block-end: var(--ui-space-3);
+}
+
+.panel-section {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* The section being edited. */
+.panel-section:focus-within {
+  background: color-mix(in srgb, var(--ui-accent) 4%, var(--ui-surface));
+  box-shadow: inset 3px 0 0 var(--ui-accent);
+}
+
+.panel-section:focus-within .section-icon {
+  background: var(--ui-accent-soft);
+  color: var(--ui-accent);
+}
+
+/* ---- Name size: its own labelled row ---- */
+.name-size-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 4ch;
+  align-items: center;
+  gap: var(--ui-space-3);
+}
+
+.name-size-row > label {
+  color: var(--ui-text-secondary);
+}
+
+.name-size-row input[type="range"] {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.name-size-row output {
+  font-size: var(--ui-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--ui-text-secondary);
+  text-align: end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-icon,
+  .panel-section {
+    transition: none;
+  }
+}
+
+/* ---- Touch targets: small screens and coarse pointers reach 44px ---- */
+@media screen and (max-width: 760px), (pointer: coarse) {
+  input:not([type="range"]),
+  select,
+  .custom-select-trigger,
+  .custom-select-option,
+  .add-row,
+  .add-btn,
+  .remove-btn,
+  .skill-level-toggle,
+  .repeat-item-toggle,
+  .name-size-row input[type="range"] {
+    min-height: 44px;
+  }
+
+  .collapse-btn,
+  .section-toggle,
+  .remove-icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .skill-item {
+    padding-block-start: calc(44px + var(--ui-space-1));
+  }
 }

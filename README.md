@@ -49,8 +49,8 @@ Then visit `http://localhost:5500`.
 > [!TIP]
 > - The editor starts **blank** intentionally.
 > - The skills section appears automatically after you add a skill.
-> - Use **Print** for paper output and **Save PDF** for exporting a PDF file.
-> - Use **Download raw CV** to save your resume data as JSON, and **Upload raw CV** to restore it later.
+> - Use **Export PDF** to print or save your resume as a PDF file.
+> - Use **Export JSON** to save your resume data as JSON, and **Import** to restore it later.
 
 ## 🧩 Chrome Extension — LinkedIn Import
 

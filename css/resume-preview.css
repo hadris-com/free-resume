@@ -91,25 +91,46 @@ body.theme-dark .view-btn.active {
   box-shadow: 0 20px 40px rgba(2, 6, 23, 0.2);
 }
 
+/*
+ * Where one sheet ends and the next begins. On screen the text runs on across this line, so
+ * nothing here covers the text column: a hairline, the faint shadow the upper sheet casts,
+ * and everything else inside the page margin.
+ */
 .page-break-line {
   position: absolute;
   inset-inline: 0;
-  height: 0;
+  height: 10px;
   pointer-events: none;
   z-index: 2;
-  border-block-start: 2px dashed rgba(128, 128, 128, 0.4);
+  border-block-start: 1px solid rgba(128, 128, 128, 0.3);
+  background: linear-gradient(rgba(15, 23, 42, 0.045), transparent);
 }
 
+/* The gap around the paper reaches in from both edges, as it would between two sheets. */
+.page-break-line::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: -5px;
+  height: 8px;
+  background:
+    linear-gradient(to right, var(--ui-page-gap, transparent), transparent 24px),
+    linear-gradient(to left, var(--ui-page-gap, transparent), transparent 24px);
+}
+
+/* Upright text would need the width of the margin; set along it, the label stays clear of the text. */
 .page-break-line::after {
   content: attr(data-label);
   position: absolute;
-  inset-inline-end: 0.6rem;
-  inset-block-start: 0.3rem;
-  font-size: 0.55rem;
+  top: 10px;
+  right: 5px;
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  font-size: 0.5rem;
   font-family: var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(128, 128, 128, 0.5);
+  color: rgba(128, 128, 128, 0.75);
 }
 
 .resume-page h1,
