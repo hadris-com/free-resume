@@ -22,7 +22,17 @@ body {
 }
 
 .brand {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
   margin-inline-end: auto;
+}
+
+.brand-logo {
+  display: block;
+  flex: none;
+  width: 24px;
+  height: 24px;
 }
 
 .brand h1 {
