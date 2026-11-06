@@ -1,6 +1,7 @@
 import { createEditorRenderers } from "./editor-renderers.js";
 import { createEventHandlers } from "./event-handlers.js";
 import { createCvTranslationGetter, createUiTranslationGetter } from "./i18n.js";
+import { createNotices } from "./notices.js";
 import { createPersistence } from "./persistence.js";
 import { getPageMetrics } from "./page-layout.js";
 import { createPrintHelpers } from "./print-helpers.js";
@@ -120,6 +121,8 @@ const { renderTemplate, getTemplateClasses, isResumeBlank } = createPreviewRende
 });
 
 // Editor renderers generate repeatable editor sections (experience, education, etc.).
+const { showNotice } = createNotices({ getUiTranslation });
+
 const { renderDynamicEditors } = createEditorRenderers({
   state,
   refs,
@@ -163,7 +166,8 @@ const { handleRawFileChange, handleInput, handleClick } = createEventHandlers({
   buildSampleResumeState,
   downloadRawResume,
   saveDraftToLocalStorage,
-  openPdfDialog
+  openPdfDialog,
+  showNotice
 });
 
 // App bootstrap: load draft, sync UI, render once, then attach listeners.

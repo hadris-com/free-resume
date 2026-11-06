@@ -20,7 +20,8 @@ export function createEventHandlers({
   buildSampleResumeState,
   downloadRawResume,
   saveDraftToLocalStorage,
-  openPdfDialog
+  openPdfDialog,
+  showNotice
 }) {
   const { createExperience, createEducation, createSkill, createLanguage } = createFactories({
     getState: () => state
@@ -71,7 +72,7 @@ export function createEventHandlers({
       syncSampleButtonState();
     } catch (error) {
       console.error(error);
-      window.alert(getUiTranslation("errors.invalidRawFile"));
+      showNotice({ message: getUiTranslation("errors.invalidRawFile"), isError: true });
     } finally {
       target.value = "";
     }
