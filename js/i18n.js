@@ -143,7 +143,11 @@ const translations = {
     "privacy.lastUpdated": "Last updated: February 2026",
     "footer.jobKanban": "Job Kanban",
     "privacy.footer": "Privacy",
-    "privacy.close": "Close"
+    "privacy.close": "Close",
+    "entries.newExperience": "New experience",
+    "entries.newEducation": "New education",
+    "actions.moveUp": "Move up",
+    "actions.moveDown": "Move down"
   },
   es: {
     "brand.title": "Free Resume",
@@ -289,7 +293,11 @@ const translations = {
     "privacy.lastUpdated": "Última actualización: febrero de 2026",
     "footer.jobKanban": "Job Kanban",
     "privacy.footer": "Privacidad",
-    "privacy.close": "Cerrar"
+    "privacy.close": "Cerrar",
+    "entries.newExperience": "Nueva experiencia",
+    "entries.newEducation": "Nueva educación",
+    "actions.moveUp": "Subir",
+    "actions.moveDown": "Bajar"
   },
   de: {
     "brand.title": "Free Resume",
@@ -435,7 +443,11 @@ const translations = {
     "privacy.lastUpdated": "Letzte Aktualisierung: Februar 2026",
     "footer.jobKanban": "Job Kanban",
     "privacy.footer": "Datenschutz",
-    "privacy.close": "Schließen"
+    "privacy.close": "Schließen",
+    "entries.newExperience": "Neue Erfahrung",
+    "entries.newEducation": "Neue Ausbildung",
+    "actions.moveUp": "Nach oben",
+    "actions.moveDown": "Nach unten"
   }
 };
 

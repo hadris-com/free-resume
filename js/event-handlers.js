@@ -1,3 +1,4 @@
+import { buildEntrySummary } from "./entry-summary.js";
 import { createFactories } from "./factories.js";
 import { resolvePageSize } from "./page-layout.js";
 import { templateCatalog } from "./preview-renderers.js";
@@ -165,6 +166,7 @@ export function createEventHandlers({
         leaveSampleMode();
         state[listName][index][key] =
           target instanceof HTMLInputElement && target.type === "checkbox" ? target.checked : target.value;
+        updateEntryRow(listName, index, target);
         syncCollapsibleHeights();
         renderPreview();
       }
@@ -180,6 +182,56 @@ export function createEventHandlers({
 
   }
 
+  // Keep the collapsed row text in step with typing, without re-rendering (which would drop focus).
+  function updateEntryRow(listName, index, field) {
+    if (listName !== "experience" && listName !== "education") {
+      return;
+    }
+    const row = field.closest(".repeat-item")?.querySelector(".repeat-item-summary");
+    if (!row) {
+      return;
+    }
+    const summary = buildEntrySummary(listName, state[listName][index], getUiTranslation);
+    const title = row.querySelector(".repeat-item-title");
+    title.textContent = summary.title;
+    title.classList.toggle("is-placeholder", summary.isEmpty);
+    row.querySelector(".repeat-item-dates").textContent = summary.dates;
+  }
+
+  const listContainers = () => ({
+    experience: refs.experienceList,
+    education: refs.educationList,
+    skills: refs.skillsList,
+    languages: refs.languagesList
+  });
+
+  // A new entry opens expanded, so focus its first field.
+  function addListItem(listName, factory) {
+    leaveSampleMode();
+    state[listName].push(factory());
+    renderDynamicEditors();
+    renderPreview();
+    const items = listContainers()[listName]?.querySelectorAll(".repeat-item");
+    items?.[items.length - 1]?.querySelector("input, textarea")?.focus();
+  }
+
+  function moveListItem(listName, index, direction) {
+    const list = state[listName];
+    const target = index + direction;
+    if (!Array.isArray(list) || !list[index] || target < 0 || target >= list.length) {
+      return;
+    }
+    leaveSampleMode();
+    [list[index], list[target]] = [list[target], list[index]];
+    renderDynamicEditors();
+    renderPreview();
+    const container = listContainers()[listName];
+    const selector = (dir) => `[data-action="move-item"][data-index="${target}"][data-direction="${dir}"]`;
+    const same = container?.querySelector(selector(direction));
+    // At the end of the list the same direction is disabled; hand focus to the opposite control.
+    (same && !same.disabled ? same : container?.querySelector(selector(-direction)))?.focus();
+  }
+
   function setRepeatItemCollapsed(trigger, isCollapsed, collapsedTitleText = "") {
     const repeatItem = trigger.closest(".repeat-item");
     if (!repeatItem) {
@@ -187,6 +239,9 @@ export function createEventHandlers({
     }
 
     setCollapsibleState(repeatItem, ".repeat-item-body", isCollapsed, { trigger, animate: true });
+    // The row's own text is its accessible name; aria-expanded carries the state.
+    trigger.removeAttribute("aria-label");
+    trigger.removeAttribute("title");
 
     const collapsedTitle = repeatItem.querySelector(".skill-collapsed-title");
     if (collapsedTitle) {
@@ -196,7 +251,18 @@ export function createEventHandlers({
       collapsedTitle.setAttribute("aria-hidden", String(!isCollapsed));
     }
 
-    syncCollapsibleHeights();
+    // The entry body is still animating, so measuring the section now would cache a partial height.
+    // Let the section grow freely and measure once the entry body has settled.
+    const sectionBody = repeatItem.closest(".section-body");
+    if (sectionBody instanceof HTMLElement && !repeatItem.closest(".panel-section.is-collapsed")) {
+      sectionBody.style.maxHeight = "none";
+    }
+    const body = repeatItem.querySelector(".repeat-item-body");
+    body?.addEventListener("transitionend", (transitionEvent) => {
+      if (transitionEvent.propertyName === "max-height") {
+        syncCollapsibleHeights();
+      }
+    }, { once: true });
   }
 
   function handleClick(event) {
@@ -331,27 +397,23 @@ export function createEventHandlers({
       return;
     }
 
-    if (trigger.id === "add-experience-btn" || trigger.dataset.action === "add-experience") {
-      leaveSampleMode();
-      state.experience.push(createExperience());
-      renderDynamicEditors();
-      renderPreview();
+    if (trigger.dataset.action === "add-experience") {
+      addListItem("experience", createExperience);
       return;
     }
 
-    if (trigger.id === "add-education-btn") {
-      leaveSampleMode();
-      state.education.push(createEducation());
-      renderDynamicEditors();
-      renderPreview();
+    if (trigger.dataset.action === "add-education") {
+      addListItem("education", createEducation);
       return;
     }
 
-    if (trigger.id === "add-skill-btn" || trigger.dataset.action === "add-skill") {
-      leaveSampleMode();
-      state.skills.push(createSkill());
-      renderDynamicEditors();
-      renderPreview();
+    if (trigger.dataset.action === "add-skill") {
+      addListItem("skills", createSkill);
+      return;
+    }
+
+    if (trigger.dataset.action === "move-item") {
+      moveListItem(trigger.dataset.list, Number(trigger.dataset.index), Number(trigger.dataset.direction));
       return;
     }
 
@@ -447,11 +509,8 @@ export function createEventHandlers({
       return;
     }
 
-    if (trigger.id === "add-language-btn" || trigger.dataset.action === "add-language") {
-      leaveSampleMode();
-      state.languages.push(createLanguage());
-      renderDynamicEditors();
-      renderPreview();
+    if (trigger.dataset.action === "add-language") {
+      addListItem("languages", createLanguage);
       return;
     }
 
