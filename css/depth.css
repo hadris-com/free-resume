@@ -1,0 +1,98 @@
+/* Elevation and the paper's stage. Screen only, so printed output never changes. */
+@media screen {
+  :root {
+    --ui-elev-1: 0 0 0 1px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.06);
+    --ui-elev-2: 0 0 0 1px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.05), 0 8px 20px rgba(15, 23, 42, 0.08);
+    --ui-elev-3: 0 0 0 1px rgba(15, 23, 42, 0.06), 0 4px 8px rgba(15, 23, 42, 0.06), 0 20px 48px rgba(15, 23, 42, 0.18);
+    --ui-elev-paper: 0 0 0 1px rgba(15, 23, 42, 0.05), 0 2px 6px rgba(15, 23, 42, 0.06), 0 12px 28px rgba(15, 23, 42, 0.09), 0 32px 64px rgba(15, 23, 42, 0.1);
+    --ui-stage: #e8eaef;
+    --ui-stage-light: #f4f5f8;
+    --ui-shadow: var(--ui-elev-3);
+  }
+
+  body.theme-dark {
+    --ui-elev-1: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.5);
+    --ui-elev-2: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 2px 4px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.45);
+    --ui-elev-3: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 4px 8px rgba(0, 0, 0, 0.4), 0 20px 48px rgba(0, 0, 0, 0.6);
+    --ui-elev-paper: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.45), 0 32px 64px rgba(0, 0, 0, 0.5);
+    --ui-stage: #0c0c0e;
+    --ui-stage-light: #17171a;
+    --ui-shadow: var(--ui-elev-3);
+  }
+
+  /* The paper sits on a softly lit stage. */
+  .preview-panel {
+    background: radial-gradient(ellipse 80% 55% at 50% 0, var(--ui-stage-light), var(--ui-stage));
+  }
+
+  /* The paper scrolls beneath this bar, so it is a material rather than a flat band. */
+  .preview-toolbar {
+    background: transparent;
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    backdrop-filter: blur(14px) saturate(150%);
+  }
+
+  .resume-preview {
+    border: 0;
+    background: transparent;
+  }
+
+  .resume-preview .resume-page {
+    border-radius: 6px;
+    box-shadow: var(--ui-elev-paper);
+  }
+
+  .page-break-line {
+    border-block-start: 1px dashed rgba(128, 128, 128, 0.32);
+  }
+
+  /* Chrome floats above the stage. */
+  .topbar {
+    border-block-end-color: transparent;
+    box-shadow: var(--ui-elev-1);
+  }
+
+  .editor-panel {
+    position: relative;
+    z-index: 2;
+    box-shadow: var(--ui-elev-2);
+  }
+
+  /* Entries read as cards, and the open one lifts. */
+  .repeat-item {
+    background: var(--ui-surface);
+    box-shadow: var(--ui-elev-1);
+    transition: box-shadow 0.2s ease;
+  }
+
+  body.theme-dark .repeat-item {
+    background: var(--ui-item);
+  }
+
+  .repeat-item:not(.is-collapsed) {
+    box-shadow: var(--ui-elev-2);
+  }
+
+  /* Controls get a little physical weight. */
+  input:not([type="range"]),
+  textarea,
+  .custom-select-trigger {
+    box-shadow: 0 1px 1px rgba(15, 23, 42, 0.04);
+  }
+
+  #pdf-btn {
+    box-shadow: 0 1px 2px rgba(0, 60, 140, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .cv-lang-btn.active,
+  .page-size-btn.active,
+  .lang-btn.active {
+    box-shadow: var(--ui-elev-1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .repeat-item {
+      transition: none;
+    }
+  }
+}
