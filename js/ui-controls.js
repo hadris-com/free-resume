@@ -361,6 +361,13 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     window.scrollTo(0, mobileViewScroll[view]);
   }
 
+  // The live region stays in place and its text stays the same: only a change of state is announced.
+  function setSaveStatusVisible(visible) {
+    if (refs.saveStatusText) {
+      refs.saveStatusText.hidden = !visible;
+    }
+  }
+
   return {
     applyTheme,
     applyI18n,
@@ -379,6 +386,7 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     closeMoreMenu,
     handleMoreMenuKeydown,
     syncPaperFit,
-    setMobileView
+    setMobileView,
+    setSaveStatusVisible
   };
 }

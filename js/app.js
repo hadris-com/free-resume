@@ -56,6 +56,7 @@ const refs = {
   resumePreview: document.getElementById("resume-preview"),
   previewPanel: document.querySelector(".preview-panel"),
   workspace: document.getElementById("workspace"),
+  saveStatusText: document.getElementById("save-status-text"),
   experienceList: document.getElementById("experience-list"),
   educationList: document.getElementById("education-list"),
   skillsList: document.getElementById("skills-list"),
@@ -70,6 +71,9 @@ const refs = {
 };
 
 let sampleModeEnabled = false;
+
+// The bootstrap render saves too: with no draft yet, that is not news until the user changes something.
+let saveStatusEnabled = false;
 
 // i18n getters resolve labels against the currently selected UI/CV language.
 const getUiTranslation = createUiTranslationGetter(() => state.uiLang);
@@ -138,9 +142,13 @@ const { renderDynamicEditors } = createEditorRenderers({
 
 // Sample content is never persisted: a reload after loading the sample returns to the user's own draft.
 function saveDraftToLocalStorage() {
-  if (!sampleModeEnabled) {
-    persistDraftToLocalStorage();
+  if (sampleModeEnabled) {
+    uiControls.setSaveStatusVisible(false);
+    return;
   }
+
+  const saved = persistDraftToLocalStorage();
+  uiControls.setSaveStatusVisible(saved && saveStatusEnabled);
 }
 
 // Rebuild preview DOM from current state and persist draft after every render.
@@ -190,6 +198,7 @@ function init() {
   const savedDraft = loadDraftFromLocalStorage();
   if (savedDraft) {
     applyImportedState(savedDraft);
+    saveStatusEnabled = true;
   }
 
   syncStaticInputsFromState();
@@ -200,6 +209,7 @@ function init() {
   renderPreview();
   syncSampleButtonState();
   syncSectionToggles();
+  saveStatusEnabled = true;
 
   refs.rawFileInput?.addEventListener("change", handleRawFileChange);
   refs.editorPanel.addEventListener("input", handleInput);

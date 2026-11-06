@@ -33,6 +33,13 @@ body {
   white-space: nowrap;
 }
 
+.save-status {
+  margin: 0;
+  color: var(--ui-text-secondary);
+  font-size: var(--ui-text-sm);
+  white-space: nowrap;
+}
+
 .topbar-controls {
   display: flex;
   align-items: center;
@@ -382,8 +389,14 @@ body {
     padding-inline: var(--ui-space-3);
   }
 
+  /* Second row: view switch on the left, save status on the right. */
   .view-switch {
     order: 1;
+  }
+
+  .save-status {
+    order: 2;
+    margin-inline-start: auto;
   }
 
   /*
