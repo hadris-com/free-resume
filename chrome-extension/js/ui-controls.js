@@ -1,7 +1,26 @@
 import { getPageMetrics } from "./page-layout.js";
 import { toBoolean } from "./utils.js";
 
+// Match --ui-dur-2, --ui-dur-3 and --ui-ease in foundation.css.
+const ENTRY_MOTION_MS = 200;
+const COLLAPSE_MOTION_MS = 280;
+const MOTION_EASING = "cubic-bezier(0.2, 0, 0, 1)";
+
+const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 export function createUiControls({ state, refs, getUiTranslation }) {
+  const collapseTimers = new WeakMap();
+
+  // While this class is on, depth.css clips the body and lets its inline max-height apply.
+  function markCollapseAnimating(container) {
+    container.classList.add("is-animating");
+    clearTimeout(collapseTimers.get(container));
+    collapseTimers.set(
+      container,
+      setTimeout(() => container.classList.remove("is-animating"), COLLAPSE_MOTION_MS + 40)
+    );
+  }
+
   function setCollapseTriggerState(trigger, isCollapsed) {
     if (!(trigger instanceof HTMLButtonElement)) {
       return;
@@ -19,6 +38,7 @@ export function createUiControls({ state, refs, getUiTranslation }) {
 
     if (body instanceof HTMLElement) {
       if (animate) {
+        markCollapseAnimating(container);
         if (isCollapsed) {
           body.style.maxHeight = `${body.scrollHeight}px`;
           container.classList.add("is-collapsed");
@@ -361,12 +381,98 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     window.scrollTo(0, mobileViewScroll[view]);
   }
 
+  let savePulseTimer = null;
+
   // The live region stays in place and its text stays the same: only a change of state is announced.
+  // The check mark confirms a save once typing pauses, so it keeps still during a burst of keys.
   function setSaveStatusVisible(visible) {
-    if (refs.saveStatusText) {
-      refs.saveStatusText.hidden = !visible;
+    const text = refs.saveStatusText;
+    if (!text) {
+      return;
+    }
+    text.hidden = !visible;
+    clearTimeout(savePulseTimer);
+    if (visible && !prefersReducedMotion()) {
+      savePulseTimer = setTimeout(() => {
+        text.animate(
+          [{ opacity: 0.2, scale: 0.5 }, { opacity: 1, scale: 1 }],
+          { duration: COLLAPSE_MOTION_MS, easing: MOTION_EASING, pseudoElement: "::before" }
+        );
+      }, 250);
     }
   }
+
+  // The lists are re-rendered from state, so entry motion runs around that render: a removal plays
+  // first and replays its click afterwards; an addition or a move plays on the new elements.
+  function entryFrames(item) {
+    const { height, paddingTop, paddingBottom } = window.getComputedStyle(item);
+    const gap = window.getComputedStyle(item.parentElement).rowGap;
+    return [
+      { height: "0px", paddingTop: "0px", paddingBottom: "0px", marginBottom: `-${gap}`, opacity: 0, overflow: "clip" },
+      { height, paddingTop, paddingBottom, marginBottom: "0px", opacity: 1, overflow: "clip" }
+    ];
+  }
+
+  let isRemovingEntry = false;
+  let isReplayingRemoval = false;
+
+  function animateEntryOut(trigger) {
+    const item = trigger.closest(".repeat-item");
+    isRemovingEntry = true;
+    item.animate(entryFrames(item).reverse(), { duration: ENTRY_MOTION_MS, easing: MOTION_EASING, fill: "forwards" });
+    // A timer, not the animation's end: a hidden page may never finish it, and the removal must still happen.
+    setTimeout(() => {
+      isRemovingEntry = false;
+      isReplayingRemoval = true;
+      trigger.click();
+      isReplayingRemoval = false;
+    }, ENTRY_MOTION_MS);
+  }
+
+  function animateEntryMove(list, from, to) {
+    const entries = () => list.querySelectorAll(":scope > .repeat-item");
+    const tops = [...entries()].map((item) => item.getBoundingClientRect().top);
+    requestAnimationFrame(() => {
+      entries().forEach((item, position) => {
+        const previous = position === from ? to : position === to ? from : position;
+        const offset = tops[previous] - item.getBoundingClientRect().top;
+        if (offset) {
+          item.animate(
+            [{ transform: `translateY(${offset}px)` }, { transform: "none" }],
+            { duration: ENTRY_MOTION_MS, easing: MOTION_EASING }
+          );
+        }
+      });
+    });
+  }
+
+  refs.editorPanel?.addEventListener("click", (event) => {
+    const trigger = event.target.closest?.("button[data-action]");
+    const list = trigger?.closest(".repeat-list");
+    if (!list || isReplayingRemoval || prefersReducedMotion()) {
+      return;
+    }
+
+    // The pending removal targets an index, so nothing may change the list until it has run.
+    if (isRemovingEntry) {
+      event.stopPropagation();
+      return;
+    }
+
+    const { action } = trigger.dataset;
+    if (action.startsWith("remove-") && trigger.closest(".repeat-item")) {
+      event.stopPropagation();
+      animateEntryOut(trigger);
+    } else if (action.startsWith("add-")) {
+      requestAnimationFrame(() => {
+        const item = [...list.querySelectorAll(":scope > .repeat-item")].pop();
+        item?.animate(entryFrames(item), { duration: ENTRY_MOTION_MS, easing: MOTION_EASING });
+      });
+    } else if (action === "move-item") {
+      const from = Number(trigger.dataset.index);
+      animateEntryMove(list, from, from + Number(trigger.dataset.direction));
+    }
+  }, true);
 
   return {
     applyTheme,
