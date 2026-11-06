@@ -46,12 +46,6 @@
         </div>
 
         <div class="topbar-controls">
-          <div class="lang-switch" role="group" aria-label="Language">
-            <button type="button" class="lang-btn active" data-lang="en">EN</button>
-            <button type="button" class="lang-btn" data-lang="es">ES</button>
-            <button type="button" class="lang-btn" data-lang="de">DE</button>
-          </div>
-
           <button id="sample-btn" type="button" class="text-btn" aria-pressed="false" data-i18n="actions.sample" hidden>
             Sample
           </button>
@@ -334,16 +328,24 @@
       </main>
 
       <footer class="app-footer">
-        <a
-          class="footer-link"
-          href="https://job.hadris.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-i18n="footer.jobKanban"
-        >
-          Job Kanban
-        </a>
-        <button type="button" class="privacy-link" id="privacy-btn" data-i18n="privacy.footer">Privacy</button>
+        <div class="lang-switch" role="group" aria-labelledby="ui-lang-label">
+          <span class="lang-switch-label" id="ui-lang-label" data-i18n="fields.interfaceLanguage">Interface language</span>
+          <button type="button" class="lang-btn active" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="es">ES</button>
+          <button type="button" class="lang-btn" data-lang="de">DE</button>
+        </div>
+        <div class="footer-links">
+          <a
+            class="footer-link"
+            href="https://job.hadris.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-i18n="footer.jobKanban"
+          >
+            Job Kanban
+          </a>
+          <button type="button" class="privacy-link" id="privacy-btn" data-i18n="privacy.footer">Privacy</button>
+        </div>
       </footer>
     </div>
 
