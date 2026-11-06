@@ -417,12 +417,12 @@ export function createEventHandlers({
       return;
     }
 
-    if (trigger.id === "upload-raw-btn") {
+    if (trigger.id === "upload-raw-btn" || trigger.dataset.action === "first-run-import") {
       refs.rawFileInput?.click();
       return;
     }
 
-    if (trigger.id === "sample-btn") {
+    if (trigger.id === "sample-btn" || trigger.dataset.action === "first-run-sample") {
       if (getSampleModeEnabled()) {
         // Leaving sample mode puts back exactly what was there before, keeping current language and theme.
         const { uiLang, cvLang, theme } = state;

@@ -134,4 +134,127 @@
       transform: none;
     }
   }
+
+  /* ======== First run ======== */
+
+  /*
+   * A card resting on the blank sheet, below the sheet's "Your Name" heading. The sheet stays: it
+   * shows the chosen template, and it is what typing fills in. The wrapper takes up no height, so
+   * the paper sits exactly where it does with content. Under the toolbar, which stays on top.
+   */
+  .first-run {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    height: 0;
+  }
+
+  .first-run-card {
+    flex: none;
+    align-self: flex-start;
+    width: min(21rem, 100% - var(--ui-space-5));
+    margin-block-start: calc(13rem * var(--paper-scale, 1));
+    padding: var(--ui-space-5);
+    border-radius: var(--ui-radius-lg);
+    background: var(--ui-raised);
+    box-shadow: var(--ui-elev-3);
+    color: var(--ui-text);
+    text-align: center;
+    animation: ui-rise-in var(--ui-dur-3) var(--ui-ease);
+  }
+
+  .first-run.is-leaving {
+    pointer-events: none;
+  }
+
+  .first-run.is-leaving .first-run-card {
+    animation: first-run-leave var(--ui-dur-2) var(--ui-ease) forwards;
+  }
+
+  @keyframes first-run-leave {
+    to {
+      opacity: 0;
+      transform: translateY(4px) scale(0.98);
+    }
+  }
+
+  .first-run-title {
+    margin: 0;
+    font-size: var(--ui-text-xl);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .first-run-hint {
+    margin-block: var(--ui-space-2) var(--ui-space-5);
+    margin-inline: 0;
+    color: var(--ui-text-secondary);
+    font-size: var(--ui-text-md);
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .first-run-actions {
+    display: grid;
+    gap: var(--ui-space-2);
+  }
+
+  .first-run-actions button {
+    min-height: 2.5rem;
+    white-space: normal;
+    font-size: var(--ui-text-md);
+    transition:
+      background-color var(--ui-dur-1) var(--ui-ease),
+      box-shadow var(--ui-dur-1) var(--ui-ease),
+      scale var(--ui-dur-1) var(--ui-ease);
+  }
+
+  .first-run-actions button:active {
+    scale: 0.98;
+  }
+
+  .first-run-secondary {
+    padding: var(--ui-space-2) var(--ui-space-3);
+    border: 0;
+    border-radius: var(--ui-radius-md);
+    background: var(--ui-hover);
+    color: var(--ui-text);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .first-run-secondary:hover {
+    background: var(--ui-press);
+  }
+
+  /* The card offers Sample while it shows. The Edit view on a phone has no paper, so the bar keeps it. */
+  @media (min-width: 761px) {
+    body.is-first-run #sample-btn {
+      display: none;
+    }
+  }
+
+  @media (max-width: 760px) {
+    body.is-first-run:has(.workspace[data-view="preview"]) #sample-btn {
+      display: none;
+    }
+
+    .first-run-actions button {
+      min-height: 44px;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .first-run-actions button {
+      min-height: 44px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .first-run-actions button:active {
+      scale: none;
+    }
+  }
 }

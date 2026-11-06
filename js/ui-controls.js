@@ -424,8 +424,48 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     const { widthPx } = getPageMetrics(state.pageSize);
     const scale = available > 0 ? Math.min(1, available / widthPx) : 1;
 
-    resumePreview.style.setProperty("--paper-scale", String(scale));
+    // Set on the panel, which the paper inherits it from: the first-run card lines up with the paper too.
+    previewPanel.style.setProperty("--paper-scale", String(scale));
     resumePreview.style.setProperty("--paper-height", `${Math.ceil(page.offsetHeight * scale)}px`);
+  }
+
+  let firstRunTimer = null;
+
+  // Called after every render. Whatever held focus inside the card, or the top bar's Sample button
+  // that it stands in for, hands focus over rather than dropping it on the page.
+  function setFirstRunVisible(visible) {
+    const { firstRun, firstRunSample, sampleBtn, moreMenuTrigger } = refs;
+    if (!firstRun) {
+      return;
+    }
+
+    const wasVisible = !firstRun.hidden && !firstRun.classList.contains("is-leaving");
+    document.body.classList.toggle("is-first-run", visible);
+    if (visible === wasVisible) {
+      return;
+    }
+
+    clearTimeout(firstRunTimer);
+
+    if (visible) {
+      firstRun.classList.remove("is-leaving");
+      firstRun.hidden = false;
+      if (document.activeElement === sampleBtn && sampleBtn.checkVisibility?.() === false) {
+        firstRunSample?.focus();
+      }
+      return;
+    }
+
+    if (firstRun.contains(document.activeElement)) {
+      (sampleBtn?.hidden ? moreMenuTrigger : sampleBtn)?.focus();
+    }
+
+    // A timer, not the animation's end: a hidden page may never finish it.
+    firstRun.classList.add("is-leaving");
+    firstRunTimer = setTimeout(() => {
+      firstRun.hidden = true;
+      firstRun.classList.remove("is-leaving");
+    }, prefersReducedMotion() ? 0 : ENTRY_MOTION_MS);
   }
 
   // The choice lasts for this page load; each view keeps its own scroll position.
@@ -560,6 +600,7 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     closeMoreMenu,
     handleMoreMenuKeydown,
     syncPaperFit,
+    setFirstRunVisible,
     setMobileView,
     setSaveStatusVisible
   };

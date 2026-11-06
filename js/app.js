@@ -55,6 +55,8 @@ const refs = {
   sampleBtn: document.getElementById("sample-btn"),
   rawFileInput: document.getElementById("raw-file-input"),
   resumePreview: document.getElementById("resume-preview"),
+  firstRun: document.getElementById("first-run"),
+  firstRunSample: document.getElementById("first-run-sample"),
   previewPanel: document.querySelector(".preview-panel"),
   workspace: document.getElementById("workspace"),
   saveStatusText: document.getElementById("save-status-text"),
@@ -166,6 +168,7 @@ function renderPreview() {
   uiControls.syncPaperFit();
   saveDraftToLocalStorage();
   syncSampleButtonState();
+  uiControls.setFirstRunVisible(isResumeBlank() && !sampleModeEnabled);
 }
 
 // Event handlers orchestrate user actions across all modules.

@@ -357,6 +357,17 @@
             </div>
           </div>
 
+          <div class="first-run" id="first-run" hidden>
+            <section class="first-run-card" aria-labelledby="first-run-title">
+              <h2 class="first-run-title" id="first-run-title" data-i18n="firstRun.title">Start your resume</h2>
+              <p class="first-run-hint" data-i18n="firstRun.hint">Type in the editor and this page fills in as you go.</p>
+              <div class="first-run-actions">
+                <button type="button" class="primary-btn" id="first-run-sample" data-action="first-run-sample" data-i18n="firstRun.useSample">Use the sample resume</button>
+                <button type="button" class="first-run-secondary" data-action="first-run-import" data-i18n="firstRun.import">Import a JSON file</button>
+              </div>
+            </section>
+          </div>
+
           <div id="resume-preview" class="resume-preview template-alpine"></div>
         </section>
       </main>
