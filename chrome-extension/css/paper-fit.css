@@ -29,6 +29,13 @@
   }
 }
 
+/* Phones always fit the width, so there is nothing to choose there. */
+@media screen and (max-width: 760px) {
+  .paper-zoom-control {
+    display: none;
+  }
+}
+
 /*
  * The templates turn single-column by viewport width, which would reflow the page inside
  * its scaled box: put back their page layout. This file loads after the templates and
