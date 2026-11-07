@@ -69,6 +69,11 @@
   body {
     margin: 0 !important;
     padding: 0 !important;
+  }
+
+  /* Paper color behind the page, so no strip of the app's gray shows where a sheet ends. Berlin prints as it always has. */
+  html:not(:has(.template-berlin)),
+  body:not(:has(.template-berlin)) {
     background: var(--paper-bg) !important;
   }
 
