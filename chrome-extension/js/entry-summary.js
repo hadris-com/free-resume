@@ -1,4 +1,10 @@
+import { getAllTranslations } from "./i18n.js";
 import { hasText } from "./utils.js";
+
+// An End value that already reads as "Present" in any supported language (case-insensitive).
+export function isPresentValue(value) {
+  return getAllTranslations("placeholders.present").includes(String(value ?? "").trim().toLowerCase());
+}
 
 const SEPARATOR = " · ";
 

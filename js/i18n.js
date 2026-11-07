@@ -152,7 +152,14 @@ const translations = {
     "firstRun.title": "Start your resume",
     "firstRun.hint": "Type in the editor and this page fills in as you go.",
     "firstRun.useSample": "Use the sample resume",
-    "firstRun.import": "Import a JSON file"
+    "firstRun.import": "Import a JSON file",
+    // Date and highlight editing
+    "fields.dateHint": "Free text works: Jan 2022, 04-2025, 2018",
+    "fields.highlightsList": "Highlights",
+    "fields.highlightItem": "Highlight",
+    "placeholders.highlight": "What did you achieve?",
+    "actions.addHighlight": "Add highlight",
+    "actions.removeHighlight": "Remove highlight"
   },
   es: {
     "brand.title": "Free Resume",
@@ -307,7 +314,14 @@ const translations = {
     "firstRun.title": "Empieza tu currículum",
     "firstRun.hint": "Escribe en el editor y esta página se irá completando.",
     "firstRun.useSample": "Usar el currículum de ejemplo",
-    "firstRun.import": "Importar un archivo JSON"
+    "firstRun.import": "Importar un archivo JSON",
+    // Date and highlight editing
+    "fields.dateHint": "Texto libre: Ene 2022, 04-2025, 2018",
+    "fields.highlightsList": "Logros",
+    "fields.highlightItem": "Logro",
+    "placeholders.highlight": "¿Qué lograste?",
+    "actions.addHighlight": "Añadir logro",
+    "actions.removeHighlight": "Quitar logro"
   },
   de: {
     "brand.title": "Free Resume",
@@ -462,12 +476,26 @@ const translations = {
     "firstRun.title": "Beginne deinen Lebenslauf",
     "firstRun.hint": "Schreibe im Editor, und diese Seite füllt sich nach und nach.",
     "firstRun.useSample": "Beispiel-Lebenslauf verwenden",
-    "firstRun.import": "JSON-Datei importieren"
+    "firstRun.import": "JSON-Datei importieren",
+    // Date and highlight editing
+    "fields.dateHint": "Freitext möglich: Jan 2022, 04-2025, 2018",
+    "fields.highlightsList": "Highlights",
+    "fields.highlightItem": "Highlight",
+    "placeholders.highlight": "Was hast du erreicht?",
+    "actions.addHighlight": "Highlight hinzufügen",
+    "actions.removeHighlight": "Highlight entfernen"
   }
 };
 
 function getTranslation(lang, key) {
   return translations[lang]?.[key] ?? translations.en[key] ?? key;
+}
+
+// Every language's text for a key, lowercased: lets "Present", "Actual" and "Heute" all read as the same value.
+export function getAllTranslations(key) {
+  return Object.values(translations)
+    .map((table) => String(table[key] ?? "").trim().toLowerCase())
+    .filter(Boolean);
 }
 
 export function isSupportedLanguage(lang) {
