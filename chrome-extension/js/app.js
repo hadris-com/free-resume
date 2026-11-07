@@ -48,7 +48,6 @@ const refs = {
   templateSelectTrigger: document.getElementById("template-select-trigger"),
   templateSelectValue: document.getElementById("template-select-value"),
   templateSelectMenu: document.getElementById("template-select-menu"),
-  templateSelectThumb: document.getElementById("template-select-thumb"),
   themeToggle: document.getElementById("theme-toggle"),
   sampleBtn: document.getElementById("sample-btn"),
   rawFileInput: document.getElementById("raw-file-input"),

@@ -42,7 +42,7 @@ export function createSampleStateBuilders({ getState, sanitizeResumeState }) {
           end: "Dec 2021",
           isCollapsed: true,
           bullets:
-            "Created responsive UX patterns for dashboard, billing, and analytics modules.\nRan usability tests and converted findings into prioritized product improvements.\nDefined interaction specs and states to speed up implementation handoff."
+            "Created responsive UX patterns for dashboard, billing, and analytics modules.\nRan usability tests and converted findings into prioritized product improvements."
         },
         {
           role: "UX Designer",
@@ -52,27 +52,7 @@ export function createSampleStateBuilders({ getState, sanitizeResumeState }) {
           end: "Feb 2018",
           isCollapsed: true,
           bullets:
-            "Redesigned checkout and account flows, improving conversion and repeat purchases.\nCollaborated with engineers to implement a reusable UI kit across web surfaces.\nMapped customer journeys and identified friction points across the funnel."
-        },
-        {
-          role: "Visual Designer",
-          company: "Brightside Agency",
-          location: "Berlin, Germany",
-          start: "Sep 2014",
-          end: "May 2016",
-          isCollapsed: true,
-          bullets:
-            "Delivered brand and digital design systems for early-stage technology clients.\nProduced high-fidelity web and marketing assets with clear design rationale.\nSupported stakeholder workshops to align design direction and business goals."
-        },
-        {
-          role: "Design Intern",
-          company: "Studio Mitte",
-          location: "Berlin, Germany",
-          start: "Jun 2013",
-          end: "Aug 2014",
-          isCollapsed: true,
-          bullets:
-            "Assisted with wireframes, prototypes, and visual explorations for client projects.\nPrepared design specs and asset exports for front-end implementation.\nContributed to user interviews and synthesized notes into actionable insights."
+            "Redesigned checkout and account flows, improving conversion and repeat purchases.\nCollaborated with engineers to implement a reusable UI kit across web surfaces."
         }
       ],
       education: [

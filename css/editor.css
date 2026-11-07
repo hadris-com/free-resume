@@ -64,17 +64,6 @@ select {
   margin-block-start: var(--ui-space-1);
 }
 
-.skill-editor-grid label {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ui-space-1);
-}
-
-.skill-editor-grid input,
-.skill-editor-grid .custom-select {
-  margin-block-start: 0;
-}
-
 .custom-select-trigger {
   width: 100%;
   border-radius: var(--ui-radius-md);
@@ -243,7 +232,6 @@ textarea {
 .skills-toolbar {
   display: flex;
   justify-content: flex-end;
-  margin-block-end: var(--ui-space-2);
 }
 
 .repeat-item {
@@ -257,18 +245,80 @@ textarea {
   z-index: 2;
 }
 
+/* ---- Skills and languages: one line per item, grouped into a single list ---- */
+.skill-rows {
+  position: relative;
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-item);
+}
+
+.skill-rows:focus-within,
+.skill-item:focus-within {
+  z-index: 2;
+}
+
 .skill-item {
   position: relative;
-  padding-block-start: var(--ui-space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-1);
+  padding: var(--ui-space-1);
+}
+
+/* A separator inset to the text, drawn on top of the item above. */
+.skill-item + .skill-item::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: var(--ui-space-3) 0;
+  height: 1px;
+  background: var(--ui-separator);
+}
+
+.skill-item input[type="text"] {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.skill-item input[type="text"]:focus {
+  background: var(--ui-control);
+}
+
+.skill-item .custom-select {
+  flex: none;
+  width: 9rem;
+  margin: 0;
+}
+
+.skill-item .custom-select-trigger {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ui-text-secondary);
 }
 
 .skill-item-actions {
-  position: absolute;
-  inset-block-start: var(--ui-space-2);
-  inset-inline-end: var(--ui-space-2);
+  flex: none;
   display: inline-flex;
   align-items: center;
-  gap: var(--ui-space-1);
+}
+
+/* With a mouse the actions wait for the row. Keyboard focus shows them too; touch always has them. */
+@media (hover: hover) and (pointer: fine) {
+  .skill-item-actions {
+    opacity: 0;
+    transition: opacity var(--ui-dur-1) var(--ui-ease);
+  }
+
+  .skill-item:hover .skill-item-actions,
+  .skill-item:focus-within .skill-item-actions {
+    opacity: 1;
+  }
 }
 
 .remove-icon-btn {
@@ -292,14 +342,6 @@ textarea {
 .remove-icon {
   width: 0.9rem;
   height: 0.9rem;
-}
-
-.skill-collapsed-title {
-  margin-block: 0 var(--ui-space-2);
-  margin-inline: 0;
-  font-size: var(--ui-text-md);
-  font-weight: 600;
-  color: var(--ui-text);
 }
 
 .repeat-item-grid {
@@ -692,8 +734,18 @@ textarea {
     height: 44px;
   }
 
-  .skill-item {
-    padding-block-start: calc(44px + var(--ui-space-1));
+  /* Three 44px targets leave too little room for a level as well: give the name its own line. */
+  .skill-item:has(.custom-select) {
+    flex-wrap: wrap;
+  }
+
+  .skill-item:has(.custom-select) input[type="text"] {
+    flex-basis: 100%;
+  }
+
+  .skill-item .custom-select {
+    flex: 1;
+    width: auto;
   }
 }
 

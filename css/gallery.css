@@ -5,22 +5,10 @@
 @media screen {
   /* ======== Template gallery ======== */
 
-  /* ---- Trigger: the current template, thumbnail and name ---- */
+  /* ---- Trigger: the current template's name; the previews live in the open gallery ---- */
   .template-trigger {
     justify-content: flex-start;
-    padding-block: var(--ui-space-2);
-    padding-inline: var(--ui-space-2) var(--ui-space-3);
     text-align: start;
-  }
-
-  .template-trigger-thumb {
-    flex: none;
-    width: 2.25rem;
-    height: auto;
-    aspect-ratio: 320 / 453;
-    border-radius: 3px;
-    background: #fdfdfc;
-    box-shadow: var(--ui-elev-1);
   }
 
   .template-trigger-name {

@@ -164,17 +164,19 @@
   }
 
   /* Entries read as cards, and an open one lifts. */
-  .repeat-item {
+  .repeat-item,
+  .skill-rows {
     background: var(--ui-surface);
     box-shadow: var(--ui-elev-1);
     transition: box-shadow var(--ui-dur-2) var(--ui-ease);
   }
 
-  body.theme-dark .repeat-item {
+  body.theme-dark .repeat-item,
+  body.theme-dark .skill-rows {
     background: var(--ui-item);
   }
 
-  .repeat-item:not(.is-collapsed):not(.skill-item),
+  .repeat-item:not(.is-collapsed),
   .repeat-item.is-collapsed:hover {
     box-shadow: var(--ui-elev-2);
   }

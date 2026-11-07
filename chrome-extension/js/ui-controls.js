@@ -8,8 +8,24 @@ const MOTION_EASING = "cubic-bezier(0.2, 0, 0, 1)";
 
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const PAPER_ZOOM_KEY = "free-resume:paper-zoom";
+// Below this the text stops being readable, so a very short window scrolls instead.
+const MIN_WHOLE_PAGE_SCALE = 0.5;
+// Matches the split layout in app-shell.css. Phones always fit the width.
+const splitLayout = window.matchMedia("screen and (min-width: 761px)");
+
+function loadPaperZoom() {
+  try {
+    return localStorage.getItem(PAPER_ZOOM_KEY) === "width" ? "width" : "page";
+  } catch {
+    return "page";
+  }
+}
+
 export function createUiControls({ state, refs, getUiTranslation }) {
   const collapseTimers = new WeakMap();
+  // How the app shows the paper, not part of the resume, so it stays out of the draft and the JSON.
+  let paperZoom = loadPaperZoom();
 
   // While this class is on, depth.css clips the body and lets its inline max-height apply.
   function markCollapseAnimating(container) {
@@ -129,10 +145,20 @@ export function createUiControls({ state, refs, getUiTranslation }) {
 
   function syncPageSizeUI() {
     document.querySelectorAll(".page-size-btn").forEach((button) => {
-      const isActive = button.getAttribute("data-page-size") === state.pageSize;
+      const isActive =
+        button.getAttribute("data-page-size") === state.pageSize || button.getAttribute("data-paper-zoom") === paperZoom;
       button.classList.toggle("active", isActive);
       button.setAttribute("aria-pressed", String(isActive));
     });
+  }
+
+  function setPaperZoom(value) {
+    paperZoom = value === "width" ? "width" : "page";
+    try {
+      localStorage.setItem(PAPER_ZOOM_KEY, paperZoom);
+    } catch {}
+    syncPageSizeUI();
+    syncPaperFit();
   }
 
   function syncSectionToggles() {
@@ -172,12 +198,6 @@ export function createUiControls({ state, refs, getUiTranslation }) {
 
     if (selectedLabel) {
       refs.templateSelectValue.textContent = selectedLabel;
-    }
-
-    const selectedThumb = refs.templateSelectMenu.querySelector(`[data-value="${state.template}"] img`);
-    const thumbSrc = selectedThumb?.getAttribute("src");
-    if (refs.templateSelectThumb && thumbSrc && refs.templateSelectThumb.getAttribute("src") !== thumbSrc) {
-      refs.templateSelectThumb.setAttribute("src", thumbSrc);
     }
 
     refs.templateSelectTrigger.setAttribute(
@@ -408,7 +428,7 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     }
   }
 
-  // Scale the page's real width down to the paper area. Layout and print are untouched: see paper-fit.css.
+  // Scale the page down to the paper area: one whole page, or its width. Layout and print are untouched: see paper-fit.css.
   function syncPaperFit() {
     const { previewPanel, resumePreview } = refs;
     const page = resumePreview?.querySelector(".resume-page");
@@ -421,8 +441,19 @@ export function createUiControls({ state, refs, getUiTranslation }) {
       previewPanel.clientWidth -
       (Number.parseFloat(panelStyle.paddingLeft) || 0) -
       (Number.parseFloat(panelStyle.paddingRight) || 0);
-    const { widthPx } = getPageMetrics(state.pageSize);
-    const scale = available > 0 ? Math.min(1, available / widthPx) : 1;
+    const { widthPx, heightPx } = getPageMetrics(state.pageSize);
+    let scale = available > 0 ? Math.min(1, available / widthPx) : 1;
+
+    if (paperZoom === "page" && splitLayout.matches) {
+      // The extra pixel keeps a page that fits exactly from rounding into a scrollbar.
+      const availableHeight =
+        previewPanel.clientHeight -
+        (previewPanel.querySelector(".preview-toolbar")?.offsetHeight ?? 0) -
+        (Number.parseFloat(panelStyle.paddingTop) || 0) -
+        (Number.parseFloat(panelStyle.paddingBottom) || 0) -
+        1;
+      scale = Math.min(scale, Math.max(MIN_WHOLE_PAGE_SCALE, availableHeight / heightPx));
+    }
 
     // Set on the panel, which the paper inherits it from: the first-run card lines up with the paper too.
     previewPanel.style.setProperty("--paper-scale", String(scale));
@@ -600,6 +631,7 @@ export function createUiControls({ state, refs, getUiTranslation }) {
     closeMoreMenu,
     handleMoreMenuKeydown,
     syncPaperFit,
+    setPaperZoom,
     setFirstRunVisible,
     setMobileView,
     setSaveStatusVisible

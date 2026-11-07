@@ -175,161 +175,82 @@ export function createEditorRenderers({
     refs.educationList.innerHTML += addRow("add-education", "actions.addEducation");
   }
 
-  function renderSkillsEditor() {
-    if (!state.skills.length) {
-      refs.skillsList.innerHTML = addRow("add-skill", "actions.addSkill");
+  // Skills and languages share one shape: a grouped list with one line per item.
+  // The level picker only shows while levels are on: otherwise the level reaches nothing on the page.
+  function renderLeveledList(container, kind, items, showLevels) {
+    const label = kind[0].toUpperCase() + kind.slice(1);
+    const listName = `${kind}s`;
+    const addMarkup = addRow(`add-${kind}`, `actions.add${label}`);
+
+    if (!items.length) {
+      container.innerHTML = addMarkup;
       return;
     }
 
-    const showSkillLevels = toBoolean(state.showSkillLevels, false);
-    const toggleLabel = showSkillLevels ? getUiTranslation("fields.hideSkillLevels") : getUiTranslation("fields.showSkillLevels");
-    const toggleMarkup = `
+    const isOn = toBoolean(showLevels, false);
+    const toggleLabel = getUiTranslation(`fields.${isOn ? "hide" : "show"}${label}Levels`);
+    const levelName = getUiTranslation(`fields.${kind}Level`);
+
+    const levelPicker = (item, index) => {
+      const selectedLevel = normalizeSkillLevel(item.level);
+      return `
+          <div class="custom-select ${kind}-level-select" data-index="${index}">
+            <button
+              type="button"
+              class="custom-select-trigger"
+              data-action="toggle-${kind}-level-select"
+              data-index="${index}"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-label="${escapeAttr(`${levelName}: ${getUiTranslation(`levels.${selectedLevel}`)}`)}"
+            >
+              <span class="custom-select-value">${getUiTranslation(`levels.${selectedLevel}`)}</span>
+              <span class="custom-select-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="custom-select-menu" role="listbox">
+              ${skillLevels
+                .map(
+                  (level) =>
+                    `<button type="button" class="custom-select-option" role="option" data-action="select-${kind}-level" data-index="${index}" data-value="${level}" aria-selected="${selectedLevel === level}">${getUiTranslation(
+                      `levels.${level}`
+                    )}</button>`
+                )
+                .join("")}
+            </div>
+          </div>`;
+    };
+
+    const rows = items
+      .map(
+        (item, index) => `
+        <article class="skill-item">
+          <input type="text" data-list="${listName}" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" placeholder="${getUiTranslation(`placeholders.${kind}`)}" aria-label="${escapeAttr(getUiTranslation(`fields.${kind}Name`))}" />${isOn ? levelPicker(item, index) : ""}
+          <div class="skill-item-actions">${moveButtons(listName, index, items.length)}${removeButton(`remove-${kind}`, index, "remove-btn ")}
+          </div>
+        </article>
+      `
+      )
+      .join("");
+
+    container.innerHTML = `
     <div class="skills-toolbar">
       <button
         type="button"
-        class="skill-level-toggle${showSkillLevels ? " is-active" : ""}"
-        data-action="toggle-skill-levels"
-        aria-pressed="${showSkillLevels}"
+        class="skill-level-toggle${isOn ? " is-active" : ""}"
+        data-action="toggle-${kind}-levels"
+        aria-pressed="${isOn}"
       >
         ${toggleLabel}
       </button>
     </div>
-  `;
-
-    const skillsMarkup = state.skills
-      .map(
-        (item, index) => {
-          const selectedLevel = normalizeSkillLevel(item.level);
-
-          return `
-        <article class="repeat-item skill-item">
-          <div class="skill-item-actions">${moveButtons("skills", index, state.skills.length)}${removeButton("remove-skill", index, "remove-btn ")}
-          </div>
-
-          <div class="repeat-item-body">
-            <div class="repeat-item-grid skill-editor-grid">
-              <label>
-                <span>${getUiTranslation("fields.skillName")}</span>
-                <input type="text" data-list="skills" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" placeholder="${getUiTranslation("placeholders.skill")}" />
-              </label>
-              <label>
-                <span>${getUiTranslation("fields.skillLevel")}</span>
-                <div class="custom-select skill-level-select" data-index="${index}">
-                  <button
-                    type="button"
-                    class="custom-select-trigger"
-                    data-action="toggle-skill-level-select"
-                    data-index="${index}"
-                    aria-haspopup="listbox"
-                    aria-expanded="false"
-                  >
-                    <span class="custom-select-value">${getUiTranslation(`levels.${selectedLevel}`)}</span>
-                    <span class="custom-select-chevron" aria-hidden="true"></span>
-                  </button>
-                  <div class="custom-select-menu" role="listbox">
-                    ${skillLevels
-                      .map(
-                        (level) =>
-                          `<button type="button" class="custom-select-option" role="option" data-action="select-skill-level" data-index="${index}" data-value="${level}" aria-selected="${selectedLevel === level}">${getUiTranslation(
-                            `levels.${level}`
-                          )}</button>`
-                      )
-                      .join("")}
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-        </article>
-      `;
-        }
-      )
-      .join("");
-
-    const bottomAddBtn = addRow("add-skill", "actions.addSkill");
-    refs.skillsList.innerHTML = `${toggleMarkup}${skillsMarkup}${bottomAddBtn}`;
-  }
-
-  function renderLanguagesEditor() {
-    if (!state.languages.length) {
-      refs.languagesList.innerHTML = addRow("add-language", "actions.addLanguage");
-      return;
-    }
-
-    const showLanguageLevels = toBoolean(state.showLanguageLevels, false);
-    const toggleLabel = showLanguageLevels ? getUiTranslation("fields.hideLanguageLevels") : getUiTranslation("fields.showLanguageLevels");
-    const toggleMarkup = `
-    <div class="skills-toolbar">
-      <button
-        type="button"
-        class="skill-level-toggle${showLanguageLevels ? " is-active" : ""}"
-        data-action="toggle-language-levels"
-        aria-pressed="${showLanguageLevels}"
-      >
-        ${toggleLabel}
-      </button>
-    </div>
-  `;
-
-    const languagesMarkup = state.languages
-      .map(
-        (item, index) => {
-          const selectedLevel = normalizeSkillLevel(item.level);
-
-          return `
-        <article class="repeat-item skill-item">
-          <div class="skill-item-actions">${moveButtons("languages", index, state.languages.length)}${removeButton("remove-language", index, "remove-btn ")}
-          </div>
-
-          <div class="repeat-item-body">
-            <div class="repeat-item-grid skill-editor-grid">
-              <label>
-                <span>${getUiTranslation("fields.languageName")}</span>
-                <input type="text" data-list="languages" data-index="${index}" data-key="name" value="${escapeAttr(item.name)}" placeholder="${getUiTranslation("placeholders.language")}" />
-              </label>
-              <label>
-                <span>${getUiTranslation("fields.languageLevel")}</span>
-                <div class="custom-select language-level-select" data-index="${index}">
-                  <button
-                    type="button"
-                    class="custom-select-trigger"
-                    data-action="toggle-language-level-select"
-                    data-index="${index}"
-                    aria-haspopup="listbox"
-                    aria-expanded="false"
-                  >
-                    <span class="custom-select-value">${getUiTranslation(`levels.${selectedLevel}`)}</span>
-                    <span class="custom-select-chevron" aria-hidden="true"></span>
-                  </button>
-                  <div class="custom-select-menu" role="listbox">
-                    ${skillLevels
-                      .map(
-                        (level) =>
-                          `<button type="button" class="custom-select-option" role="option" data-action="select-language-level" data-index="${index}" data-value="${level}" aria-selected="${selectedLevel === level}">${getUiTranslation(
-                            `levels.${level}`
-                          )}</button>`
-                      )
-                      .join("")}
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-        </article>
-      `;
-        }
-      )
-      .join("");
-
-    const bottomAddBtn = addRow("add-language", "actions.addLanguage");
-    refs.languagesList.innerHTML = `${toggleMarkup}${languagesMarkup}${bottomAddBtn}`;
+    <div class="skill-rows">${rows}</div>${addMarkup}`;
   }
 
   function renderDynamicEditors() {
     renderExperienceEditor();
     renderEducationEditor();
-    renderSkillsEditor();
-    renderLanguagesEditor();
+    renderLeveledList(refs.skillsList, "skill", state.skills, state.showSkillLevels);
+    renderLeveledList(refs.languagesList, "language", state.languages, state.showLanguageLevels);
   }
 
   return {
