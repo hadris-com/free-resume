@@ -430,9 +430,8 @@ export function createUiControls({ state, refs, getUiTranslation }) {
 
   // Scale the page down to the paper area: one whole page, or its width. Layout and print are untouched: see paper-fit.css.
   function syncPaperFit() {
-    const { previewPanel, resumePreview } = refs;
-    const page = resumePreview?.querySelector(".resume-page");
-    if (!previewPanel || !page) {
+    const { previewPanel } = refs;
+    if (!previewPanel) {
       return;
     }
 
@@ -455,9 +454,8 @@ export function createUiControls({ state, refs, getUiTranslation }) {
       scale = Math.min(scale, Math.max(MIN_WHOLE_PAGE_SCALE, availableHeight / heightPx));
     }
 
-    // Set on the panel, which the paper inherits it from: the first-run card lines up with the paper too.
+    // Set on the panel, which the sheets inherit it from: the first-run card lines up with the paper too.
     previewPanel.style.setProperty("--paper-scale", String(scale));
-    resumePreview.style.setProperty("--paper-height", `${Math.ceil(page.offsetHeight * scale)}px`);
   }
 
   let firstRunTimer = null;
