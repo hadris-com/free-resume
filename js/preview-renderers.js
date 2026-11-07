@@ -1,5 +1,6 @@
 import {
   buildLink,
+  buildPhoneMarkup,
   buildSocialLink,
   escapeAttr,
   escapeHtml,
@@ -23,8 +24,8 @@ export const templateCatalog = {
     baseClass: "template-atelier"
   },
   noir: {
-    renderer: "berlin",
-    baseClass: "template-berlin",
+    renderer: "columns",
+    baseClass: "template-columns",
     variantClass: "variant-noir"
   },
   fjord: {
@@ -40,8 +41,8 @@ export const templateCatalog = {
     baseClass: "template-bastion"
   },
   slate: {
-    renderer: "berlin",
-    baseClass: "template-berlin",
+    renderer: "columns",
+    baseClass: "template-columns",
     variantClass: "variant-slate"
   },
   kernel: {
@@ -222,8 +223,8 @@ export function createPreviewRenderers({ getState, getUiTranslation, getCvTransl
     };
   }
 
-  // Header above a main column and a side column. Noir and Slate are this with other colors.
-  function renderBerlinTemplate() {
+  // Header above a main column and a side column, shared by Noir and Slate.
+  function renderColumnsTemplate() {
     const identity = getIdentity();
     const main = [
       renderSection("summary", getSummaryMarkup()),
@@ -361,6 +362,203 @@ export function createPreviewRenderers({ getState, getUiTranslation, getCvTransl
   `;
   }
 
+  // Berlin keeps its original look: its own entries, chips and date format, outside the shared rules.
+  function formatBerlinRange(start, end) {
+    const cleanStart = String(start ?? "").trim();
+    const cleanEnd = String(end ?? "").trim();
+
+    if (!cleanStart && !cleanEnd) {
+      return "";
+    }
+
+    if (cleanStart && cleanEnd) {
+      return `${cleanStart} - ${cleanEnd}`;
+    }
+
+    if (cleanStart) {
+      return `${cleanStart} - ${getCvTranslation("placeholders.present")}`;
+    }
+
+    return cleanEnd;
+  }
+
+  function renderBerlinExperience() {
+    const state = getState();
+    const entries = getExperienceItems();
+
+    if (!entries.length) {
+      return "";
+    }
+
+    const entryClass = state.template === "alpine" ? "entry entry-marked" : "entry";
+
+    return entries
+      .map((item) => {
+        const role = hasText(item.role) ? item.role : getCvTranslation("placeholders.jobTitle");
+        const company = hasText(item.company) ? item.company : "";
+        const location = hasText(item.location) ? item.location : "";
+        const metaInline = company
+          ? `${getCvTranslation("labels.at")} ${company}${location ? ` · ${location}` : ""}`
+          : location;
+        const dateRange = formatBerlinRange(item.start, item.end);
+        const bullets = String(item.bullets ?? "")
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+
+        return `
+        <article class="${entryClass}">
+          <h4 class="entry-title">
+            <span class="entry-role">${escapeHtml(role)}</span>
+            ${metaInline ? `<span class="entry-meta-inline">${escapeHtml(metaInline)}</span>` : ""}
+          </h4>
+          ${dateRange ? `<p class="entry-meta entry-meta-block">${escapeHtml(dateRange)}</p>` : ""}
+          ${bullets.length ? `<ul>${bullets.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}</ul>` : ""}
+        </article>
+      `;
+      })
+      .join("");
+  }
+
+  function renderBerlinEducation() {
+    const state = getState();
+    const entries = getEducationItems();
+
+    if (!entries.length) {
+      return "";
+    }
+
+    const entryClass = state.template === "alpine" ? "entry entry-marked" : "entry";
+
+    return entries
+      .map((item) => {
+        const degree = hasText(item.degree) ? item.degree : getCvTranslation("placeholders.degree");
+        const schoolLocation = [item.school, item.location].filter(hasText).join(" · ");
+
+        return `
+        <article class="${entryClass}">
+          <div class="entry-topline">
+            <h4 class="entry-title">${escapeHtml(degree)}</h4>
+            <span class="entry-meta">${escapeHtml(formatBerlinRange(item.start, item.end))}</span>
+          </div>
+          ${schoolLocation ? `<p class="entry-company">${escapeHtml(schoolLocation)}</p>` : ""}
+        </article>
+      `;
+      })
+      .join("");
+  }
+
+  function renderBerlinSkills() {
+    const { showSkillLevels } = getState();
+    const skills = getSkillItems();
+    const showLevels = toBoolean(showSkillLevels, false);
+
+    if (!skills.length) {
+      return "";
+    }
+
+    return `
+    <div class="skill-cloud">
+      ${skills
+        .map((skill) => {
+          const levelMarkup = showLevels
+            ? `<span class="skill-chip-level">${getCvTranslation(`levels.${skill.level}`)}</span>`
+            : "";
+
+          return `<span class="skill-chip"><span>${escapeHtml(skill.name)}</span>${levelMarkup}</span>`;
+        })
+        .join("")}
+    </div>
+  `;
+  }
+
+  function renderBerlinLanguages() {
+    const { showLanguageLevels } = getState();
+    const languages = getLanguageItems();
+    const showLevels = toBoolean(showLanguageLevels, false);
+
+    if (!languages.length) {
+      return "";
+    }
+
+    return `
+    <div class="skill-cloud">
+      ${languages
+        .map((lang) => {
+          const levelMarkup = showLevels
+            ? `<span class="skill-chip-level">${getCvTranslation(`levels.${lang.level}`)}</span>`
+            : "";
+
+          return `<span class="skill-chip"><span>${escapeHtml(lang.name)}</span>${levelMarkup}</span>`;
+        })
+        .join("")}
+    </div>
+  `;
+  }
+
+  function renderBerlinTemplate() {
+    const state = getState();
+    const name = hasText(state.profile.name) ? state.profile.name : getCvTranslation("placeholders.noName");
+    const title = hasText(state.profile.title) ? state.profile.title : getCvTranslation("placeholders.noTitle");
+    const locationInHeader = toBoolean(state.alpineLocationInHeader, false);
+    const summaryMarkup = getSummaryMarkup();
+    const experienceMarkup = renderBerlinExperience();
+    const educationMarkup = renderBerlinEducation();
+    const skillsMarkup = renderBerlinSkills();
+    const languagesMarkup = renderBerlinLanguages();
+    const locationButton = buildLocationToggle(state.profile.location, locationInHeader, "resume-location-toggle");
+
+    const detailsList = [
+      state.profile.email ? `<li>${buildLink(state.profile.email)}</li>` : "",
+      state.profile.phone ? `<li>${buildPhoneMarkup(state.profile.phone)}</li>` : "",
+      !locationInHeader && locationButton ? `<li>${locationButton}</li>` : ""
+    ]
+      .filter(Boolean)
+      .join("");
+
+    const linksList = [
+      state.profile.website ? `<li>${buildLink(state.profile.website)}</li>` : "",
+      state.profile.linkedin ? `<li>${buildSocialLink(state.profile.linkedin, "linkedin")}</li>` : "",
+      state.profile.github ? `<li>${buildSocialLink(state.profile.github, "github")}</li>` : ""
+    ]
+      .filter(Boolean)
+      .join("");
+
+    const mainSections = [
+      summaryMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.summary")}</h3>${summaryMarkup}</section>` : "",
+      experienceMarkup
+        ? `<section><h3 class="section-label">${getCvTranslation("sections.experience")}</h3>${experienceMarkup}</section>`
+        : "",
+      educationMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.education")}</h3>${educationMarkup}</section>` : ""
+    ]
+      .filter(Boolean)
+      .join("");
+
+    const sidebarSections = [
+      detailsList ? `<section><h3 class="section-label">${getCvTranslation("sections.details")}</h3><ul class="details-list">${detailsList}</ul></section>` : "",
+      linksList ? `<section><h3 class="section-label">${getCvTranslation("sections.links")}</h3><ul class="links-list">${linksList}</ul></section>` : "",
+      skillsMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.skills")}</h3>${skillsMarkup}</section>` : "",
+      languagesMarkup ? `<section><h3 class="section-label">${getCvTranslation("sections.languages")}</h3>${languagesMarkup}</section>` : ""
+    ]
+      .filter(Boolean)
+      .join("");
+
+    return `
+    <article class="resume-page">
+      <header class="resume-header">
+        <h1 class="resume-name">${escapeHtml(name)}</h1>
+        <p class="resume-role">${escapeHtml(title)}</p>
+        ${locationInHeader && locationButton ? `<p class="resume-location">${locationButton}</p>` : ""}
+      </header>
+
+      <div class="resume-columns${mainSections && sidebarSections ? "" : " single-column"}">
+        ${mainSections ? `<div>${mainSections}</div>` : ""}
+        ${sidebarSections ? `<aside>${sidebarSections}</aside>` : ""}
+      </div>
+    </article>
+  `;
+  }
+
   // Editorial: one column of text under a large name, with the lists set as running text.
   function renderAtelierTemplate() {
     const identity = getIdentity();
@@ -487,6 +685,7 @@ export function createPreviewRenderers({ getState, getUiTranslation, getCvTransl
 
   const rendererMap = {
     berlin: renderBerlinTemplate,
+    columns: renderColumnsTemplate,
     aurora: renderAuroraTemplate,
     atelier: renderAtelierTemplate,
     alpine: renderAlpineTemplate,

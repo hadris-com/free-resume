@@ -81,11 +81,12 @@ body.theme-dark .view-btn.active {
 }
 
 /*
- * Three levels of text, below the name, on every template:
+ * Three levels of text, below the name, on every template but Berlin:
  *   title: section headings and entry titles
  *   body:  paragraphs, bullets and lists of skills
  *   meta:  dates, company and location, contact details and levels
- * A template may set these sizes to suit its font, but it doesn't add a level.
+ * A template may set these sizes to suit its font, but it doesn't add a level. Berlin keeps its
+ * original look: the :where() rules below skip it, and css/templates/berlin.css holds its rules.
  */
 .resume-preview {
   --type-title: 0.875rem;
@@ -102,9 +103,6 @@ body.theme-dark .view-btn.active {
   border-radius: 18px;
   background: var(--paper-bg);
   color: var(--paper-text);
-  font-family: var(--font-body);
-  font-size: var(--type-body);
-  line-height: 1.45;
   box-shadow: 0 20px 40px rgba(2, 6, 23, 0.2);
 }
 
@@ -147,47 +145,53 @@ body.theme-dark .view-btn.active {
   margin: 0;
 }
 
-.resume-page p,
-.resume-page li {
+:where(.resume-preview:not(.template-berlin)) .resume-page {
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  line-height: 1.45;
+}
+
+:where(.resume-preview:not(.template-berlin)) .resume-page p,
+:where(.resume-preview:not(.template-berlin)) .resume-page li {
   color: var(--paper-body);
 }
 
-.resume-page p {
+:where(.resume-preview:not(.template-berlin)) .resume-page p {
   margin: 0;
 }
 
-.resume-page a {
+:where(.resume-preview:not(.template-berlin)) .resume-page a {
   color: inherit;
   text-decoration: underline;
   text-decoration-color: var(--paper-divider);
   text-underline-offset: 2px;
 }
 
-.resume-page .resume-location {
+:where(.resume-preview:not(.template-berlin)) .resume-page .resume-location {
   margin-block-start: 0.2rem;
   font-size: var(--type-meta);
   color: var(--paper-muted);
 }
 
-.section-label {
+:where(.resume-preview:not(.template-berlin)) .section-label {
   font-size: var(--type-title);
   font-weight: 700;
   color: var(--paper-text);
   margin-block-end: 0.5rem;
 }
 
-.entry + .entry {
+:where(.resume-preview:not(.template-berlin)) .entry + .entry {
   margin-block-start: 0.9rem;
 }
 
-.entry-topline {
+:where(.resume-preview:not(.template-berlin)) .entry-topline {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 0.75rem;
 }
 
-.entry-title {
+:where(.resume-preview:not(.template-berlin)) .entry-title {
   font-size: var(--type-title);
   font-weight: 600;
   color: var(--paper-text);
@@ -208,13 +212,13 @@ body.theme-dark .view-btn.active {
   color: var(--paper-muted);
 }
 
-.resume-page .entry ul {
+:where(.resume-preview:not(.template-berlin)) .resume-page .entry ul {
   margin-block: 0.3rem 0;
   margin-inline: 0;
   padding-inline-start: 1rem;
 }
 
-.entry li + li {
+:where(.resume-preview:not(.template-berlin)) .entry li + li {
   margin-block-start: 0.15rem;
 }
 
