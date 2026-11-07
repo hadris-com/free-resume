@@ -23,7 +23,7 @@ body.theme-dark .template-aurora .aurora-banner {
 
 .template-aurora .aurora-name {
   font-family: var(--font-display);
-  font-size: calc(clamp(2rem, 3vw, 2.6rem) * var(--name-font-scale, 1));
+  font-size: calc(2rem * var(--name-font-scale, 1));
   letter-spacing: -0.02em;
 }
 
