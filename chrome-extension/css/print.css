@@ -31,7 +31,6 @@
   }
 
   /* ---------- Hide app chrome ---------- */
-  .bg-noise,
   .topbar,
   .editor-panel,
   .preview-toolbar,
@@ -224,10 +223,5 @@
   .template-alpine .alpine-main {
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
-  }
-
-  /* ---------- Hide empty-state placeholders ---------- */
-  .empty-copy {
-    display: none !important;
   }
 }

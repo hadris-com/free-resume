@@ -50,8 +50,6 @@ const refs = {
   templateSelectMenu: document.getElementById("template-select-menu"),
   templateSelectThumb: document.getElementById("template-select-thumb"),
   themeToggle: document.getElementById("theme-toggle"),
-  downloadRawBtn: document.getElementById("download-raw-btn"),
-  uploadRawBtn: document.getElementById("upload-raw-btn"),
   sampleBtn: document.getElementById("sample-btn"),
   rawFileInput: document.getElementById("raw-file-input"),
   resumePreview: document.getElementById("resume-preview"),
