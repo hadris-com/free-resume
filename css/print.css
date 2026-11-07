@@ -2,6 +2,56 @@
   margin: 0;
 }
 
+/*
+ * How the resume breaks across pages and fills them. Not limited to print: the preview goes
+ * through the same rules, which is what keeps each sheet on screen equal to its printed page.
+ */
+.resume-page,
+.template-aurora .aurora-side,
+.template-aurora .aurora-main,
+.template-alpine .alpine-body,
+.template-alpine .alpine-sidebar,
+.template-alpine .alpine-main {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.entry {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.section-label {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+.section-label + * {
+  page-break-before: avoid;
+  break-before: avoid;
+}
+
+/* A one-page resume stretches its inner layout to the bottom of the sheet. */
+:is(.template-aurora, .template-berlin, .template-alpine) .resume-page[data-print-page-count="1"] {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.template-aurora .resume-page[data-print-page-count="1"] .aurora-shell,
+.template-berlin .resume-page[data-print-page-count="1"] .resume-columns,
+.template-alpine .resume-page[data-print-page-count="1"] .alpine-body {
+  flex: 1 !important;
+}
+
+.template-aurora .resume-page[data-print-page-count="1"] .aurora-main {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.template-aurora .resume-page[data-print-page-count="1"] .aurora-main > section:last-child {
+  flex: 1 !important;
+}
+
 @media print {
   /* ---------- Force light palette regardless of theme ---------- */
   :root,
@@ -38,8 +88,12 @@
   .preview-toolbar,
   .first-run,
   .app-footer,
-  .privacy-modal,
-  .page-break-line {
+  .privacy-modal {
+    display: none !important;
+  }
+
+  /* The copies only show later pages on screen: the first copy flows across the real pages here. */
+  .paper-sheet + .paper-sheet {
     display: none !important;
   }
 
@@ -77,81 +131,5 @@
     box-shadow: none !important;
     color: var(--paper-text) !important;
     overflow: visible !important;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-  }
-
-
-  .entry,
-  .template-aurora .timeline li {
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-
-  .section-label,
-  .alpine-icon-heading,
-  .alpine-dot-heading {
-    page-break-after: avoid;
-    break-after: avoid-page;
-  }
-
-  .section-label + *,
-  .alpine-icon-heading + *,
-  .alpine-dot-heading + * {
-    page-break-before: avoid;
-    break-before: avoid-page;
-  }
-
-
-  /* ---------- Stretch inner layouts to fill the page ---------- */
-  .template-aurora .resume-page[data-print-page-count="1"] {
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  .template-aurora .resume-page[data-print-page-count="1"] .aurora-shell {
-    flex: 1 !important;
-  }
-
-  .template-aurora .resume-page[data-print-page-count="1"] .aurora-main {
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  .template-aurora .aurora-side,
-  .template-aurora .aurora-main {
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-  }
-
-  .template-aurora .resume-page[data-print-page-count="1"] .aurora-main > section:last-child {
-    flex: 1 !important;
-  }
-
-  .template-berlin .resume-page[data-print-page-count="1"] {
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  .template-berlin .resume-page[data-print-page-count="1"] .resume-columns {
-    flex: 1 !important;
-  }
-
-  /* ---------- Alpine: fill page in print ---------- */
-  .template-alpine .resume-page[data-print-page-count="1"] {
-    display: flex !important;
-    flex-direction: column !important;
-    background: #fdfdfc !important;
-  }
-
-  .template-alpine .resume-page[data-print-page-count="1"] .alpine-body {
-    flex: 1 !important;
-  }
-
-  .template-alpine .alpine-body,
-  .template-alpine .alpine-sidebar,
-  .template-alpine .alpine-main {
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
   }
 }

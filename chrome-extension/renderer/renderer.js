@@ -54,8 +54,7 @@ async function main() {
   // Wire print helpers
   const { openPdfDialog } = createPrintHelpers({
     getState: () => state,
-    getResumePreviewElement: () => resumeEl,
-    getUiTranslation
+    getResumePreviewElement: () => resumeEl
   });
 
   // Apply page dimensions as CSS custom properties (same as renderPreview() in app.js)
@@ -69,7 +68,7 @@ async function main() {
   resumeEl.innerHTML = renderTemplate(state.template);
 
   // Wait for fonts, then wait two animation frames for layout reflow before
-  // printing — fillPrintPages() inside openPdfDialog() needs accurate heights.
+  // printing — openPdfDialog() measures the pages.
   await document.fonts.ready;
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {

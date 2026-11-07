@@ -109,45 +109,35 @@ body.theme-dark .view-btn.active {
 }
 
 /*
- * Where one sheet ends and the next begins. On screen the text runs on across this line, so
- * nothing here covers the text column: a hairline, the faint shadow the upper sheet casts,
- * and everything else inside the page margin.
+ * The resume on separate sheets, as print lays it out: paginatePreview in print-helpers.js.
+ * The flow is a box of columns one page tall, so its content breaks by the same rules as a
+ * printed page. A sheet shows one column, and print uses the first copy on real pages instead.
  */
-.page-break-line {
-  position: absolute;
-  inset-inline: 0;
-  height: 10px;
-  pointer-events: none;
-  z-index: 2;
-  border-block-start: 1px solid rgba(128, 128, 128, 0.3);
-  background: linear-gradient(rgba(15, 23, 42, 0.045), transparent);
-}
+@media screen {
+  .paper-sheet {
+    flex: none;
+    width: calc(var(--page-width, 794px) * var(--paper-scale, 1));
+    height: calc(var(--page-height, 1123px) * var(--paper-scale, 1));
+    overflow: clip;
+  }
 
-/* The gap around the paper reaches in from both edges, as it would between two sheets. */
-.page-break-line::before {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  inset-block-start: -5px;
-  height: 8px;
-  background:
-    linear-gradient(to right, var(--ui-page-gap, transparent), transparent 24px),
-    linear-gradient(to left, var(--ui-page-gap, transparent), transparent 24px);
-}
+  .paper-sheet-flow {
+    width: var(--page-width, 794px);
+    height: var(--page-height, 1123px);
+    column-count: 1;
+    column-gap: 0;
+    column-fill: auto;
+    transform: scale(var(--paper-scale, 1)) translateX(calc(var(--sheet-index, 0) * var(--page-width, 794px) * -1));
+    transform-origin: 0 0;
+  }
 
-/* Upright text would need the width of the margin; set along it, the label stays clear of the text. */
-.page-break-line::after {
-  content: attr(data-label);
-  position: absolute;
-  top: 10px;
-  right: 5px;
-  writing-mode: vertical-rl;
-  white-space: nowrap;
-  font-size: 0.5rem;
-  font-family: var(--font-mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(128, 128, 128, 0.75);
+  /* As in print.css: these would otherwise differ from the printed page, and a box that hides its overflow can't break. */
+  .resume-preview .paper-sheet .resume-page {
+    width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+  }
 }
 
 .resume-page h1,

@@ -113,11 +113,10 @@ const { syncStaticInputsFromState, applyImportedState, syncSampleButtonState } =
   isResumeBlank: () => isResumeBlank()
 });
 
-// Print helpers manage print-specific behavior and page-break markers.
-const { insertPageBreakMarkers, fillPrintPages, restorePrintPages, openPdfDialog } = createPrintHelpers({
+// Print helpers lay the preview out on sheets and open the print dialog.
+const { paginatePreview, openPdfDialog } = createPrintHelpers({
   getState: () => state,
-  getResumePreviewElement: () => refs.resumePreview,
-  getUiTranslation
+  getResumePreviewElement: () => refs.resumePreview
 });
 
 // Preview renderers generate template HTML and compute preview-related flags/classes.
@@ -154,13 +153,16 @@ function saveDraftToLocalStorage() {
 // Rebuild preview DOM from current state and persist draft after every render.
 function renderPreview() {
   const { widthPx, heightPx } = getPageMetrics(state.pageSize);
+  const previewScrollTop = refs.previewPanel.scrollTop;
 
   refs.resumePreview.className = `resume-preview ${getTemplateClasses(state.template)}`;
   refs.resumePreview.innerHTML = renderTemplate(state.template);
   refs.resumePreview.style.setProperty("--page-width", `${widthPx}px`);
   refs.resumePreview.style.setProperty("--page-height", `${heightPx}px`);
   refs.resumePreview.style.setProperty("--name-font-scale", state.nameFontSize / 100);
-  insertPageBreakMarkers();
+  paginatePreview();
+  // Rebuilding the sheets collapses the panel for a moment, which would drop its scroll position.
+  refs.previewPanel.scrollTop = previewScrollTop;
   uiControls.syncCollapsibleHeights();
   uiControls.syncPaperFit();
   saveDraftToLocalStorage();
@@ -216,12 +218,11 @@ function init() {
   refs.editorPanel.addEventListener("input", handleInput);
   refs.editorPanel.addEventListener("change", handleInput);
   window.addEventListener("resize", syncCollapsibleHeights);
-  window.addEventListener("beforeprint", fillPrintPages);
-  window.addEventListener("afterprint", restorePrintPages);
   document.addEventListener("click", handleClick);
   refs.moreMenu?.addEventListener("keydown", uiControls.handleMoreMenuKeydown);
   refs.templateSelectWrapper?.addEventListener("keydown", uiControls.handleTemplateSelectKeydown);
-  document.fonts?.ready.then(syncPaperFit);
+  // A late font can change where the pages break.
+  document.fonts?.ready.then(paginatePreview);
 
   if ("ResizeObserver" in window && refs.previewPanel) {
     new ResizeObserver(syncPaperFit).observe(refs.previewPanel);
