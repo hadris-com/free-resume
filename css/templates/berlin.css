@@ -136,7 +136,7 @@
 
 .template-berlin .resume-name {
   font-family: var(--font-display);
-  font-size: calc(clamp(2rem, 3.7vw, 2.75rem) * var(--name-font-scale, 1));
+  font-size: calc(2rem * var(--name-font-scale, 1));
   letter-spacing: -0.02em;
 }
 

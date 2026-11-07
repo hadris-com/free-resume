@@ -49,6 +49,12 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     const paddingBlock = (Number.parseFloat(style.paddingTop) || 0) + (Number.parseFloat(style.paddingBottom) || 0);
     page.dataset.printPageCount = String(pageCount);
     page.style.setProperty("min-height", `${pageCount * heightPx - (pageCount - 1) * paddingBlock}px`, "important");
+
+    // Content pushed to a later sheet can make any fixed height spill onto one more sheet, which
+    // would print as a blank page. The last sheet then keeps its natural height instead.
+    if (page.getClientRects().length > pageCount) {
+      page.style.setProperty("min-height", "auto", "important");
+    }
   }
 
   /*

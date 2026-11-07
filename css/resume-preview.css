@@ -71,7 +71,10 @@ body.theme-dark .view-btn.active {
   background: var(--ui-fill-strong);
 }
 
+/* The paper sets its own font and color: the app's body uses the interface's, and the extension's renderer sets none. */
 .resume-preview {
+  font-family: var(--font-body);
+  color: var(--text-main);
   display: grid;
   place-items: center;
   border-radius: 16px;
