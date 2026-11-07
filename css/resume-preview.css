@@ -153,15 +153,6 @@ body.theme-dark .view-btn.active {
   padding-inline-start: 1.1rem;
 }
 
-.resume-page .empty-copy {
-  margin: 0;
-  border: 1px dashed var(--paper-divider);
-  border-radius: 12px;
-  padding: 0.65rem;
-  font-size: 0.86rem;
-  color: var(--paper-muted);
-}
-
 .section-label {
   font-family: var(--font-mono);
   text-transform: uppercase;

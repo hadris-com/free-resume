@@ -52,18 +52,6 @@
   --paper-text: #181919;
   --paper-muted: #5d6572;
   --paper-divider: rgba(16, 24, 40, 0.18);
-
-  /* ---- Former glass tokens: unused by the interface, values kept ---- */
-  --bg-0: #eef2ff;
-  --bg-1: #d5f2eb;
-  --bg-2: #f8efe1;
-  --panel-bg: rgba(255, 255, 255, 0.32);
-  --panel-bg-top: rgba(255, 255, 255, 0.5);
-  --panel-bg-bottom: rgba(255, 255, 255, 0.18);
-  --panel-blur: blur(30px) saturate(175%);
-  --panel-glass-border: rgba(255, 255, 255, 0.58);
-  --panel-glass-highlight: rgba(255, 255, 255, 0.44);
-  --panel-shadow: 0 20px 60px rgba(3, 16, 46, 0.14);
 }
 
 body.theme-dark {
@@ -88,17 +76,6 @@ body.theme-dark {
   --paper-text: #eff3fb;
   --paper-muted: #bfcae0;
   --paper-divider: rgba(191, 202, 224, 0.24);
-
-  --bg-0: #0d111c;
-  --bg-1: #0f3d45;
-  --bg-2: #3a2518;
-  --panel-bg: rgba(11, 20, 31, 0.3);
-  --panel-bg-top: rgba(31, 48, 68, 0.5);
-  --panel-bg-bottom: rgba(7, 12, 21, 0.2);
-  --panel-blur: blur(30px) saturate(175%);
-  --panel-glass-border: rgba(148, 163, 184, 0.4);
-  --panel-glass-highlight: rgba(226, 232, 240, 0.22);
-  --panel-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
 }
 
 /*
