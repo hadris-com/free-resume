@@ -1,3 +1,128 @@
+/*
+ * Berlin Classic keeps its original look, so it stays outside the shared levels and date rule in
+ * resume-preview.css. These are the rules it was built on, with the specificity they always had.
+ */
+:where(.template-berlin) .resume-page p,
+:where(.template-berlin) .resume-page li {
+  color: var(--paper-muted);
+  line-height: 1.45;
+}
+
+:where(.template-berlin) .resume-page ul {
+  margin-block-start: 0.45rem;
+  margin-inline: 0;
+  margin-block-end: 0;
+  padding-inline-start: 1.1rem;
+}
+
+:where(.template-berlin) .section-label {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--paper-text);
+  font-size: 0.68rem;
+  margin-block-end: 0.48rem;
+}
+
+:where(.template-berlin) .entry + .entry {
+  margin-block-start: 0.85rem;
+}
+
+:where(.template-berlin) .entry-topline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+:where(.template-berlin) .entry-title {
+  font-weight: 700;
+  color: var(--paper-text);
+}
+
+:where(.template-berlin) .entry-role {
+  font-weight: 700;
+}
+
+:where(.template-berlin) .entry-meta-inline {
+  margin-inline-start: 0.4rem;
+  font-weight: 500;
+  color: var(--paper-muted);
+  font-size: 0.88rem;
+}
+
+:where(.template-berlin) .entry-meta-block {
+  margin-block-start: 0.08rem;
+  margin-inline: 0;
+  margin-block-end: 0;
+}
+
+:where(.template-berlin) .entry-company {
+  margin-block-start: 0.1rem;
+  margin-inline: 0;
+  margin-block-end: 0;
+  color: var(--paper-muted);
+  font-size: 0.9rem;
+}
+
+:where(.template-berlin) .entry-meta {
+  font-size: 0.77rem;
+  letter-spacing: 0.03em;
+  color: var(--paper-muted);
+  white-space: nowrap;
+}
+
+:where(.template-berlin) .entry-meta.entry-meta-block {
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+
+:where(.template-berlin) .skill-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+}
+
+:where(.template-berlin) .skill-chip {
+  border: 1px solid var(--paper-divider);
+  border-radius: 999px;
+  padding-block: 0.22rem;
+  padding-inline: 0.52rem;
+  font-size: 0.75rem;
+  color: var(--paper-muted);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+:where(.template-berlin) .skill-chip-level {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper-text);
+}
+
+.resume-preview:where(.template-berlin) .contact-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--paper-muted);
+}
+
+.resume-preview:where(.template-berlin) .contact-icon svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  display: block;
+}
+
+.template-berlin .location-toggle svg {
+  display: inline;
+  width: 9px;
+  height: 9px;
+}
+
 /* Template 1: Berlin Classic */
 .template-berlin .resume-page {
   display: flex;
@@ -83,10 +208,4 @@
 .template-berlin .social-link-text {
   border-block-end: 1px solid var(--paper-divider);
   text-decoration: none;
-}
-
-@media screen and (max-width: 760px) {
-  .template-berlin .resume-columns {
-    grid-template-columns: 1fr;
-  }
 }

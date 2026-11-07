@@ -152,7 +152,7 @@ function extractSocialHandle(url, type) {
   }
 }
 
-export function buildSocialLink(value, type) {
+export function buildSocialLink(value, type, { plain = false } = {}) {
   const cleaned = String(value ?? "").trim();
   if (!cleaned) {
     return "";
@@ -163,6 +163,13 @@ export function buildSocialLink(value, type) {
   const fallbackHandle = cleaned.replace(/^@/, "");
   const baseUrl = type === "github" ? "https://github.com/" : "https://www.linkedin.com/in/";
   const href = isHttp ? normalized : `${baseUrl}${encodeURIComponent(fallbackHandle)}`;
+
+  // On paper the address has to work without its icon, so it reads in full.
+  if (plain) {
+    const address = href.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
+    return `<a href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(address)}</a>`;
+  }
+
   const handle = isHttp ? extractSocialHandle(normalized, type) : fallbackHandle;
   const label = handle ? `/${handle}` : cleaned;
 

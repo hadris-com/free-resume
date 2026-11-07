@@ -80,6 +80,21 @@ body.theme-dark .view-btn.active {
   padding: 1rem;
 }
 
+/*
+ * Three levels of text, below the name, on every template but Berlin:
+ *   title: section headings and entry titles
+ *   body:  paragraphs, bullets and lists of skills
+ *   meta:  dates, company and location, contact details and levels
+ * A template may set these sizes to suit its font, but it doesn't add a level. Berlin keeps its
+ * original look: the :where() rules below skip it, and css/templates/berlin.css holds its rules.
+ */
+.resume-preview {
+  --type-title: 0.875rem;
+  --type-body: 0.8125rem;
+  --type-meta: 0.75rem;
+  --paper-accent: var(--paper-text);
+}
+
 .resume-page {
   position: relative;
   width: min(var(--page-width, 794px), 100%);
@@ -130,105 +145,120 @@ body.theme-dark .view-btn.active {
   margin: 0;
 }
 
-.resume-page p,
-.resume-page li {
-  color: var(--paper-muted);
+:where(.resume-preview:not(.template-berlin)) .resume-page {
+  font-family: var(--font-body);
+  font-size: var(--type-body);
   line-height: 1.45;
 }
 
-.resume-page ul {
-  margin-block-start: 0.45rem;
-  margin-inline: 0;
-  margin-block-end: 0;
-  padding-inline-start: 1.1rem;
+:where(.resume-preview:not(.template-berlin)) .resume-page p,
+:where(.resume-preview:not(.template-berlin)) .resume-page li {
+  color: var(--paper-body);
 }
 
-.section-label {
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+:where(.resume-preview:not(.template-berlin)) .resume-page p {
+  margin: 0;
+}
+
+:where(.resume-preview:not(.template-berlin)) .resume-page a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--paper-divider);
+  text-underline-offset: 2px;
+}
+
+:where(.resume-preview:not(.template-berlin)) .resume-page .resume-location {
+  margin-block-start: 0.2rem;
+  font-size: var(--type-meta);
+  color: var(--paper-muted);
+}
+
+:where(.resume-preview:not(.template-berlin)) .section-label {
+  font-size: var(--type-title);
+  font-weight: 700;
   color: var(--paper-text);
-  font-size: 0.68rem;
-  margin-block-end: 0.48rem;
+  margin-block-end: 0.5rem;
 }
 
-.entry + .entry {
-  margin-block-start: 0.85rem;
+:where(.resume-preview:not(.template-berlin)) .entry + .entry {
+  margin-block-start: 0.9rem;
 }
 
-.entry-topline {
+:where(.resume-preview:not(.template-berlin)) .entry-topline {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.6rem;
+  gap: 0.75rem;
 }
 
-.entry-title {
-  font-weight: 700;
+:where(.resume-preview:not(.template-berlin)) .entry-title {
+  font-size: var(--type-title);
+  font-weight: 600;
   color: var(--paper-text);
+  min-width: 0;
 }
 
-.entry-role {
-  font-weight: 700;
-}
-
-.entry-meta-inline {
-  margin-inline-start: 0.4rem;
-  font-weight: 500;
-  color: var(--paper-muted);
-  font-size: 0.88rem;
-}
-
-.entry-meta-block {
-  margin-block-start: 0.08rem;
-  margin-inline: 0;
-  margin-block-end: 0;
-}
-
-.entry-company {
-  margin-block-start: 0.1rem;
-  margin-inline: 0;
-  margin-block-end: 0;
-  color: var(--paper-muted);
-  font-size: 0.9rem;
-}
-
-.entry-meta {
-  font-size: 0.77rem;
-  letter-spacing: 0.03em;
+/* The one rule for dates: meta text, aligned figures, and it never breaks across lines. */
+.entry-date {
+  flex: none;
+  font-size: var(--type-meta);
+  font-variant-numeric: tabular-nums;
   color: var(--paper-muted);
   white-space: nowrap;
 }
 
-.entry-meta.entry-meta-block {
-  font-size: 0.72rem;
-  letter-spacing: 0.02em;
+.resume-page .entry-org {
+  font-size: var(--type-meta);
+  color: var(--paper-muted);
 }
 
-.skill-cloud {
+:where(.resume-preview:not(.template-berlin)) .resume-page .entry ul {
+  margin-block: 0.3rem 0;
+  margin-inline: 0;
+  padding-inline-start: 1rem;
+}
+
+:where(.resume-preview:not(.template-berlin)) .entry li + li {
+  margin-block-start: 0.15rem;
+}
+
+.contact-list,
+.contact-line,
+.tag-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.contact-line {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.42rem;
+  gap: 0.15rem 1rem;
 }
 
-.skill-chip {
-  border: 1px solid var(--paper-divider);
-  border-radius: 999px;
-  padding-block: 0.22rem;
-  padding-inline: 0.52rem;
-  font-size: 0.75rem;
+.contact-list li,
+.contact-line li {
+  font-size: var(--type-meta);
+  color: var(--paper-body);
+  overflow-wrap: anywhere;
+}
+
+.tag-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.tag-level {
+  margin-inline-start: 0.4em;
+  font-size: var(--type-meta);
   color: var(--paper-muted);
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35rem;
-}
-
-.skill-chip-level {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--paper-text);
 }
 
 .resume-preview .location-toggle {
@@ -243,7 +273,13 @@ body.theme-dark .view-btn.active {
   gap: 0.2rem;
 }
 
+/* The pin is Alpine's: everywhere else the location reads as plain text. */
 .resume-preview .location-toggle svg {
+  display: none;
+}
+
+.template-alpine .location-toggle svg {
+  display: block;
   width: 9px;
   height: 9px;
 }
@@ -319,19 +355,5 @@ body.theme-dark .view-btn.active {
 .resume-preview .social-link-icon svg {
   width: 0.85rem;
   height: 0.85rem;
-  display: block;
-}
-
-.resume-preview .contact-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.82rem;
-  color: var(--paper-muted);
-}
-
-.resume-preview .contact-icon svg {
-  width: 0.8rem;
-  height: 0.8rem;
   display: block;
 }
