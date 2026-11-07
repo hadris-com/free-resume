@@ -115,17 +115,6 @@ export function buildLink(value) {
   return `<a href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(cleaned)}</a>`;
 }
 
-export function buildPhoneMarkup(value) {
-  const cleaned = String(value ?? "").trim();
-  if (!cleaned) {
-    return "";
-  }
-
-  const phoneIcon = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5.11 3h3a2 2 0 0 1 2 1.72c.12.86.32 1.7.59 2.5a2 2 0 0 1-.45 2.11L9 10.91a16 16 0 0 0 4.09 4.09l1.58-1.25a2 2 0 0 1 2.11-.45c.8.27 1.64.47 2.5.59A2 2 0 0 1 22 16.92z"/></svg>`;
-
-  return `<span class="contact-meta contact-phone"><span class="contact-icon">${phoneIcon}</span><span>${escapeHtml(cleaned)}</span></span>`;
-}
-
 function extractSocialHandle(url, type) {
   try {
     const parsed = new URL(url);
@@ -152,7 +141,7 @@ function extractSocialHandle(url, type) {
   }
 }
 
-export function buildSocialLink(value, type) {
+export function buildSocialLink(value, type, { plain = false } = {}) {
   const cleaned = String(value ?? "").trim();
   if (!cleaned) {
     return "";
@@ -163,6 +152,13 @@ export function buildSocialLink(value, type) {
   const fallbackHandle = cleaned.replace(/^@/, "");
   const baseUrl = type === "github" ? "https://github.com/" : "https://www.linkedin.com/in/";
   const href = isHttp ? normalized : `${baseUrl}${encodeURIComponent(fallbackHandle)}`;
+
+  // On paper the address has to work without its icon, so it reads in full.
+  if (plain) {
+    const address = href.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
+    return `<a href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(address)}</a>`;
+  }
+
   const handle = isHttp ? extractSocialHandle(normalized, type) : fallbackHandle;
   const label = handle ? `/${handle}` : cleaned;
 
