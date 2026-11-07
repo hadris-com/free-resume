@@ -1,18 +1,16 @@
 /*
- * How the paper sits in the app's paper area, on screen. Scoped to .app-shell: the
- * extension's renderer loads resume-preview.css too and has its own page around the paper.
+ * How the sheets sit in the app's paper area, on screen. Scoped to .app-shell: the extension's
+ * renderer loads resume-preview.css too and has its own page around the paper.
  *
- * The page is always laid out at its real width and scaled down when the area is narrower,
- * so it keeps its layout and its page-break markers: a transform leaves the measurements in
- * insertPageBreakMarkers alone. syncPaperFit in ui-controls.js sets --paper-scale and
- * --paper-height. Nothing here applies to print, which lays the page out on its own.
+ * Pages are always laid out at their real size and scaled down, so their layout and their breaks
+ * don't depend on the window. syncPaperFit in ui-controls.js sets --paper-scale.
  */
 @media screen {
   .app-shell .resume-preview {
-    display: block;
-    justify-items: start; /* The base place-items: center would also center the page in a block box. */
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-space-4);
     width: calc(var(--page-width, 794px) * var(--paper-scale, 1));
-    height: var(--paper-height, auto);
     margin-inline: auto;
     padding: 0;
     border: 0;
@@ -20,12 +18,6 @@
     background: transparent;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-  }
-
-  .app-shell .resume-page {
-    width: var(--page-width, 794px);
-    transform: scale(var(--paper-scale, 1));
-    transform-origin: 0 0;
   }
 }
 
