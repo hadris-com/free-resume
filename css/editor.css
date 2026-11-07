@@ -171,6 +171,12 @@ textarea {
   margin-block-end: var(--ui-space-2);
 }
 
+/* The whole header row toggles; the template section has no toggle, so no pointer. */
+.panel-section[data-section] > .section-heading-row,
+.repeat-item-head {
+  cursor: pointer;
+}
+
 .panel-section.is-collapsed .section-heading-row {
   margin-block-end: 0;
 }

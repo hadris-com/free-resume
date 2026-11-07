@@ -356,6 +356,8 @@
   .footer-link:hover,
   .privacy-link:hover,
   .collapse-btn:hover,
+  .panel-section[data-section] > .section-heading-row:hover .collapse-btn,
+  .repeat-item-head:not(:has(.repeat-item-actions:hover)):hover .repeat-item-toggle,
   .remove-icon-btn:hover,
   .privacy-modal-close:hover,
   .skill-level-toggle:hover,
