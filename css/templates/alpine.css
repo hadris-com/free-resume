@@ -1,4 +1,10 @@
-/* Template 4: Alpine Classic */
+/* Alpine Classic: a centered header above a sidebar and a column with a rail. */
+.template-alpine {
+  --type-title: 0.9rem;
+  --type-body: 0.88rem;
+  --type-meta: 0.74rem;
+}
+
 .template-alpine .resume-page {
   padding: 0;
   display: flex;
@@ -16,28 +22,40 @@
 
 .template-alpine .alpine-name {
   font-family: "Oswald", "Arial Narrow", sans-serif;
-  font-size: calc(clamp(1.8rem, 3.2vw, 2.4rem) * var(--name-font-scale, 1));
+  font-size: calc(1.8rem * var(--name-font-scale, 1));
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
-.template-alpine .alpine-dot-heading,
-.template-alpine .alpine-icon-heading {
+.template-alpine .entry + .entry {
+  margin-block-start: 0.85rem;
+}
+
+.template-alpine .entry-title {
+  line-height: normal;
+}
+
+.template-alpine .section-label {
   font-family: "Oswald", "Arial Narrow", sans-serif;
+  font-size: var(--type-title);
+  font-weight: 500;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-block-end: 0.4rem;
 }
 
 .template-alpine .alpine-meta {
   margin: 0;
   margin-block-start: 0.1rem;
-  font-size: 0.82rem;
+  font-size: var(--type-body);
   color: var(--paper-muted);
   letter-spacing: 0.03em;
 }
 
 .template-alpine .alpine-detail-meta {
-  font-size: 0.82rem;
-  color: var(--paper-muted);
-  letter-spacing: 0.03em;
+  font-size: var(--type-meta);
+  color: var(--paper-body);
 }
 
 .template-alpine .alpine-pin {
@@ -49,15 +67,11 @@
 .template-alpine .alpine-meta-location {
   margin: 0;
   margin-block-start: 0.02rem;
-  font-size: 0.69rem;
+  font-size: var(--type-meta);
 }
 
 .template-alpine .alpine-pin svg {
   vertical-align: -0.1em;
-}
-
-.template-alpine .alpine-meta-location .alpine-detail-meta {
-  font-size: 0.69rem;
 }
 
 .template-alpine .alpine-meta-location .alpine-pin svg {
@@ -98,64 +112,15 @@
   position: relative;
 }
 
-.template-alpine .alpine-dot-heading {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--paper-text);
-  margin-block-end: 0.55rem;
-  display: flex;
+.template-alpine .alpine-sidebar .contact-list,
+.template-alpine .alpine-sidebar .tag-list {
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
-.template-alpine .alpine-dot-heading::before,
-.template-alpine .alpine-dot-heading::after {
-  content: "·";
-  font-size: 1rem;
-  line-height: 1;
-  color: var(--paper-muted);
-}
-
-.template-alpine .alpine-details,
-.template-alpine .alpine-links,
-.template-alpine .alpine-skills {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.template-alpine .alpine-details li + li,
-.template-alpine .alpine-links li + li,
-.template-alpine .alpine-skills li + li {
-  margin-block-start: 0.35rem;
-}
-
-.template-alpine .alpine-details li,
-.template-alpine .alpine-links li {
-  font-size: 0.82rem;
-}
-
-.template-alpine .alpine-skills li {
-  font-size: 0.88rem;
-}
-
-.template-alpine .alpine-skill-level {
-  margin-inline-start: 0.4rem;
-  font-size: 0.75rem;
-  color: var(--paper-muted);
+.template-alpine .tag-level {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-}
-
-.template-alpine .alpine-sidebar a,
-.template-alpine .alpine-main a {
-  color: var(--paper-text);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-color: var(--paper-divider);
 }
 
 .template-alpine .alpine-sidebar a.social-icon-link {
@@ -163,12 +128,6 @@
 }
 
 .template-alpine .alpine-icon-heading {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--paper-text);
-  margin-block-end: 0.55rem;
   position: relative;
   padding-inline-start: 1.1rem;
 }
@@ -198,11 +157,11 @@
   transform: translateX(-50%);
 }
 
-.template-alpine .alpine-section-body .entry-marked {
+.template-alpine .alpine-section-body .entry {
   position: relative;
 }
 
-.template-alpine .alpine-section-body .entry-marked::after {
+.template-alpine .alpine-section-body .entry::after {
   content: "";
   position: absolute;
   inset-inline-start: calc(var(--alpine-line-x) - var(--alpine-content-offset));
@@ -216,17 +175,16 @@
 }
 
 .template-alpine .alpine-main p {
-  font-size: 0.9rem;
   line-height: 1.55;
+}
+
+.template-alpine .alpine-main .entry-org {
+  line-height: 1.45;
 }
 
 .template-alpine .alpine-main ul {
   list-style: none;
-  margin-block-start: 0.3rem;
-  margin-inline: 0;
-  margin-block-end: 0;
   padding-inline-start: 1rem;
-  font-size: 0.88rem;
   line-height: 1.5;
 }
 
@@ -243,42 +201,4 @@
   color: var(--paper-muted);
   font-size: 0.82em;
   line-height: 1;
-}
-
-.template-alpine .alpine-main ul li + li {
-  margin-block-start: 0.15rem;
-}
-
-.template-alpine .entry-meta {
-  font-size: 0.76rem;
-}
-
-.template-alpine .entry-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  column-gap: 0.25rem;
-}
-
-.template-alpine .entry-role {
-  font-weight: 600;
-}
-
-.template-alpine .entry-meta-inline {
-  font-size: 0.82rem;
-  margin-inline-start: 0;
-}
-
-.template-alpine .entry-meta.entry-meta-block {
-  color: var(--paper-muted);
-  font-size: 0.72rem;
-  letter-spacing: 0.02em;
-}
-
-@media screen and (max-width: 760px) {
-  .template-alpine .alpine-body {
-    grid-template-columns: 1fr;
-  }
 }
