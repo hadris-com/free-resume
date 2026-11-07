@@ -20,7 +20,7 @@ body.theme-dark .template-atelier .resume-page {
 .template-atelier .atelier-name {
   font-family: var(--font-display);
   letter-spacing: -0.02em;
-  font-size: calc(clamp(1.8rem, 3vw, 2.45rem) * var(--name-font-scale, 1));
+  font-size: calc(1.8rem * var(--name-font-scale, 1));
 }
 
 .template-atelier .atelier-role {

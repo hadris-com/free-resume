@@ -16,7 +16,7 @@
 
 .template-alpine .alpine-name {
   font-family: "Oswald", "Arial Narrow", sans-serif;
-  font-size: calc(clamp(1.8rem, 3.2vw, 2.4rem) * var(--name-font-scale, 1));
+  font-size: calc(1.8rem * var(--name-font-scale, 1));
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
