@@ -414,7 +414,7 @@ export function createEventHandlers({
     (same && !same.disabled ? same : container?.querySelector(selector(-direction)))?.focus();
   }
 
-  function setRepeatItemCollapsed(trigger, isCollapsed, collapsedTitleText = "") {
+  function setRepeatItemCollapsed(trigger, isCollapsed) {
     const repeatItem = trigger.closest(".repeat-item");
     if (!repeatItem) {
       return;
@@ -424,14 +424,6 @@ export function createEventHandlers({
     // The row's own text is its accessible name; aria-expanded carries the state.
     trigger.removeAttribute("aria-label");
     trigger.removeAttribute("title");
-
-    const collapsedTitle = repeatItem.querySelector(".skill-collapsed-title");
-    if (collapsedTitle) {
-      if (collapsedTitleText) {
-        collapsedTitle.textContent = collapsedTitleText;
-      }
-      collapsedTitle.setAttribute("aria-hidden", String(!isCollapsed));
-    }
 
     // The entry body is still animating, so measuring the section now would cache a partial height.
     // Let the section grow freely and measure once the entry body has settled.
@@ -588,7 +580,12 @@ export function createEventHandlers({
       return;
     }
 
-    if (trigger.classList.contains("page-size-btn")) {
+    if (trigger.hasAttribute("data-paper-zoom")) {
+      uiControls.setPaperZoom(trigger.getAttribute("data-paper-zoom"));
+      return;
+    }
+
+    if (trigger.hasAttribute("data-page-size")) {
       state.pageSize = resolvePageSize(trigger.getAttribute("data-page-size"));
       applyI18n();
       renderPreview();
