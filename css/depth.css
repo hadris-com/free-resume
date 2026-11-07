@@ -214,12 +214,14 @@
 
   @media (min-width: 761px) {
     .preview-toolbar {
+      --toolbar-fill: color-mix(in srgb, var(--ui-stage) var(--ui-material-opacity), transparent);
+      --toolbar-blur: blur(16px) saturate(170%);
       margin-inline: calc(var(--ui-space-4) * -1);
       padding-inline: var(--ui-space-4);
-      background: color-mix(in srgb, var(--ui-stage) var(--ui-material-opacity), transparent);
+      background: var(--toolbar-fill);
       box-shadow: 0 1px 0 var(--ui-separator);
-      -webkit-backdrop-filter: blur(16px) saturate(170%);
-      backdrop-filter: blur(16px) saturate(170%);
+      -webkit-backdrop-filter: var(--toolbar-blur);
+      backdrop-filter: var(--toolbar-blur);
     }
 
     /* Where the browser can tell, the material appears only once the paper starts to pass under. */
@@ -238,10 +240,10 @@
 
   @keyframes ui-toolbar-material {
     to {
-      background: color-mix(in srgb, var(--ui-stage) var(--ui-material-opacity), transparent);
+      background: var(--toolbar-fill);
       box-shadow: 0 1px 0 var(--ui-separator);
-      -webkit-backdrop-filter: blur(16px) saturate(170%);
-      backdrop-filter: blur(16px) saturate(170%);
+      -webkit-backdrop-filter: var(--toolbar-blur);
+      backdrop-filter: var(--toolbar-blur);
     }
   }
 
@@ -249,9 +251,7 @@
 
   /* Equal segments let the thumb slide with no measuring. Without :has() the plain style stays. */
   @supports selector(:has(*)) {
-    .cv-lang-switch,
-    .page-size-switch,
-    .view-switch {
+    :is(.cv-lang-switch, .page-size-switch, .view-switch) {
       --segment-count: 1;
       --segment-index: 0;
       --segment-inset: 2px;
@@ -281,9 +281,7 @@
       --segment-index: 2;
     }
 
-    .cv-lang-switch::before,
-    .page-size-switch::before,
-    .view-switch::before {
+    :is(.cv-lang-switch, .page-size-switch, .view-switch)::before {
       content: "";
       position: absolute;
       z-index: -1;
@@ -301,33 +299,23 @@
       scale: 0.96;
     }
 
-    .cv-lang-btn,
-    .page-size-btn,
-    .view-btn {
+    :is(.cv-lang-btn, .page-size-btn, .view-btn) {
       padding-inline: var(--ui-space-3);
       text-align: center;
     }
 
-    .cv-lang-btn.active,
-    .page-size-btn.active,
-    .view-btn.active,
-    body.theme-dark .cv-lang-btn.active,
-    body.theme-dark .page-size-btn.active,
-    body.theme-dark .view-btn.active {
+    :is(.cv-lang-btn, .page-size-btn, .view-btn).active,
+    body.theme-dark :is(.cv-lang-btn, .page-size-btn, .view-btn).active {
       background: transparent;
       box-shadow: none;
       color: var(--ui-on-thumb);
     }
 
-    .cv-lang-btn:not(.active):hover,
-    .page-size-btn:not(.active):hover,
-    .view-btn:not(.active):hover {
+    :is(.cv-lang-btn, .page-size-btn, .view-btn):not(.active):hover {
       background: var(--ui-hover);
     }
 
-    .cv-lang-btn:not(.active):active,
-    .page-size-btn:not(.active):active,
-    .view-btn:not(.active):active {
+    :is(.cv-lang-btn, .page-size-btn, .view-btn):not(.active):active {
       background: var(--ui-press);
     }
   }
@@ -368,6 +356,8 @@
   .footer-link:hover,
   .privacy-link:hover,
   .collapse-btn:hover,
+  .panel-section[data-section] > .section-heading-row:hover .collapse-btn,
+  .repeat-item-head:not(:has(.repeat-item-actions:hover)):hover .repeat-item-toggle,
   .remove-icon-btn:hover,
   .privacy-modal-close:hover,
   .skill-level-toggle:hover,
@@ -376,7 +366,6 @@
   .custom-select-option:focus-visible,
   .more-menu-item:hover,
   .more-menu-item:focus-visible,
-  .add-btn:hover,
   .remove-btn:hover,
   .notice-action:hover {
     background: var(--ui-hover);
@@ -395,7 +384,6 @@
   .repeat-item-toggle:active,
   .custom-select-option:active,
   .more-menu-item:active,
-  .add-btn:active,
   .remove-btn:active,
   .notice-action:active {
     background: var(--ui-press);

@@ -464,6 +464,15 @@ export function createEventHandlers({
       closeMoreMenu();
     }
 
+    // A pointer convenience: the rest of a section or entry header toggles it through its own
+    // chevron button, which stays the one keyboard and screen-reader control. Other controls
+    // in the header keep doing only their own action.
+    const head = event.target.closest(".section-heading-row, .repeat-item-head");
+    if (head && !event.target.closest("button, a, input, select, textarea, label, .repeat-item-actions")) {
+      head.querySelector(".collapse-btn, .repeat-item-toggle")?.click();
+      return;
+    }
+
     const trigger = event.target.closest("button");
 
     if (!trigger) {
