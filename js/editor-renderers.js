@@ -1,4 +1,5 @@
-import { buildEntrySummary } from "./entry-summary.js";
+import { buildEntrySummary, isPresentValue } from "./entry-summary.js";
+import { autosizeHighlight, highlightRowMarkup, splitBullets } from "./highlight-rows.js";
 import { escapeAttr, escapeHtml, toBoolean } from "./utils.js";
 
 export function createEditorRenderers({
@@ -66,6 +67,7 @@ export function createEditorRenderers({
       .map(
         (item, index) => {
           const isCollapsed = toBoolean(item.isCollapsed, false);
+          const isPresent = isPresentValue(item.end);
 
           return `
         <article class="repeat-item${isCollapsed ? " is-collapsed" : ""}">
@@ -81,24 +83,32 @@ export function createEditorRenderers({
                 <span>${getUiTranslation("fields.company")}</span>
                 <input type="text" data-list="experience" data-index="${index}" data-key="company" value="${escapeAttr(item.company)}" placeholder="${getUiTranslation("placeholders.company")}" />
               </label>
-              <label class="field-span-2">
+              <label class="field-span-4">
                 <span>${getUiTranslation("fields.itemLocation")}</span>
                 <input type="text" data-list="experience" data-index="${index}" data-key="location" value="${escapeAttr(item.location)}" placeholder="${getUiTranslation("placeholders.location")}" />
               </label>
-              <label>
+              <label class="field-span-2">
                 <span>${getUiTranslation("fields.startDate")}</span>
                 <input type="text" data-list="experience" data-index="${index}" data-key="start" value="${escapeAttr(item.start)}" placeholder="${getUiTranslation("placeholders.startDateExample")}" />
               </label>
-              <label>
-                <span>${getUiTranslation("fields.endDate")}</span>
-                <input type="text" data-list="experience" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="${getUiTranslation("placeholders.present")}" />
-              </label>
+              <div class="field-span-2 end-field">
+                <label>
+                  <span>${getUiTranslation("fields.endDate")}</span>
+                  <input type="text" data-list="experience" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="${getUiTranslation("placeholders.present")}"${isPresent ? " disabled" : ""} />
+                </label>
+                <label class="present-toggle">
+                  <input type="checkbox" role="switch" class="switch-input" data-present-toggle data-list="experience" data-index="${index}"${isPresent ? " checked" : ""} />
+                  <span>${getUiTranslation("placeholders.present")}</span>
+                </label>
+              </div>
+              <p class="field-hint">${getUiTranslation("fields.dateHint")}</p>
             </div>
 
-            <label>
-              <span>${getUiTranslation("fields.highlights")}</span>
-            <textarea rows="3" class="highlights-textarea" data-list="experience" data-index="${index}" data-key="bullets">${escapeHtml(item.bullets)}</textarea>
-            </label>
+            <div class="highlights-field" role="group" aria-label="${escapeAttr(getUiTranslation("fields.highlightsList"))}">
+              <span class="highlights-label" aria-hidden="true">${getUiTranslation("fields.highlightsList")}</span>
+              <div class="highlights-list" data-list="experience" data-index="${index}">${highlightRows(item.bullets)}</div>
+              <button type="button" class="add-row highlight-add" data-action="add-highlight" data-list="experience" data-index="${index}"><span class="add-row-plus" aria-hidden="true">+</span>${getUiTranslation("actions.addHighlight")}</button>
+            </div>
           </div>
         </article>
       `;
@@ -107,6 +117,13 @@ export function createEditorRenderers({
       .join("");
 
     refs.experienceList.innerHTML += addRow("add-experience", "actions.addExperience");
+    refs.experienceList.querySelectorAll(".highlight-input").forEach(autosizeHighlight);
+  }
+
+  // One row per non-empty line; an entry with none still shows one empty row to type into.
+  function highlightRows(bullets) {
+    const lines = splitBullets(bullets);
+    return (lines.length ? lines : [""]).map((line, i) => highlightRowMarkup(getUiTranslation, line, i + 1)).join("");
   }
 
   function renderEducationEditor() {
@@ -146,6 +163,7 @@ export function createEditorRenderers({
                 <span>${getUiTranslation("fields.endDate")}</span>
                 <input type="text" data-list="education" data-index="${index}" data-key="end" value="${escapeAttr(item.end)}" placeholder="${getUiTranslation("placeholders.educationEndYear")}" />
               </label>
+              <p class="field-hint">${getUiTranslation("fields.dateHint")}</p>
             </div>
           </div>
         </article>
