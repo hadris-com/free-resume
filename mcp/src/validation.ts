@@ -7,6 +7,7 @@ import {
   skillKeys,
   skillLevels,
   templateNames,
+  resolveTemplateName,
   pageSizes,
   themes,
   supportedLanguages,
@@ -111,7 +112,7 @@ export function validateResumeDetailed(rawState: unknown): string[] {
 
   if (!isOptionalString(rawState.template, fieldLimits.template)) {
     errors.push(`'template' must be a string with max length ${fieldLimits.template}`);
-  } else if (typeof rawState.template === "string" && !(templateNames as readonly string[]).includes(rawState.template)) {
+  } else if (typeof rawState.template === "string" && !(templateNames as readonly string[]).includes(resolveTemplateName(rawState.template))) {
     errors.push(`'template' must be one of: ${templateNames.join(", ")}`);
   }
 
@@ -288,8 +289,8 @@ export function sanitizeResumeState(rawState: unknown): Record<string, unknown> 
   const showSkillLevels = toBoolean(source.showSkillLevels, legacyShowLevels);
 
   const templateValue =
-    typeof source.template === "string" && (templateNames as readonly string[]).includes(source.template)
-      ? source.template
+    typeof source.template === "string" && (templateNames as readonly string[]).includes(resolveTemplateName(source.template))
+      ? resolveTemplateName(source.template)
       : "alpine";
 
   return {

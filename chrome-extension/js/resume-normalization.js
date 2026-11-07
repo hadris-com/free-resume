@@ -51,7 +51,14 @@ export function normalizeSkillLevel(level) {
   return skillLevels.includes(level) ? level : "intermediate";
 }
 
-export function createResumeNormalization({ templateCatalog }) {
+export function createResumeNormalization({ templateCatalog, retiredTemplates = {} }) {
+  // A retired template's id resolves to the template that replaced it, so its drafts and files still load.
+  function resolveTemplateId(template) {
+    return typeof template === "string" && Object.prototype.hasOwnProperty.call(retiredTemplates, template)
+      ? retiredTemplates[template]
+      : template;
+  }
+
   function isPlainObject(value) {
     return value !== null && typeof value === "object" && Object.getPrototypeOf(value) === Object.prototype;
   }
@@ -179,7 +186,7 @@ export function createResumeNormalization({ templateCatalog }) {
       return false;
     }
 
-    if (typeof rawState.template === "string" && !Object.prototype.hasOwnProperty.call(templateCatalog, rawState.template)) {
+    if (typeof rawState.template === "string" && !Object.prototype.hasOwnProperty.call(templateCatalog, resolveTemplateId(rawState.template))) {
       return false;
     }
 
@@ -279,7 +286,7 @@ export function createResumeNormalization({ templateCatalog }) {
       lang: uiLang,
       uiLang,
       cvLang,
-      template: typeof source.template === "string" && templateCatalog[source.template] ? source.template : "alpine",
+      template: typeof source.template === "string" && templateCatalog[resolveTemplateId(source.template)] ? resolveTemplateId(source.template) : "alpine",
       pageSize: resolvePageSize(source.pageSize),
       theme: source.theme === "dark" ? "dark" : "light",
       showSkills: Boolean(source.showSkills),

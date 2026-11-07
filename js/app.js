@@ -5,7 +5,7 @@ import { createNotices } from "./notices.js";
 import { createPersistence } from "./persistence.js";
 import { getPageMetrics } from "./page-layout.js";
 import { createPrintHelpers } from "./print-helpers.js";
-import { createPreviewRenderers, templateCatalog } from "./preview-renderers.js";
+import { createPreviewRenderers, retiredTemplates, templateCatalog } from "./preview-renderers.js";
 import { createResumeNormalization, normalizeSkillLevel, skillLevels } from "./resume-normalization.js";
 import { createSampleStateBuilders } from "./sample-state.js";
 import { createStateSync } from "./state-sync.js";
@@ -81,7 +81,8 @@ const getCvTranslation = createCvTranslationGetter(() => state.cvLang);
 
 // Normalization enforces consistent resume shape before save/load/sample import.
 const { sanitizeResumeState, validateResumeShape } = createResumeNormalization({
-  templateCatalog
+  templateCatalog,
+  retiredTemplates
 });
 
 // Persistence handles localStorage draft lifecycle + raw JSON import/export.

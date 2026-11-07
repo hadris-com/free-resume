@@ -95,7 +95,7 @@ The `chrome-extension/` directory contains a Manifest V3 Chrome extension that i
 
 | Option | Description |
 |---|---|
-| **Template** | Any of the 10 Free Resume templates |
+| **Template** | Any of the 8 Free Resume templates |
 | **Page size** | A4 or Letter |
 | **Max skills** | Limit the number of skills imported (default 10; 0 = all) |
 | **Skills order** | *LinkedIn order* — preserves DOM order; *Top endorsed* — sorts by endorsement count |

@@ -23,11 +23,6 @@ export const templateCatalog = {
     renderer: "atelier",
     baseClass: "template-atelier"
   },
-  noir: {
-    renderer: "columns",
-    baseClass: "template-columns",
-    variantClass: "variant-noir"
-  },
   fjord: {
     renderer: "fjord",
     baseClass: "template-fjord"
@@ -40,11 +35,6 @@ export const templateCatalog = {
     renderer: "bastion",
     baseClass: "template-bastion"
   },
-  slate: {
-    renderer: "columns",
-    baseClass: "template-columns",
-    variantClass: "variant-slate"
-  },
   kernel: {
     renderer: "kernel",
     baseClass: "template-kernel"
@@ -53,6 +43,12 @@ export const templateCatalog = {
     renderer: "alpine",
     baseClass: "template-alpine"
   }
+};
+
+// Retired templates and the one they now open as. Saved drafts and JSON files can still name them.
+export const retiredTemplates = {
+  noir: "berlin",
+  slate: "berlin"
 };
 
 export function createPreviewRenderers({ getState, getUiTranslation, getCvTranslation, normalizeSkillLevel }) {
@@ -221,37 +217,6 @@ export function createPreviewRenderers({ getState, getUiTranslation, getCvTransl
         profile.github ? `<li>${buildSocialLink(profile.github, "github", { plain: true })}</li>` : ""
       ].filter(Boolean)
     };
-  }
-
-  // Header above a main column and a side column, shared by Noir and Slate.
-  function renderColumnsTemplate() {
-    const identity = getIdentity();
-    const main = [
-      renderSection("summary", getSummaryMarkup()),
-      renderSection("experience", renderExperienceEntries()),
-      renderSection("education", renderEducationEntries())
-    ].join("");
-    const side = [
-      renderSection("details", renderList(identity.details, "contact-list")),
-      renderSection("links", renderList(identity.links, "contact-list")),
-      renderSection("skills", renderSkillsMarkup()),
-      renderSection("languages", renderLanguagesMarkup())
-    ].join("");
-
-    return `
-    <article class="resume-page">
-      <header class="resume-header">
-        <h1 class="resume-name">${identity.name}</h1>
-        <p class="resume-role">${identity.title}</p>
-        ${identity.headerLocation}
-      </header>
-
-      <div class="resume-columns${main && side ? "" : " single-column"}">
-        ${main ? `<div>${main}</div>` : ""}
-        ${side ? `<aside>${side}</aside>` : ""}
-      </div>
-    </article>
-  `;
   }
 
   // A side column on the left, with the work history running down a timeline.
@@ -685,7 +650,6 @@ export function createPreviewRenderers({ getState, getUiTranslation, getCvTransl
 
   const rendererMap = {
     berlin: renderBerlinTemplate,
-    columns: renderColumnsTemplate,
     aurora: renderAuroraTemplate,
     atelier: renderAtelierTemplate,
     alpine: renderAlpineTemplate,
@@ -696,7 +660,8 @@ export function createPreviewRenderers({ getState, getUiTranslation, getCvTransl
   };
 
   function resolveTemplate(template) {
-    return templateCatalog[template] ? template : "alpine";
+    const current = retiredTemplates[template] ?? template;
+    return templateCatalog[current] ? current : "alpine";
   }
 
   function getTemplateClasses(template) {
