@@ -57,7 +57,19 @@ jobs:
         run: npx playwright install --with-deps webkit firefox
 
       - name: Run tests
-        run: npm test
+        env:
+          SCREENSHOT_DIR: ${{ runner.temp }}/screenshots
+        run: |
+          mkdir -p "$SCREENSHOT_DIR"
+          npm test
+
+      - name: Upload screenshots of failing previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-browser-screenshots
+          path: ${{ runner.temp }}/screenshots
+          if-no-files-found: ignore
 
   extension:
     name: Extension assets in sync

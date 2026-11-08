@@ -125,9 +125,14 @@ for (const [name, engine] of [
           for (const pageSize of pageSizes) {
             await choose(page, template, pageSize);
             const { sheets, missing, repeated } = await page.evaluate(sheetCoverage);
+            const before = problems.length;
             if (sheets < 2) problems.push(`${template} ${pageSize}: only ${sheets} sheet`);
             if (missing.length) problems.push(`${template} ${pageSize}: missing ${missing.slice(0, 5).join(" ")}`);
             if (repeated.length) problems.push(`${template} ${pageSize}: repeated ${repeated.slice(0, 5).join(" ")}`);
+            // CI uploads these, so a failure in an engine nobody runs locally can still be seen.
+            if (problems.length > before && process.env.SCREENSHOT_DIR) {
+              await page.locator("#resume-preview").screenshot({ path: `${process.env.SCREENSHOT_DIR}/${name}-${template}-${pageSize}.png` });
+            }
           }
         }
         assert.deepEqual(problems, []);
