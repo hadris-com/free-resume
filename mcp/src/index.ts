@@ -306,6 +306,21 @@ server.tool(
 
     const sanitized = sanitizeResumeState(rawState);
 
+    // Sanitizing fixes types and defaults but keeps text whole, so check the limits too: the app
+    // won't import a file that breaks them, and the caller can shorten what's reported.
+    const errors = validateResumeDetailed(sanitized);
+    if (errors.length > 0) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `Could not create the file, because the app would not import it. Fix these ${errors.length} problem(s) and try again:\n${errors.map((e, i) => `${i + 1}. ${e}`).join("\n")}`,
+          },
+        ],
+        isError: true,
+      };
+    }
+
     const exportPayload = {
       app: "free-resume",
       schemaVersion: 2,
