@@ -6,7 +6,7 @@ A modern, template-driven resume web application.
 
 ## 📸 Screenshots
 
-<!-- Keep these current: after changing the interface, the templates or the Sample resume, run `node scripts/render-images.mjs` on macOS. It renders docs/screenshots/ and the gallery thumbnails from the Sample resume. -->
+<!-- Keep these current: after changing the interface, the templates or the Sample resume, run `node scripts/render-images.mjs` on macOS. It renders docs/screenshots/, the gallery thumbnails and og-image.png from the Sample resume. -->
 
 ![Free Resume on desktop, in light mode](docs/screenshots/desktop.jpg)
 
