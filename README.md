@@ -48,7 +48,7 @@ The tests drive the app in headless Chrome and need only Node 22 or later and Ch
 node --test tests/*.test.mjs
 ```
 
-They check the editor, the template gallery and saved drafts, and that the preview always has as many sheets as the exported PDF has pages, including resumes that end right at a page break. If Chrome isn't found, set `CHROME_PATH` to its binary. The **Test** workflow runs them on every pull request, along with checks that `chrome-extension/` is in sync and that the MCP server builds.
+They check the editor, the template gallery and saved drafts, and that the preview always has as many sheets as the exported PDF has pages, including resumes that end right at a page break. If Chrome isn't found, set `CHROME_PATH` to its binary. The **Test** workflow runs them on every pull request, along with checks that `chrome-extension/` is in sync and that the MCP server in `mcp/` builds and passes its own tests (`cd mcp && npm ci && npm test`).
 
 `tests/cross-browser/` also runs the preview in WebKit (Safari's engine) and Firefox through Playwright. It has its own dependencies:
 
