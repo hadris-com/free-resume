@@ -147,8 +147,7 @@ final class Checker: NSObject, WKNavigationDelegate {
         const flow = document.querySelector("#resume-preview .paper-sheet-flow");
         const page = flow?.querySelector(".resume-page");
         const style = flow && getComputedStyle(flow);
-        const rect = page?.getBoundingClientRect(), box = flow?.getBoundingClientRect();
-        return `page ${page?.offsetHeight}px tall in ${page?.getClientRects().length} rects, ${Math.round(rect?.width)}px wide; flow ${style?.height} tall, ${flow?.scrollWidth}/${flow?.offsetWidth}px wide`;
+        return `fragments ${page?.getClientRects().length}, page ${page?.offsetHeight}px tall, flow ${style?.height} in ${style?.columnCount} columns, WebKit sizes ${CSS.supports("font", "-apple-system-body")}`;
       """) { layout in
         self.layout = layout as? String ?? ""
         self.printPDF(current) { pdf in
