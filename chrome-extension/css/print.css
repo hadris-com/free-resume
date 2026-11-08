@@ -87,6 +87,23 @@
     print-color-adjust: exact !important;
   }
 
+  /* ---------- Keep the PDF's text in reading order ---------- */
+  /* Chrome writes the PDF's text in paint order, and positioned elements paint after the rest.
+     Text extractors such as applicant tracking systems would then read them out of place. */
+  .resume-preview .location-toggle.has-tooltip {
+    position: static;
+  }
+
+  .resume-preview .location-toggle.has-tooltip::before,
+  .resume-preview .location-toggle.has-tooltip::after {
+    content: none;
+  }
+
+  /* Aurora's timeline entries are positioned for their dots, so the headings beside them must be too. */
+  .template-aurora .aurora-main .section-label {
+    position: relative;
+  }
+
   /* ---------- Hide app chrome ---------- */
   .topbar,
   .editor-panel,
