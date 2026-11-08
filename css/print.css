@@ -21,6 +21,32 @@
   break-inside: avoid;
 }
 
+/*
+ * A long entry moved whole to the next page would leave a large gap, so one taller than a
+ * quarter of a page breaks between its bullets instead: each bullet stays whole, and the title
+ * keeps its first bullet. See markSplittableEntries.
+ */
+.entry.entry-splittable {
+  page-break-inside: auto;
+  break-inside: auto;
+}
+
+.entry-splittable > ul > li {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.entry-splittable > :not(ul) {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+.entry-splittable > ul,
+.entry-splittable > ul > li:first-child {
+  page-break-before: avoid;
+  break-before: avoid;
+}
+
 .section-label {
   page-break-after: avoid;
   break-after: avoid;

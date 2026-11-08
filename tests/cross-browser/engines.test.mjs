@@ -10,17 +10,22 @@ const pageSizes = ["a4", "letter"];
 // ENGINES=webkit or ENGINES=firefox runs one engine; CI runs WebKit on macOS, where it prints like Safari.
 const engines = (process.env.ENGINES || "webkit,firefox").split(",");
 
-// Fills the saved draft with the sample resume plus extra jobs, then reloads the app on it.
-async function loadSample(page, extraJobs = 0) {
-  await page.evaluate(async (extra) => {
+// Fills the saved draft with the sample resume plus extra jobs, then reloads the app on it. A long
+// job, when asked for, goes third: one with too many bullets to fit what's left of the first page.
+async function loadSample(page, extraJobs = 0, longJob = false) {
+  await page.evaluate(async ([extra, longJob]) => {
     const { createSampleStateBuilders } = await import("/js/sample-state.js");
     const sample = createSampleStateBuilders({ getState: () => ({}), sanitizeResumeState: (state) => state }).buildSampleResumeState();
     const jobs = sample.experience.slice();
     for (let i = 0; i < extra; i++) sample.experience.push({ ...jobs[i % jobs.length], role: `${jobs[i % jobs.length].role} ${i + 2}` });
+    if (longJob) {
+      const bullets = Array.from({ length: 34 }, (_, n) => `Bullet ${n + 1} of a long job, written out to fill a whole line of the page.`).join("\n");
+      sample.experience.splice(2, 0, { ...jobs[2], role: "Long Job", bullets });
+    }
     const draft = JSON.parse(localStorage.getItem("free-resume:draft"));
     draft.data = { ...draft.data, ...sample };
     localStorage.setItem("free-resume:draft", JSON.stringify(draft));
-  }, extraJobs);
+  }, [extraJobs, longJob]);
   await page.reload();
   await page.waitForSelector("#resume-preview .resume-page");
   await page.evaluate(() => document.fonts.ready);
@@ -137,6 +142,37 @@ for (const [name, engine] of [
         assert.deepEqual(problems, []);
       }
     );
+
+    test("a long job breaks between its bullets, each word on exactly one sheet", async () => {
+      await loadSample(page, 0, true);
+      const problems = [];
+      for (const template of templates) {
+        for (const pageSize of pageSizes) {
+          await choose(page, template, pageSize);
+          const { missing, repeated } = await page.evaluate(sheetCoverage);
+          const { sheetsOfEntry, titleSheet, firstBulletSheet } = await page.evaluate(() => {
+            const flow = document.querySelector("#resume-preview .paper-sheet-flow");
+            const box = flow.getBoundingClientRect();
+            const sheetOf = (rect) => Math.floor((rect.left - box.left + 1) / box.width);
+            const entry = [...flow.querySelectorAll(".entry")].find((element) => element.textContent.includes("Long Job"));
+            return {
+              sheetsOfEntry: new Set([...entry.getClientRects()].map(sheetOf)).size,
+              titleSheet: sheetOf(entry.querySelector(".entry-title").getClientRects()[0]),
+              firstBulletSheet: sheetOf(entry.querySelector("li").getClientRects()[0])
+            };
+          });
+          const before = problems.length;
+          if (sheetsOfEntry < 2) problems.push(`${template} ${pageSize}: moved whole instead of breaking`);
+          if (titleSheet !== firstBulletSheet) problems.push(`${template} ${pageSize}: title left without its first bullet`);
+          if (missing.length) problems.push(`${template} ${pageSize}: missing ${missing.slice(0, 5).join(" ")}`);
+          if (repeated.length) problems.push(`${template} ${pageSize}: repeated ${repeated.slice(0, 5).join(" ")}`);
+          if (problems.length > before && process.env.SCREENSHOT_DIR) {
+            await page.locator("#resume-preview").screenshot({ path: `${process.env.SCREENSHOT_DIR}/${name}-long-job-${template}-${pageSize}.png` });
+          }
+        }
+      }
+      assert.deepEqual(problems, []);
+    });
 
     test("no uncaught errors in the page", () => {
       assert.deepEqual(errors, []);

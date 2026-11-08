@@ -107,6 +107,43 @@ describe("pagination", { timeout: 600000 }, () => {
     });
   }
 
+  // A job too long to move whole breaks between its bullets, with its title kept on the sheet of
+  // its first bullet, and the sheets still match the PDF.
+  test("a long job breaks between its bullets", async () => {
+    await page.setViewport(1440, 900);
+    const sample = await page.evaluate(`import("/js/sample-state.js").then(({ createSampleStateBuilders }) =>
+      createSampleStateBuilders({ getState: () => ({}), sanitizeResumeState: (state) => state }).buildSampleResumeState().experience)`);
+    const bullets = Array.from({ length: 34 }, (_, n) => `Bullet ${n + 1} of a long job, written out to fill a whole line of the page.`).join("\n");
+    await loadSampleDraft(page, { experience: [...sample.slice(0, 2), { ...sample[2], role: "Long Job", bullets }, sample[2]] });
+
+    const problems = [];
+    for (const template of templates) {
+      for (const pageSize of pageSizes) {
+        await choose(template, pageSize);
+        const { splittable, sheetsOfEntry, titleSheet, firstBulletSheet } = await page.evaluate(`(() => {
+          const flow = document.querySelector('#resume-preview .paper-sheet-flow');
+          const box = flow.getBoundingClientRect();
+          const sheetOf = (rect) => Math.floor((rect.left - box.left + 1) / box.width);
+          const entry = [...flow.querySelectorAll('.entry')].find((element) => element.textContent.includes('Long Job'));
+          const rects = [...entry.getClientRects()];
+          return {
+            splittable: entry.classList.contains('entry-splittable'),
+            sheetsOfEntry: new Set(rects.map(sheetOf)).size,
+            titleSheet: sheetOf(entry.querySelector('.entry-title').getClientRects()[0]),
+            firstBulletSheet: sheetOf(entry.querySelector('li').getClientRects()[0])
+          };
+        })()`);
+        const sheets = await page.sheetCount();
+        const pages = await page.pdfPageCount();
+        if (!splittable) problems.push(`${template} ${pageSize}: not marked splittable`);
+        if (sheetsOfEntry < 2) problems.push(`${template} ${pageSize}: moved whole instead of breaking`);
+        if (titleSheet !== firstBulletSheet) problems.push(`${template} ${pageSize}: title left without its first bullet`);
+        if (sheets !== pages) problems.push(`${template} ${pageSize}: ${sheets} sheets, ${pages} PDF pages`);
+      }
+    }
+    assert.deepEqual(problems, []);
+  });
+
   test("no uncaught errors in the page", () => {
     assert.deepEqual(page.errors, []);
   });

@@ -116,3 +116,13 @@
 .template-solstice .solstice-skills li {
   break-inside: avoid;
 }
+
+/* WebKit prints a list of columns inside a page that breaks as a single column, taller than the preview shows. A grid prints as laid out. */
+@supports (font: -apple-system-body) {
+  .template-solstice .solstice-skills .tag-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.25rem;
+    columns: auto;
+  }
+}

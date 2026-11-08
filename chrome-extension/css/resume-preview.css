@@ -139,6 +139,18 @@ body.theme-dark .view-btn.active {
     box-shadow: none;
     overflow: visible;
   }
+
+  /*
+   * WebKit lays out text a fraction of a pixel wider in print than on screen, so a line that just
+   * fits on a sheet can wrap in the PDF and push the page's last lines onto another. The sheet is
+   * a little narrower there, so it wraps any line that close to the edge and never holds more
+   * than the printed page does. Its breaks are all forced (see insertSheetGaps), so print follows.
+   */
+  @supports (font: -apple-system-body) {
+    .resume-preview .paper-sheet .resume-page {
+      width: calc(100% - 2px);
+    }
+  }
 }
 
 .resume-page h1,
