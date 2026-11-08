@@ -163,6 +163,28 @@
   grid-template-columns: 1fr;
 }
 
+/* Firefox can't split a grid across sheets or pages, so a long resume lost its end. It gets
+   the same widths with flex. `-moz-appearance` is only supported by Firefox. */
+@supports (-moz-appearance: none) {
+  .template-berlin .resume-columns {
+    display: flex;
+  }
+
+  .template-berlin .resume-columns > div {
+    flex: 0 0 calc((100% - 1.15rem) * 2 / 3);
+    min-width: 0;
+  }
+
+  .template-berlin .resume-columns > aside {
+    flex: 0 0 calc((100% - 1.15rem) / 3);
+    min-width: 0;
+  }
+
+  .template-berlin .resume-columns.single-column > * {
+    flex-basis: 100%;
+  }
+}
+
 .template-berlin .resume-columns > div > section + section,
 .template-berlin .resume-columns > aside > section + section {
   margin-block-start: 1.15rem;

@@ -39,6 +39,28 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+/* Firefox can't split a grid across sheets or pages, so a long resume lost its end. It gets
+   the same widths with flex. `-moz-appearance` is only supported by Firefox. */
+@supports (-moz-appearance: none) {
+  .template-aurora .aurora-shell {
+    display: flex;
+  }
+
+  .template-aurora .aurora-side {
+    flex: 0 0 calc(100% / 3);
+    min-width: 0;
+  }
+
+  .template-aurora .aurora-main {
+    flex: 0 0 calc(100% * 2 / 3);
+    min-width: 0;
+  }
+
+  .template-aurora .aurora-shell.single-pane > * {
+    flex-basis: 100%;
+  }
+}
+
 .template-aurora .aurora-side,
 .template-aurora .aurora-main {
   padding-block: 1.5rem 2.5rem;
