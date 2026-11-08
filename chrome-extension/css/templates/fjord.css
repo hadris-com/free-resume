@@ -10,6 +10,23 @@
   overflow: hidden;
 }
 
+/* Firefox can't split a grid across sheets or pages, so a long resume lost its end. It gets
+   the same widths with flex. `-moz-appearance` is only supported by Firefox. */
+@supports (-moz-appearance: none) {
+  .template-fjord .resume-page {
+    display: flex;
+  }
+
+  .template-fjord .fjord-side {
+    flex: 0 0 15.5rem;
+  }
+
+  .template-fjord .fjord-main {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
 .template-fjord .fjord-side {
   --paper-text: #ffffff;
   --paper-body: #e4eef1;

@@ -1,4 +1,4 @@
 .DS_Store
 mcp/node_modules/
 mcp/dist/
-
+tests/cross-browser/node_modules/
