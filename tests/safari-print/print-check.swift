@@ -147,7 +147,8 @@ final class Checker: NSObject, WKNavigationDelegate {
         const flow = document.querySelector("#resume-preview .paper-sheet-flow");
         const page = flow?.querySelector(".resume-page");
         const style = flow && getComputedStyle(flow);
-        return `fragments ${page?.getClientRects().length}, page ${page?.offsetHeight}px tall, flow ${style?.height} in ${style?.columnCount} columns, WebKit sizes ${CSS.supports("font", "-apple-system-body")}`;
+        const gaps = [...(page?.querySelectorAll(".sheet-gap") ?? [])].map((gap) => `${gap.style.height} before ${gap.nextElementSibling?.className || gap.nextElementSibling?.tagName}`);
+        return `page ${page?.offsetHeight}px tall in ${page?.getClientRects().length} rects, flow ${style?.height}; gaps: ${gaps.join("; ") || "none"}`;
       """) { layout in
         self.layout = layout as? String ?? ""
         self.printPDF(current) { pdf in
@@ -198,7 +199,11 @@ final class Checker: NSObject, WKNavigationDelegate {
     for (index, (sheet, page)) in zip(sheets, pages).enumerated() {
       let off = difference(letters(sheet), letters(page))
       // A line in the wrong place is 40 letters or more; ligatures and repeats leave none.
-      if off > 10 { return report(current, "page \(index + 1) differs from its preview sheet by \(off) letters") }
+      if off > 10 {
+        let a = letters(sheet), b = letters(page)
+        let shown = Set(a.keys).union(b.keys).filter { a[$0, default: 0] != b[$0, default: 0] }.sorted().map { "\($0) \(a[$0, default: 0])/\(b[$0, default: 0])" }
+        return report(current, "page \(index + 1) differs from its preview sheet by \(off) letters (sheet/PDF: \(shown.joined(separator: ", ")))")
+      }
     }
     // A later page starts below the page's top margin, as the first one does.
     for index in 1..<max(1, pdf.pageCount) {
@@ -206,7 +211,7 @@ final class Checker: NSObject, WKNavigationDelegate {
       let height = page.bounds(for: .mediaBox).height
       let lines = selection.selectionsByLine().filter { !($0.string ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
       let top = lines.map { height - $0.bounds(for: page).maxY }.min() ?? .infinity
-      if top < 12 { return report(current, "page \(index + 1) starts \(Int(top))pt from its top edge") }
+      if top < 12 { return report(current, "page \(index + 1) starts \(Int(top))pt from its top edge (\(layout))") }
     }
     Swift.print("ok    \(current.label): \(pages.count) page\(pages.count == 1 ? "" : "s")")
   }
