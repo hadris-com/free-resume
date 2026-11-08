@@ -36,6 +36,30 @@
   min-height: var(--fill-height, auto) !important;
 }
 
+/* WebKit only: the top margin of a later sheet, which also breaks to it. See insertSheetGaps. */
+.sheet-gap {
+  -webkit-column-break-before: always;
+  break-before: column;
+}
+
+@media print {
+  .sheet-gap {
+    page-break-before: always;
+    break-before: page;
+  }
+}
+
+/*
+ * WebKit (Safari, iOS): when a page breaks inside an item of a column flex box, it starts the next
+ * page as far down as the item began on the first one, below the header. These pages are blocks
+ * there instead, except a one-page resume, which stretches as a flex box below.
+ */
+@supports (font: -apple-system-body) {
+  :is(.template-alpine, .template-aurora, .template-solstice, .template-berlin) .resume-page:not([data-print-page-count="1"]) {
+    display: block;
+  }
+}
+
 /* A one-page resume stretches its inner layout to the bottom of the sheet. */
 :is(.template-aurora, .template-berlin, .template-alpine) .resume-page[data-print-page-count="1"] {
   display: flex !important;

@@ -26,7 +26,7 @@ const webkitPageSizes = {
   letter: { widthPx: 765, heightPx: 990, fillSlackPx: 4 }
 };
 
-const printsAtWebKitScale = typeof CSS !== "undefined" && CSS.supports?.("font", "-apple-system-body") === true;
+export const printsAtWebKitScale = typeof CSS !== "undefined" && CSS.supports?.("font", "-apple-system-body") === true;
 
 export function getPageMetrics(pageSize) {
   const resolved = resolvePageSize(pageSize);

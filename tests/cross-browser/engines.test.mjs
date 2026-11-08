@@ -113,11 +113,8 @@ for (const [name, engine] of [
       }
     });
 
-    // WebKit doesn't repeat the page's top padding on later sheets, so a line can fall
-    // between two of them: https://github.com/hadris-com/free-resume/issues/91
     test(
       "a long resume shows every word on exactly one sheet",
-      { todo: name === "webkit" ? "WebKit clips lines at sheet boundaries (#91)" : false },
       async () => {
         await loadSample(page, 6);
         const problems = [];

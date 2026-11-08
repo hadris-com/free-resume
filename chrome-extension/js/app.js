@@ -222,8 +222,15 @@ function init() {
   document.addEventListener("click", handleClick);
   refs.moreMenu?.addEventListener("keydown", uiControls.handleMoreMenuKeydown);
   refs.templateSelectWrapper?.addEventListener("keydown", uiControls.handleTemplateSelectKeydown);
-  // A late font can change where the pages break.
-  document.fonts?.ready.then(paginatePreview);
+  // A late font can change where the pages break. A template's own fonts only start loading once
+  // it's shown, which can be after `ready`, so paginate again whenever fonts finish loading.
+  const repaginate = () => {
+    const previewScrollTop = refs.previewPanel.scrollTop;
+    paginatePreview();
+    refs.previewPanel.scrollTop = previewScrollTop;
+  };
+  document.fonts?.ready.then(repaginate);
+  document.fonts?.addEventListener?.("loadingdone", repaginate);
 
   if ("ResizeObserver" in window && refs.previewPanel) {
     new ResizeObserver(syncPaperFit).observe(refs.previewPanel);
