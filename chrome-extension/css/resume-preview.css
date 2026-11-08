@@ -124,7 +124,8 @@ body.theme-dark .view-btn.active {
 
   .paper-sheet-flow {
     width: var(--page-width, 794px);
-    height: var(--page-height, 1123px);
+    /* A little shorter than the sheet in WebKit: see webkitPageSizes in page-layout.js. */
+    height: var(--flow-height, var(--page-height, 1123px));
     column-count: 1;
     column-gap: 0;
     column-fill: auto;
@@ -135,6 +136,7 @@ body.theme-dark .view-btn.active {
   /* As in print.css: these would otherwise differ from the printed page, and a box that hides its overflow can't break. */
   .resume-preview .paper-sheet .resume-page {
     width: 100%;
+    min-height: var(--flow-height, var(--page-height, 1123px));
     border-radius: 0;
     box-shadow: none;
     overflow: visible;
