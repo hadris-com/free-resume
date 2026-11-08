@@ -58,6 +58,12 @@ cd tests/cross-browser && npm ci && npx playwright install webkit firefox && npm
 
 Set `ENGINES=webkit` or `ENGINES=firefox` to run one engine. Run the WebKit checks on macOS: WebKit on Linux is a different port and doesn't print the way Safari does.
 
+`tests/safari-print/` prints every template to PDF through Safari's print path and checks that each page holds what its preview sheet shows. It needs macOS, where it builds a small Swift program:
+
+```bash
+node tests/safari-print/run.mjs
+```
+
 ## 🌐 Deploy with GitHub Pages
 
 1. Push this repository to GitHub.
