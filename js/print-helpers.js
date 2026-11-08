@@ -41,9 +41,16 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     return sheet;
   }
 
+  // The sheets the resume spans: the columns of the flow, counted from their overall width.
+  // Safari before 27 reports a box broken across columns as a single rect, so counting the page's
+  // rects there found one sheet however long the resume was.
+  function sheetsSpanned(flow) {
+    return Math.max(1, Math.round(flow.scrollWidth / flow.offsetWidth));
+  }
+
   // Each printed fragment repeats the page's padding, so the height that fills the last sheet
   // counts that padding once per sheet, and the box's own height already includes it once.
-  function fillSheets(page, pageCount) {
+  function fillSheets(page, flow, pageCount) {
     // WebKit's printed page is a fraction of a pixel off the sheet, so a full-height fill there
     // keeps a few pixels short of it rather than spill onto a blank page.
     const { heightPx, fillSlackPx = 0 } = getActivePageMetrics();
@@ -56,7 +63,7 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
 
     // Content pushed to a later sheet can make any fixed height spill onto one more sheet, which
     // would print as a blank page. The last sheet then keeps its natural height instead.
-    if (page.getClientRects().length > pageCount) {
+    if (sheetsSpanned(flow) > pageCount) {
       page.style.setProperty("--fill-height", "auto");
     }
   }
@@ -119,7 +126,7 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     const { widthPx } = getActivePageMetrics();
     const elements = [...page.querySelectorAll("*")];
 
-    for (let sheet = 1; sheet < page.getClientRects().length && sheet < 50; sheet++) {
+    for (let sheet = 1; sheet < sheetsSpanned(flow) && sheet < 50; sheet++) {
       const origin = flow.getBoundingClientRect();
       const scale = origin.width / widthPx || 1;
       const columnWidth = widthPx * scale;
@@ -200,8 +207,8 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
       insertSheetGaps(page, firstSheet.firstElementChild);
     }
 
-    const pageCount = Math.max(1, page.getClientRects().length);
-    fillSheets(page, pageCount);
+    const pageCount = sheetsSpanned(firstSheet.firstElementChild);
+    fillSheets(page, firstSheet.firstElementChild, pageCount);
 
     for (let index = 1; index < pageCount; index++) {
       const sheet = createSheet(index);
