@@ -40,6 +40,16 @@ Or use the **Live Server** extension in VS Code — open `index.html` → **Open
 
 Then visit `http://localhost:5500`.
 
+## 🧪 Tests
+
+The tests drive the app in headless Chrome and need only Node 22 or later and Chrome. Nothing to install:
+
+```bash
+node --test tests/*.test.mjs
+```
+
+They check the editor, the template gallery and saved drafts, and that the preview always has as many sheets as the exported PDF has pages, including resumes that end right at a page break. If Chrome isn't found, set `CHROME_PATH` to its binary. The **Test** workflow runs them on every pull request, along with checks that `chrome-extension/` is in sync and that the MCP server builds.
+
 ## 🌐 Deploy with GitHub Pages
 
 1. Push this repository to GitHub.
