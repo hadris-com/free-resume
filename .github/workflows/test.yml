@@ -32,10 +32,22 @@ jobs:
       - name: Run tests
         run: node --test tests/*.test.mjs
 
+  # Playwright's WebKit on Linux is a different port: it lacks the Apple-only CSS the app uses
+  # to detect Safari's print scale, so it can't check the Safari fixes. macOS WebKit can.
   cross-browser:
-    name: WebKit and Firefox
-    runs-on: ubuntu-latest
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: WebKit (macOS)
+            engine: webkit
+            os: macos-latest
+          - name: Firefox
+            engine: firefox
+            os: ubuntu-latest
     defaults:
       run:
         working-directory: tests/cross-browser
@@ -53,11 +65,12 @@ jobs:
       - name: Install Playwright
         run: npm ci
 
-      - name: Install WebKit and Firefox
-        run: npx playwright install --with-deps webkit firefox
+      - name: Install ${{ matrix.engine }}
+        run: npx playwright install --with-deps ${{ matrix.engine }}
 
       - name: Run tests
         env:
+          ENGINES: ${{ matrix.engine }}
           SCREENSHOT_DIR: ${{ runner.temp }}/screenshots
         run: |
           mkdir -p "$SCREENSHOT_DIR"
@@ -67,7 +80,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cross-browser-screenshots
+          name: ${{ matrix.engine }}-screenshots
           path: ${{ runner.temp }}/screenshots
           if-no-files-found: ignore
 

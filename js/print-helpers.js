@@ -1,4 +1,4 @@
-import { getPageMetrics } from "./page-layout.js";
+import { getPageMetrics, printsAtWebKitScale } from "./page-layout.js";
 
 export function createPrintHelpers({ getState, getResumePreviewElement }) {
   const PRINT_PAGE_SIZE_STYLE_ID = "dynamic-print-page-size";
@@ -61,6 +61,86 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     }
   }
 
+  // The padding a printed fragment of `element` would repeat at the top of a page: that of each
+  // box around it that clones its decoration, up to the page.
+  function repeatedPaddingTop(element, page) {
+    let total = 0;
+    for (let box = element.parentElement; box; box = box.parentElement) {
+      const style = window.getComputedStyle(box);
+      if ((style.boxDecorationBreak || style.webkitBoxDecorationBreak) === "clone") {
+        total += Number.parseFloat(style.paddingTop) || 0;
+      }
+      if (box === page) {
+        break;
+      }
+    }
+    return total;
+  }
+
+  /*
+   * WebKit (Safari, iOS) doesn't repeat a box's padding on the next page, so a later sheet would
+   * start at its very top edge. Before each element that opens a later sheet, add a gap as tall as
+   * the padding Chrome repeats, which also forces the break there: a column break in the preview
+   * and a page break in print, so the PDF breaks where the preview does. Sheet by sheet, because
+   * each gap pushes the rest of the content down.
+   */
+  function insertSheetGaps(page, flow) {
+    const { widthPx, heightPx } = getActivePageMetrics();
+    const elements = [...page.querySelectorAll("*")];
+
+    for (let sheet = 1; sheet < page.getClientRects().length && sheet < 50; sheet++) {
+      const origin = flow.getBoundingClientRect();
+      const scale = origin.height / heightPx || 1;
+      const columnWidth = widthPx * scale;
+      const sheetOf = (rect) => Math.floor((rect.left - origin.left + 1) / columnWidth);
+      // Every piece of content on this sheet, to tell what sits above what.
+      const onSheet = [];
+      for (const element of elements) {
+        for (const rect of element.getClientRects()) {
+          if ((rect.width || rect.height) && sheetOf(rect) === sheet) {
+            onSheet.push({ element, rect });
+          }
+        }
+      }
+      const atTopOfColumn = (element, first) =>
+        !onSheet.some(
+          ({ element: other, rect }) =>
+            other !== element &&
+            !other.contains(element) &&
+            !element.contains(other) &&
+            rect.bottom <= first.top + 1 &&
+            rect.right > first.left &&
+            rect.left < first.right
+        );
+      const opening = elements.filter((element) => {
+        const rects = element.getClientRects();
+        const first = rects[0];
+        if (!first || !(first.width || first.height)) {
+          return false;
+        }
+        // Starts this sheet's column, with nothing above it...
+        if (sheetOf(first) === sheet) {
+          return atTopOfColumn(element, first);
+        }
+        // ...or should stay whole but WebKit split it onto this sheet, as it does inside a grid.
+        return (
+          rects.length > 1 &&
+          sheetOf(first) === sheet - 1 &&
+          sheetOf(rects[1]) === sheet &&
+          /avoid/.test(window.getComputedStyle(element).breakInside || window.getComputedStyle(element).pageBreakInside)
+        );
+      });
+      // The outermost element that opens the sheet in each column, not its first descendants.
+      for (const element of opening.filter((element) => !opening.some((other) => other !== element && other.contains(element)))) {
+        const gap = document.createElement("div");
+        gap.className = "sheet-gap";
+        gap.setAttribute("aria-hidden", "true");
+        gap.style.height = `${repeatedPaddingTop(element, page)}px`;
+        element.before(gap);
+      }
+    }
+  }
+
   /*
    * Lay the resume out on separate sheets, broken just as print breaks it. A box of columns one
    * page tall goes through the browser's own fragmentation, so entries, headings and the repeated
@@ -81,6 +161,11 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     const firstSheet = createSheet(0);
     firstSheet.firstElementChild.append(page);
     previewElement.replaceChildren(firstSheet);
+
+    page.querySelectorAll(".sheet-gap").forEach((gap) => gap.remove());
+    if (printsAtWebKitScale) {
+      insertSheetGaps(page, firstSheet.firstElementChild);
+    }
 
     const pageCount = Math.max(1, page.getClientRects().length);
     fillSheets(page, pageCount);

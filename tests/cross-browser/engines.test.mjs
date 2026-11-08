@@ -7,6 +7,8 @@ import { firefox, webkit } from "playwright";
 import { startServer } from "../helpers/server.mjs";
 
 const pageSizes = ["a4", "letter"];
+// ENGINES=webkit or ENGINES=firefox runs one engine; CI runs WebKit on macOS, where it prints like Safari.
+const engines = (process.env.ENGINES || "webkit,firefox").split(",");
 
 // Fills the saved draft with the sample resume plus extra jobs, then reloads the app on it.
 async function loadSample(page, extraJobs = 0) {
@@ -71,7 +73,7 @@ function sheetCoverage() {
 for (const [name, engine] of [
   ["webkit", webkit],
   ["firefox", firefox]
-]) {
+].filter(([name]) => engines.includes(name))) {
   describe(name, { timeout: 300000 }, () => {
     let server;
     let browser;
@@ -113,11 +115,8 @@ for (const [name, engine] of [
       }
     });
 
-    // WebKit doesn't repeat the page's top padding on later sheets, so a line can fall
-    // between two of them: https://github.com/hadris-com/free-resume/issues/91
     test(
       "a long resume shows every word on exactly one sheet",
-      { todo: name === "webkit" ? "WebKit clips lines at sheet boundaries (#91)" : false },
       async () => {
         await loadSample(page, 6);
         const problems = [];
