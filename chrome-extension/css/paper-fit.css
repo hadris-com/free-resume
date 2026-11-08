@@ -27,36 +27,3 @@
     display: none;
   }
 }
-
-/*
- * The templates turn single-column by viewport width, which would reflow the page inside
- * its scaled box: put back their page layout. This file loads after the templates and
- * before variants.css, so at equal specificity the variants keep their own columns.
- */
-@media screen and (max-width: 760px) {
-  .template-berlin .resume-columns {
-    grid-template-columns: 2fr 1fr;
-  }
-
-  .template-alpine .alpine-body {
-    grid-template-columns: 1fr 2.2fr;
-  }
-
-  .template-atelier .atelier-grid {
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  }
-
-  .template-aurora .aurora-shell {
-    grid-template-columns: 1.1fr 1.8fr;
-  }
-
-  .template-aurora .aurora-banner {
-    padding-block: 1.8rem;
-    padding-inline: 2rem;
-  }
-
-  .template-aurora .aurora-side,
-  .template-aurora .aurora-main {
-    padding: 1.4rem;
-  }
-}

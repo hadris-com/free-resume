@@ -10,7 +10,7 @@
  * sync-assets.sh from the repo root.
  */
 
-import { createPreviewRenderers, templateCatalog } from "../js/preview-renderers.js";
+import { createPreviewRenderers, retiredTemplates, templateCatalog } from "../js/preview-renderers.js";
 import { createResumeNormalization, normalizeSkillLevel } from "../js/resume-normalization.js";
 import { createCvTranslationGetter, createUiTranslationGetter } from "../js/i18n.js";
 import { createPrintHelpers } from "../js/print-helpers.js";
@@ -36,7 +36,7 @@ async function main() {
   }
 
   // Sanitize + normalise (enforces field limits and valid defaults)
-  const { sanitizeResumeState } = createResumeNormalization({ templateCatalog });
+  const { sanitizeResumeState } = createResumeNormalization({ templateCatalog, retiredTemplates });
   const state = sanitizeResumeState(raw);
 
   // Wire i18n getters (same pattern as app.js)

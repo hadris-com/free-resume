@@ -1,0 +1,118 @@
+/* Solstice Banner: a solid band over one column of work, with the short lists at the foot. */
+.template-solstice {
+  --paper-accent: #a93a23;
+}
+
+.template-solstice .resume-page {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.template-solstice .solstice-band {
+  --paper-text: #ffffff;
+  --paper-body: #fbe9e4;
+  --paper-muted: #fbe9e4;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-block: 2.5rem 1.75rem;
+  padding-inline: 2.75rem;
+  background: var(--paper-accent);
+  color: var(--paper-text);
+}
+
+.template-solstice .solstice-band a {
+  text-decoration: none;
+}
+
+.template-solstice .solstice-title {
+  min-width: 0;
+}
+
+.template-solstice .solstice-name {
+  font-family: var(--font-display);
+  font-size: calc(2.75rem * var(--name-font-scale, 1));
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.template-solstice .solstice-role {
+  margin-block: 0.4rem 0;
+  font-size: var(--type-title);
+  color: var(--paper-text);
+}
+
+.template-solstice .solstice-band .contact-list {
+  flex: none;
+  gap: 0.1rem;
+  max-width: 45%;
+  text-align: end;
+}
+
+.template-solstice .solstice-body {
+  flex: 1;
+  padding-block: 2rem;
+  padding-inline: 2.75rem;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.template-solstice .solstice-body section + section {
+  margin-block-start: 1.75rem;
+}
+
+.template-solstice .section-label {
+  color: var(--paper-accent);
+  margin-block-end: 0.6rem;
+}
+
+.template-solstice .solstice-body .entry + .entry {
+  margin-block-start: 1.1rem;
+}
+
+.template-solstice .solstice-foot {
+  display: flex;
+  gap: 2rem;
+  margin-inline: 2.75rem;
+  padding-block: 1.25rem 2.5rem;
+  border-block-start: 2px solid var(--paper-accent);
+}
+
+.template-solstice .solstice-foot section {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.template-solstice .solstice-foot .solstice-education {
+  flex-grow: 1.2;
+}
+
+.template-solstice .solstice-foot .solstice-skills {
+  flex-grow: 2.2;
+}
+
+.template-solstice .solstice-foot .entry-topline {
+  display: block;
+}
+
+.template-solstice .solstice-foot .entry-date {
+  display: block;
+}
+
+.template-solstice .solstice-foot .entry + .entry {
+  margin-block-start: 0.6rem;
+}
+
+.template-solstice .solstice-skills .tag-list {
+  display: block;
+  columns: 2;
+  column-gap: 1.25rem;
+}
+
+.template-solstice .solstice-skills li {
+  break-inside: avoid;
+}

@@ -3,7 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { resumeJsonSchema, templateNames, pageSizes, supportedLanguages, skillLevels } from "./schema.js";
+import { resumeJsonSchema, templateNames, resolveTemplateName, pageSizes, supportedLanguages, skillLevels } from "./schema.js";
 import { sampleResume } from "./sample-data.js";
 import { validateResumeDetailed, sanitizeResumeState } from "./validation.js";
 
@@ -45,7 +45,7 @@ server.prompt(
   },
   ({ career_info, language, template }) => {
     const lang = language || "en";
-    const tmpl = template && (templateNames as readonly string[]).includes(template) ? template : "alpine";
+    const tmpl = template && (templateNames as readonly string[]).includes(resolveTemplateName(template)) ? resolveTemplateName(template) : "alpine";
 
     return {
       messages: [
@@ -265,7 +265,7 @@ server.tool(
     const rawState = {
       uiLang: args.uiLang || "en",
       cvLang: args.cvLang || "en",
-      template: args.template || "alpine",
+      template: args.template ? resolveTemplateName(args.template) : "alpine",
       pageSize: args.pageSize || "a4",
       theme: args.theme || "light",
       showSkills: args.showSkills ?? true,

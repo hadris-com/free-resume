@@ -1,0 +1,104 @@
+/* Kernel Systems: compact, with skills first and an entry's role, company and date on one line. */
+.template-kernel {
+  --paper-accent: #1f4b99;
+  --type-title: 0.875rem;
+  --type-body: 0.8125rem;
+  --type-meta: 0.75rem;
+}
+
+.template-kernel .resume-page {
+  padding-block: 2.75rem;
+  padding-inline: 2.5rem;
+  line-height: 1.4;
+}
+
+.template-kernel .kernel-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-block-end: 0.85rem;
+  margin-block-end: 1.4rem;
+  border-block-end: 2px solid var(--paper-text);
+}
+
+.template-kernel .kernel-name {
+  font-size: calc(2rem * var(--name-font-scale, 1));
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.template-kernel .kernel-role {
+  margin-block: 0.2rem 0;
+  font-size: var(--type-title);
+  color: var(--paper-accent);
+  font-weight: 600;
+}
+
+.template-kernel .kernel-head .contact-list {
+  flex: none;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.1rem 1.5rem;
+  max-width: 60%;
+}
+
+.template-kernel .resume-page > section + section,
+.template-kernel .resume-page > section + .kernel-facts,
+.template-kernel .kernel-facts + section {
+  margin-block-start: 1.4rem;
+}
+
+.template-kernel .section-label {
+  margin-block-end: 0.35rem;
+  color: var(--paper-accent);
+}
+
+.template-kernel .kernel-facts {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 2rem;
+}
+
+.template-kernel .tag-list {
+  display: block;
+}
+
+.template-kernel .tag-list li {
+  display: inline;
+}
+
+.template-kernel .tag-list li:not(:last-child)::after {
+  content: ", ";
+}
+
+.template-kernel .entry {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.6rem;
+  align-items: baseline;
+}
+
+.template-kernel .entry + .entry {
+  margin-block-start: 0.8rem;
+}
+
+.template-kernel .entry-topline {
+  display: contents;
+}
+
+/* A long role pushes the company and date onto the next line instead of squeezing them. */
+.template-kernel .entry-org {
+  order: 1;
+}
+
+.template-kernel .entry-date {
+  order: 2;
+  margin-inline-start: auto;
+}
+
+.template-kernel .entry ul {
+  order: 3;
+  flex: 0 0 100%;
+}

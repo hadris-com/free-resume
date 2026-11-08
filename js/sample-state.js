@@ -53,6 +53,16 @@ export function createSampleStateBuilders({ getState, sanitizeResumeState }) {
           isCollapsed: true,
           bullets:
             "Redesigned checkout and account flows, improving conversion and repeat purchases.\nCollaborated with engineers to implement a reusable UI kit across web surfaces."
+        },
+        {
+          role: "Visual Designer",
+          company: "Brightside Agency",
+          location: "Berlin, Germany",
+          start: "Sep 2014",
+          end: "May 2016",
+          isCollapsed: true,
+          bullets:
+            "Delivered brand and digital design systems for early-stage technology clients.\nProduced high-fidelity web and marketing assets with clear design rationale."
         }
       ],
       education: [

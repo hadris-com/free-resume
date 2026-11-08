@@ -5,15 +5,23 @@ export const templateNames = [
   "alpine",
   "aurora",
   "atelier",
-  "noir",
   "fjord",
   "solstice",
   "bastion",
-  "slate",
   "kernel",
   "berlin",
 ] as const;
 export type TemplateName = (typeof templateNames)[number];
+
+// Retired templates and the one they now open as. Older files can still name them.
+export const retiredTemplates: Readonly<Record<string, TemplateName>> = {
+  noir: "berlin",
+  slate: "berlin",
+};
+
+export function resolveTemplateName(name: string): string {
+  return Object.prototype.hasOwnProperty.call(retiredTemplates, name) ? retiredTemplates[name] : name;
+}
 
 export const pageSizes = ["a4", "letter"] as const;
 export type PageSize = (typeof pageSizes)[number];

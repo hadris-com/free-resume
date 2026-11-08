@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Free Resume</title>
-    <meta name="description" content="Free multilingual resume builder. 10 templates, 3 languages, PDF export. 100% free, no sign-up, fully private." />
+    <meta name="description" content="Free multilingual resume builder. 8 templates, 3 languages, PDF export. 100% free, no sign-up, fully private." />
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';"
@@ -13,14 +13,14 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Free Resume" />
-    <meta property="og:description" content="Free multilingual resume builder. 10 templates, 3 languages, PDF export. 100% free and private." />
+    <meta property="og:description" content="Free multilingual resume builder. 8 templates, 3 languages, PDF export. 100% free and private." />
     <meta property="og:image" content="https://hadris-com.github.io/free-resume/og-image.png" />
     <meta property="og:url" content="https://hadris-com.github.io/free-resume/" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Free Resume" />
-    <meta name="twitter:description" content="Free multilingual resume builder. 10 templates, 3 languages, PDF export. 100% free and private." />
+    <meta name="twitter:description" content="Free multilingual resume builder. 8 templates, 3 languages, PDF export. 100% free and private." />
     <meta name="twitter:image" content="https://hadris-com.github.io/free-resume/og-image.png" />
 
     <link rel="icon" type="image/svg+xml" href="./assets/logo/favicon.svg" />
@@ -35,8 +35,11 @@
     <link rel="stylesheet" href="./css/templates/aurora.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/templates/atelier.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/templates/alpine.css?v=20260307-1" />
+    <link rel="stylesheet" href="./css/templates/bastion.css" />
+    <link rel="stylesheet" href="./css/templates/fjord.css" />
+    <link rel="stylesheet" href="./css/templates/solstice.css" />
+    <link rel="stylesheet" href="./css/templates/kernel.css" />
     <link rel="stylesheet" href="./css/paper-fit.css?v=20261106-5" />
-    <link rel="stylesheet" href="./css/templates/variants.css?v=20260307-1" />
     <link rel="stylesheet" href="./css/depth.css?v=20261106-1" />
     <link rel="stylesheet" href="./css/gallery.css?v=20261106-1" />
     <link rel="stylesheet" href="./css/print.css?v=20260307-2" />
@@ -132,11 +135,7 @@
                   </button>
                   <button type="button" class="template-option" role="option" tabindex="-1" data-action="select-template" data-value="atelier" aria-selected="false">
                     <span class="template-option-thumb"><img src="./assets/templates/atelier.webp" alt="" width="320" height="453" loading="lazy" decoding="async" /></span>
-                    <span class="template-option-name" data-i18n="templates.atelier">Atelier Grid</span>
-                  </button>
-                  <button type="button" class="template-option" role="option" tabindex="-1" data-action="select-template" data-value="noir" aria-selected="false">
-                    <span class="template-option-thumb"><img src="./assets/templates/noir.webp" alt="" width="320" height="453" loading="lazy" decoding="async" /></span>
-                    <span class="template-option-name" data-i18n="templates.noir">Noir Minimal</span>
+                    <span class="template-option-name" data-i18n="templates.atelier">Atelier Editorial</span>
                   </button>
                   <button type="button" class="template-option" role="option" tabindex="-1" data-action="select-template" data-value="fjord" aria-selected="false">
                     <span class="template-option-thumb"><img src="./assets/templates/fjord.webp" alt="" width="320" height="453" loading="lazy" decoding="async" /></span>
@@ -150,10 +149,6 @@
                     <span class="template-option-thumb"><img src="./assets/templates/bastion.webp" alt="" width="320" height="453" loading="lazy" decoding="async" /></span>
                     <span class="template-option-name" data-i18n="templates.bastion">Bastion Ledger</span>
                   </button>
-                  <button type="button" class="template-option" role="option" tabindex="-1" data-action="select-template" data-value="slate" aria-selected="false">
-                    <span class="template-option-thumb"><img src="./assets/templates/slate.webp" alt="" width="320" height="453" loading="lazy" decoding="async" /></span>
-                    <span class="template-option-name" data-i18n="templates.slate">Slate Mono</span>
-                  </button>
                   <button type="button" class="template-option" role="option" tabindex="-1" data-action="select-template" data-value="kernel" aria-selected="false">
                     <span class="template-option-thumb"><img src="./assets/templates/kernel.webp" alt="" width="320" height="453" loading="lazy" decoding="async" /></span>
                     <span class="template-option-name" data-i18n="templates.kernel">Kernel Systems</span>
@@ -166,12 +161,10 @@
                 <select id="template-select" class="sr-only" aria-hidden="true" tabindex="-1">
                   <option value="alpine" data-i18n="templates.alpine">Alpine Classic</option>
                   <option value="aurora" data-i18n="templates.aurora">Aurora Timeline</option>
-                  <option value="atelier" data-i18n="templates.atelier">Atelier Grid</option>
-                  <option value="noir" data-i18n="templates.noir">Noir Minimal</option>
+                  <option value="atelier" data-i18n="templates.atelier">Atelier Editorial</option>
                   <option value="fjord" data-i18n="templates.fjord">Fjord Split</option>
                   <option value="solstice" data-i18n="templates.solstice">Solstice Banner</option>
                   <option value="bastion" data-i18n="templates.bastion">Bastion Ledger</option>
-                  <option value="slate" data-i18n="templates.slate">Slate Mono</option>
                   <option value="kernel" data-i18n="templates.kernel">Kernel Systems</option>
                   <option value="berlin" data-i18n="templates.berlin">Berlin Classic</option>
                 </select>
