@@ -1,0 +1,12 @@
+{
+  "name": "free-resume-cross-browser-tests",
+  "private": true,
+  "description": "Runs the app in WebKit (Safari's engine) and Firefox through Playwright.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test *.test.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.65.0"
+  }
+}

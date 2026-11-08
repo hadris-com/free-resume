@@ -50,6 +50,12 @@ node --test tests/*.test.mjs
 
 They check the editor, the template gallery and saved drafts, and that the preview always has as many sheets as the exported PDF has pages, including resumes that end right at a page break. If Chrome isn't found, set `CHROME_PATH` to its binary. The **Test** workflow runs them on every pull request, along with checks that `chrome-extension/` is in sync and that the MCP server builds.
 
+`tests/cross-browser/` also runs the preview in WebKit (Safari's engine) and Firefox through Playwright. It has its own dependencies:
+
+```bash
+cd tests/cross-browser && npm ci && npx playwright install webkit firefox && npm test
+```
+
 ## 🌐 Deploy with GitHub Pages
 
 1. Push this repository to GitHub.

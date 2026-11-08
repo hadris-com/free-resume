@@ -32,6 +32,33 @@ jobs:
       - name: Run tests
         run: node --test tests/*.test.mjs
 
+  cross-browser:
+    name: WebKit and Firefox
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: tests/cross-browser
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tests/cross-browser/package-lock.json
+
+      - name: Install Playwright
+        run: npm ci
+
+      - name: Install WebKit and Firefox
+        run: npx playwright install --with-deps webkit firefox
+
+      - name: Run tests
+        run: npm test
+
   extension:
     name: Extension assets in sync
     runs-on: ubuntu-latest
