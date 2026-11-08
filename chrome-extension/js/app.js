@@ -153,13 +153,14 @@ function saveDraftToLocalStorage() {
 
 // Rebuild preview DOM from current state and persist draft after every render.
 function renderPreview() {
-  const { widthPx, heightPx } = getPageMetrics(state.pageSize);
+  const { widthPx, heightPx, fillSlackPx = 0 } = getPageMetrics(state.pageSize);
   const previewScrollTop = refs.previewPanel.scrollTop;
 
   refs.resumePreview.className = `resume-preview ${getTemplateClasses(state.template)}`;
   refs.resumePreview.innerHTML = renderTemplate(state.template);
   refs.resumePreview.style.setProperty("--page-width", `${widthPx}px`);
   refs.resumePreview.style.setProperty("--page-height", `${heightPx}px`);
+  refs.resumePreview.style.setProperty("--flow-height", `${heightPx - fillSlackPx}px`);
   refs.resumePreview.style.setProperty("--name-font-scale", state.nameFontSize / 100);
   paginatePreview();
   // Rebuilding the sheets collapses the panel for a moment, which would drop its scroll position.

@@ -83,8 +83,8 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
   // Marks the entries that print.css lets break between bullets. Measured whole, before any of
   // them breaks, in the page's own pixels so the preview's zoom doesn't change the answer.
   function markSplittableEntries(page, flow) {
-    const { heightPx } = getActivePageMetrics();
-    const scale = flow.getBoundingClientRect().height / heightPx || 1;
+    const { widthPx, heightPx } = getActivePageMetrics();
+    const scale = flow.getBoundingClientRect().width / widthPx || 1;
     const entries = [...page.querySelectorAll(".entry")];
     entries.forEach((entry) => entry.classList.remove("entry-splittable"));
     const tall = entries.filter((entry) => {
@@ -111,12 +111,12 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
    * each gap pushes the rest of the content down.
    */
   function insertSheetGaps(page, flow) {
-    const { widthPx, heightPx } = getActivePageMetrics();
+    const { widthPx } = getActivePageMetrics();
     const elements = [...page.querySelectorAll("*")];
 
     for (let sheet = 1; sheet < page.getClientRects().length && sheet < 50; sheet++) {
       const origin = flow.getBoundingClientRect();
-      const scale = origin.height / heightPx || 1;
+      const scale = origin.width / widthPx || 1;
       const columnWidth = widthPx * scale;
       const sheetOf = (rect) => Math.floor((rect.left - origin.left + 1) / columnWidth);
       // Every piece of content on this sheet, to tell what sits above what.
