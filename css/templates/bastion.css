@@ -88,3 +88,29 @@
   flex-wrap: wrap;
   column-gap: 1rem;
 }
+
+/*
+ * Firefox can't break a grid across pages, so it would leave a long entry's title at the foot of
+ * one page and move all its bullets to the next. There a long entry is laid out as blocks
+ * instead, with its date placed in the same margin. `-moz-appearance` is only supported by
+ * Firefox.
+ */
+@supports (-moz-appearance: none) {
+  .template-bastion .entry.entry-splittable {
+    display: block;
+    position: relative;
+  }
+
+  .template-bastion .entry-splittable .entry-date {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: var(--bastion-margin);
+  }
+
+  .template-bastion .entry-splittable .entry-title,
+  .template-bastion .entry-splittable .entry-org,
+  .template-bastion .entry-splittable ul {
+    margin-inline-start: calc(var(--bastion-margin) + var(--bastion-gap));
+  }
+}

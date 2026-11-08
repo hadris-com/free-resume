@@ -102,3 +102,32 @@
   order: 3;
   flex: 0 0 100%;
 }
+
+/*
+ * WebKit can't break a flex box across pages, so it would move a long entry whole. There a long
+ * entry is laid out as blocks instead, to the same effect: the date floats to the end of the
+ * title's line, and the bullets start below it.
+ */
+@supports (font: -apple-system-body) {
+  .template-kernel .entry.entry-splittable {
+    display: block;
+  }
+
+  .template-kernel .entry-splittable .entry-title,
+  .template-kernel .entry-splittable .entry-org {
+    display: inline;
+  }
+
+  .template-kernel .entry-splittable .entry-org {
+    margin-inline-start: 0.6rem;
+  }
+
+  .template-kernel .entry-splittable .entry-date {
+    float: right;
+    margin-inline-start: 0.6rem;
+  }
+
+  .template-kernel .entry-splittable ul {
+    clear: both;
+  }
+}

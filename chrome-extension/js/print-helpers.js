@@ -77,6 +77,32 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     return total;
   }
 
+  // An entry with bullets taller than this share of a page may break between its bullets.
+  const SPLITTABLE_ENTRY_SHARE = 0.25;
+
+  // Marks the entries that print.css lets break between bullets. Measured whole, before any of
+  // them breaks, in the page's own pixels so the preview's zoom doesn't change the answer.
+  function markSplittableEntries(page, flow) {
+    const { heightPx } = getActivePageMetrics();
+    const scale = flow.getBoundingClientRect().height / heightPx || 1;
+    const entries = [...page.querySelectorAll(".entry")];
+    entries.forEach((entry) => entry.classList.remove("entry-splittable"));
+    const tall = entries.filter((entry) => {
+      if (entry.querySelectorAll(":scope > ul > li").length < 2) {
+        return false;
+      }
+      const height = [...entry.getClientRects()].reduce((sum, rect) => sum + rect.height, 0) / scale;
+      return height > heightPx * SPLITTABLE_ENTRY_SHARE;
+    });
+    tall.forEach((entry) => entry.classList.add("entry-splittable"));
+  }
+
+  // Where a gap must go so a sheet opens with `element`: before the whole entry when that
+  // element is the start of a splittable entry's bullets, since the title keeps its first bullet.
+  function sheetOpener(element) {
+    return element.matches(".entry-splittable > ul, .entry-splittable > ul > li:first-child") ? element.closest(".entry") : element;
+  }
+
   /*
    * WebKit (Safari, iOS) doesn't repeat a box's padding on the next page, so a later sheet would
    * start at its very top edge. Before each element that opens a later sheet, add a gap as tall as
@@ -131,7 +157,8 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
         );
       });
       // The outermost element that opens the sheet in each column, not its first descendants.
-      for (const element of opening.filter((element) => !opening.some((other) => other !== element && other.contains(element)))) {
+      const openers = [...new Set(opening.map(sheetOpener))];
+      for (const element of openers.filter((element) => !openers.some((other) => other !== element && other.contains(element)))) {
         const gap = document.createElement("div");
         gap.className = "sheet-gap";
         gap.setAttribute("aria-hidden", "true");
@@ -163,6 +190,7 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     previewElement.replaceChildren(firstSheet);
 
     page.querySelectorAll(".sheet-gap").forEach((gap) => gap.remove());
+    markSplittableEntries(page, firstSheet.firstElementChild);
     if (printsAtWebKitScale) {
       insertSheetGaps(page, firstSheet.firstElementChild);
     }
