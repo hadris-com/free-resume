@@ -36,7 +36,9 @@ describe("pagination", { timeout: 600000 }, () => {
   };
 
   test("the sample resume fits on one page", async () => {
-    await page.click("document.getElementById('sample-btn')");
+    // The Sample button is hidden on a blank resume, so the sample is loaded as a saved draft.
+    await loadSampleDraft(page);
+    assert.equal(await page.evaluate("document.querySelector('[data-profile=name]').value"), "Lena Hoffmann");
     for (const template of templates) {
       for (const pageSize of pageSizes) {
         await choose(template, pageSize);
