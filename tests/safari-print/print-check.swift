@@ -51,9 +51,16 @@ final class Checker: NSObject, WKNavigationDelegate {
   var failures: [String] = []
 
   func start() {
+    // Uncaught errors in the page, reported with the case they broke.
+    web.configuration.userContentController.addUserScript(WKUserScript(source: """
+      window.__errors = [];
+      addEventListener("error", (event) => window.__errors.push(String(event.message)));
+      addEventListener("unhandledrejection", (event) => window.__errors.push(String(event.reason)));
+    """, injectionTime: .atDocumentStart, forMainFrameOnly: true))
     window.contentView = web
     web.navigationDelegate = self
     load {
+      Swift.print("macOS", ProcessInfo.processInfo.operatingSystemVersionString)
       self.js("return [...document.querySelectorAll('#template-select-menu [role=option]')].map((o) => o.dataset.value);") { value in
         let templates = value as? [String] ?? []
         if templates.isEmpty { self.fail("no templates found in the gallery") }
@@ -111,6 +118,9 @@ final class Checker: NSObject, WKNavigationDelegate {
 
   func check(_ current: Case) {
     // The words whose center falls inside each preview sheet.
+    js("return window.__errors.join(' | ');") { errors in
+      if let errors = errors as? String, !errors.isEmpty { self.report(current, "errors in the page: \(errors)") }
+    }
     js("""
       await document.fonts.ready;
       await new Promise((done) => setTimeout(done, 500));
@@ -132,13 +142,23 @@ final class Checker: NSObject, WKNavigationDelegate {
       });
     """) { value in
       let sheets = value as? [String] ?? []
-      self.printPDF(current) { pdf in
-        self.compare(current, sheets: sheets, pdf: pdf)
-        self.next()
+      // How the preview laid the resume out, shown when the sheets and pages disagree.
+      self.js("""
+        const flow = document.querySelector("#resume-preview .paper-sheet-flow");
+        const page = flow?.querySelector(".resume-page");
+        const style = flow && getComputedStyle(flow);
+        return `fragments ${page?.getClientRects().length}, page ${page?.offsetHeight}px tall, flow ${style?.height} in ${style?.columnCount} columns, WebKit sizes ${CSS.supports("font", "-apple-system-body")}`;
+      """) { layout in
+        self.layout = layout as? String ?? ""
+        self.printPDF(current) { pdf in
+          self.compare(current, sheets: sheets, pdf: pdf)
+          self.next()
+        }
       }
     }
   }
 
+  var layout = ""
   var printed: ((PDFDocument?) -> Void)?
 
   func printPDF(_ current: Case, then: @escaping (PDFDocument?) -> Void) {
@@ -173,7 +193,7 @@ final class Checker: NSObject, WKNavigationDelegate {
     guard let pdf else { return report(current, "the PDF wasn't written") }
     let pages = (0..<pdf.pageCount).map { pdf.page(at: $0)?.string ?? "" }
     guard sheets.count == pages.count else {
-      return report(current, "\(sheets.count) preview sheets, \(pages.count) PDF pages")
+      return report(current, "\(sheets.count) preview sheets, \(pages.count) PDF pages (\(layout))")
     }
     for (index, (sheet, page)) in zip(sheets, pages).enumerated() {
       let off = difference(letters(sheet), letters(page))
