@@ -62,7 +62,7 @@
   min-height: var(--fill-height, auto) !important;
 }
 
-/* WebKit only: the top margin of a later sheet, which also breaks to it. See insertSheetGaps. */
+/* A break the layout forces: in WebKit, also the top margin of a later sheet. See insertSheetGaps and keepTitlesWithFirstBullet. */
 .sheet-gap {
   -webkit-column-break-before: always;
   break-before: column;
