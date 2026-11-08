@@ -44,13 +44,15 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
   // Each printed fragment repeats the page's padding, so the height that fills the last sheet
   // counts that padding once per sheet, and the box's own height already includes it once.
   function fillSheets(page, pageCount) {
-    const { heightPx } = getActivePageMetrics();
+    // WebKit's printed page is a fraction of a pixel off the sheet, so a full-height fill there
+    // keeps a few pixels short of it rather than spill onto a blank page.
+    const { heightPx, fillSlackPx = 0 } = getActivePageMetrics();
     const style = window.getComputedStyle(page);
     const paddingBlock = (Number.parseFloat(style.paddingTop) || 0) + (Number.parseFloat(style.paddingBottom) || 0);
     page.dataset.printPageCount = String(pageCount);
     // A variable rather than an inline min-height, so print.css can drop it where print pages
     // aren't the size the preview assumes.
-    page.style.setProperty("--fill-height", `${pageCount * heightPx - (pageCount - 1) * paddingBlock}px`);
+    page.style.setProperty("--fill-height", `${pageCount * heightPx - (pageCount - 1) * paddingBlock - fillSlackPx}px`);
 
     // Content pushed to a later sheet can make any fixed height spill onto one more sheet, which
     // would print as a blank page. The last sheet then keeps its natural height instead.

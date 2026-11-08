@@ -109,16 +109,6 @@
     position: relative;
   }
 
-  /* Safari prints 1 CSS pixel as 0.8pt where the preview assumes 0.75pt, so a page holds
-     1052.5px instead of 1123px and the filled height would spill onto a blank extra page.
-     93% keeps it just inside, so backgrounds still reach within a few points of the bottom.
-     `font: -apple-system-body` is only supported by WebKit, the engine of Safari and iOS browsers. */
-  @supports (font: -apple-system-body) {
-    .resume-page[data-print-page-count] {
-      min-height: calc(var(--fill-height) * 0.93) !important;
-    }
-  }
-
   /* ---------- Hide app chrome ---------- */
   .topbar,
   .editor-panel,
