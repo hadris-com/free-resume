@@ -103,42 +103,6 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     return element.matches(".entry-splittable > ul, .entry-splittable > ul > li:first-child") ? element.closest(".entry") : element;
   }
 
-  // The element a break before `entry` must go before: its section's heading, when the entry is
-  // the first thing under it, since a heading stays with what follows it.
-  function breakTargetBefore(entry, page) {
-    let target = entry;
-    for (;;) {
-      const previous = target.previousElementSibling;
-      if (previous?.matches(".section-label")) {
-        target = previous;
-      } else if (!previous && target.parentElement !== page && target.parentElement.previousElementSibling?.matches(".section-label")) {
-        target = target.parentElement.previousElementSibling;
-      } else {
-        return target;
-      }
-    }
-  }
-
-  // Firefox doesn't keep a title with the bullet after it, so when a long entry's title ends a
-  // sheet without its first bullet, a break before the entry moves the title to the next one.
-  function keepTitlesWithFirstBullet(page, flow) {
-    for (const entry of page.querySelectorAll(".entry-splittable")) {
-      const box = flow.getBoundingClientRect();
-      const sheetOf = (element) => {
-        const rect = element.getClientRects()[0];
-        return rect ? Math.floor((rect.left - box.left + 1) / box.width) : -1;
-      };
-      const title = entry.querySelector(".entry-title");
-      const firstBullet = entry.querySelector(":scope > ul > li");
-      if (title && firstBullet && sheetOf(title) >= 0 && sheetOf(title) < sheetOf(firstBullet)) {
-        const gap = document.createElement("div");
-        gap.className = "sheet-gap";
-        gap.setAttribute("aria-hidden", "true");
-        breakTargetBefore(entry, page).before(gap);
-      }
-    }
-  }
-
   /*
    * WebKit (Safari, iOS) doesn't repeat a box's padding on the next page, so a later sheet would
    * start at its very top edge. Before each element that opens a later sheet, add a gap as tall as
@@ -229,8 +193,6 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     markSplittableEntries(page, firstSheet.firstElementChild);
     if (printsAtWebKitScale) {
       insertSheetGaps(page, firstSheet.firstElementChild);
-    } else {
-      keepTitlesWithFirstBullet(page, firstSheet.firstElementChild);
     }
 
     const pageCount = Math.max(1, page.getClientRects().length);
