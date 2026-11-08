@@ -1,0 +1,72 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser:
+    name: Browser checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # ubuntu-latest ships Google Chrome, which the tests find on PATH.
+      - name: Run tests
+        run: node --test tests/*.test.mjs
+
+  extension:
+    name: Extension assets in sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync and compare
+        run: |
+          sh chrome-extension/sync-assets.sh
+          if [ -n "$(git status --porcelain chrome-extension)" ]; then
+            git status --short chrome-extension
+            echo "::error::chrome-extension/ is out of date. Run: sh chrome-extension/sync-assets.sh"
+            exit 1
+          fi
+
+  mcp:
+    name: MCP server builds
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mcp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mcp/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
