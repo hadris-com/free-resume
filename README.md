@@ -115,3 +115,62 @@ The `chrome-extension/` directory contains a Manifest V3 Chrome extension that i
 | **Page size** | A4 or Letter |
 | **Max skills** | Limit the number of skills imported (default 10; 0 = all) |
 | **Skills order** | *LinkedIn order* — preserves DOM order; *Top endorsed* — sorts by endorsement count |
+
+## 🤖 MCP server — AI assistants
+
+The `mcp/` directory contains a [Model Context Protocol](https://modelcontextprotocol.io) server. It lets an AI assistant such as Claude write your resume as a Free Resume JSON file, which you then open in the app with **Import** in the **⋯** menu, or **Import a JSON file** on a blank resume. The server runs on your computer and talks to the assistant over stdio. It sends nothing anywhere.
+
+### 📥 Installation
+
+It needs Node 22 or later.
+
+```bash
+cd mcp && npm ci && npm run build
+```
+
+This builds `mcp/dist/index.js`. Then connect it to your assistant, using the absolute path to that file:
+
+- **Claude Code:**
+
+  ```bash
+  claude mcp add free-resume -- node /absolute/path/to/free-resume/mcp/dist/index.js
+  ```
+
+- **Claude Desktop, or any other MCP client:** add it to the client's MCP configuration (for Claude Desktop, *Settings → Developer → Edit Config*):
+
+  ```json
+  {
+    "mcpServers": {
+      "free-resume": {
+        "command": "node",
+        "args": ["/absolute/path/to/free-resume/mcp/dist/index.js"]
+      }
+    }
+  }
+  ```
+
+### ▶️ Usage
+
+1. Give the assistant your background (a LinkedIn export, an old resume, or a few notes) and ask it to make a Free Resume file.
+2. The assistant builds the file with `create-resume-file`, or writes one following the `generate-resume` prompt and checks it with `validate-resume`.
+3. Save its answer as a `.json` file and open it in the app with **Import** in the **⋯** menu.
+
+### 🧰 What it offers
+
+| Kind | Name | What it does |
+|---|---|---|
+| Tool | `create-resume-file` | Takes the resume's fields and returns a complete file ready to import. If something breaks a limit the app enforces, like a summary over 10,000 characters, it says what to shorten instead. |
+| Tool | `validate-resume` | Checks a resume JSON, with or without the export wrapper, and lists every problem. |
+| Prompt | `generate-resume` | Instructions for writing a file from career information, in a chosen language (`en`, `es`, `de`) and template. |
+| Resource | `free-resume://schema` | The JSON Schema of the file format. |
+| Resource | `free-resume://example` | A complete example file. |
+
+It knows the same 8 templates as the app. Files that name the retired Noir or Slate templates still validate and open as Berlin.
+
+### 🧪 Tests
+
+```bash
+cd mcp && npm test
+```
+
+The tests build the server, check its validation against the app's own (so the server never accepts a file the app rejects), and start it over stdio to call each tool the way an assistant does. CI runs them on every pull request.
