@@ -48,12 +48,14 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     const style = window.getComputedStyle(page);
     const paddingBlock = (Number.parseFloat(style.paddingTop) || 0) + (Number.parseFloat(style.paddingBottom) || 0);
     page.dataset.printPageCount = String(pageCount);
-    page.style.setProperty("min-height", `${pageCount * heightPx - (pageCount - 1) * paddingBlock}px`, "important");
+    // A variable rather than an inline min-height, so print.css can drop it where print pages
+    // aren't the size the preview assumes.
+    page.style.setProperty("--fill-height", `${pageCount * heightPx - (pageCount - 1) * paddingBlock}px`);
 
     // Content pushed to a later sheet can make any fixed height spill onto one more sheet, which
     // would print as a blank page. The last sheet then keeps its natural height instead.
     if (page.getClientRects().length > pageCount) {
-      page.style.setProperty("min-height", "auto", "important");
+      page.style.setProperty("--fill-height", "auto");
     }
   }
 
@@ -71,7 +73,7 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
     }
 
     syncPrintPageSize();
-    page.style.removeProperty("min-height");
+    page.style.removeProperty("--fill-height");
     delete page.dataset.printPageCount;
 
     const firstSheet = createSheet(0);

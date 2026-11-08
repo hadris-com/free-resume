@@ -31,6 +31,11 @@
   break-before: avoid;
 }
 
+/* The resume fills whole sheets, so backgrounds reach the bottom of its last page. */
+.resume-page[data-print-page-count] {
+  min-height: var(--fill-height, auto) !important;
+}
+
 /* A one-page resume stretches its inner layout to the bottom of the sheet. */
 :is(.template-aurora, .template-berlin, .template-alpine) .resume-page[data-print-page-count="1"] {
   display: flex !important;
@@ -102,6 +107,16 @@
   /* Aurora's timeline entries are positioned for their dots, so the headings beside them must be too. */
   .template-aurora .aurora-main .section-label {
     position: relative;
+  }
+
+  /* Safari prints 1 CSS pixel as 0.8pt where the preview assumes 0.75pt, so a page holds
+     1052.5px instead of 1123px and the filled height would spill onto a blank extra page.
+     93% keeps it just inside, so backgrounds still reach within a few points of the bottom.
+     `font: -apple-system-body` is only supported by WebKit, the engine of Safari and iOS browsers. */
+  @supports (font: -apple-system-body) {
+    .resume-page[data-print-page-count] {
+      min-height: calc(var(--fill-height) * 0.93) !important;
+    }
   }
 
   /* ---------- Hide app chrome ---------- */
