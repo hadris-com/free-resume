@@ -7,6 +7,8 @@ import { firefox, webkit } from "playwright";
 import { startServer } from "../helpers/server.mjs";
 
 const pageSizes = ["a4", "letter"];
+// ENGINES=webkit or ENGINES=firefox runs one engine; CI runs WebKit on macOS, where it prints like Safari.
+const engines = (process.env.ENGINES || "webkit,firefox").split(",");
 
 // Fills the saved draft with the sample resume plus extra jobs, then reloads the app on it.
 async function loadSample(page, extraJobs = 0) {
@@ -71,7 +73,7 @@ function sheetCoverage() {
 for (const [name, engine] of [
   ["webkit", webkit],
   ["firefox", firefox]
-]) {
+].filter(([name]) => engines.includes(name))) {
   describe(name, { timeout: 300000 }, () => {
     let server;
     let browser;

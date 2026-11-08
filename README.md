@@ -56,6 +56,8 @@ They check the editor, the template gallery and saved drafts, and that the previ
 cd tests/cross-browser && npm ci && npx playwright install webkit firefox && npm test
 ```
 
+Set `ENGINES=webkit` or `ENGINES=firefox` to run one engine. Run the WebKit checks on macOS: WebKit on Linux is a different port and doesn't print the way Safari does.
+
 ## 🌐 Deploy with GitHub Pages
 
 1. Push this repository to GitHub.
