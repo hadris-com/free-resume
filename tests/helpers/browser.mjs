@@ -19,7 +19,18 @@ function findChrome() {
   throw new Error("Chrome not found. Set CHROME_PATH to a Chrome or Chromium binary.");
 }
 
-export async function launchBrowser() {
+// A cold CI runner starting two Chromes at once can miss the wait, so a failed start is retried.
+export async function launchBrowser(attempts = 2) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await startChrome();
+    } catch (error) {
+      if (attempt >= attempts) throw error;
+    }
+  }
+}
+
+async function startChrome() {
   const profile = await mkdtemp(join(tmpdir(), "free-resume-test-"));
   const args = [
     "--headless=new",
@@ -34,16 +45,26 @@ export async function launchBrowser() {
   // Linux CI runners can't create Chrome's sandbox.
   if (process.platform === "linux") args.unshift("--no-sandbox");
   const chrome = spawn(findChrome(), args, { stdio: "ignore" });
+  let exited = false;
+  chrome.once("exit", () => (exited = true));
 
   // With port 0, Chrome writes the port it picked to this file, so parallel runs never collide.
   let port;
-  for (let i = 0; i < 100 && !port; i++) {
+  for (let i = 0; i < 300 && !port && !exited; i++) {
     await sleep(100);
     try {
       port = (await readFile(join(profile, "DevToolsActivePort"), "utf8")).split("\n")[0];
     } catch {}
   }
-  if (!port) throw new Error("Chrome did not start");
+  if (!port) {
+    // A Chrome left running would keep the test process alive until the job times out.
+    if (!exited) {
+      chrome.kill("SIGKILL");
+      await new Promise((done) => chrome.once("exit", done));
+    }
+    await rm(profile, { recursive: true, force: true });
+    throw new Error("Chrome did not start");
+  }
 
   let target;
   for (let i = 0; i < 50 && !target; i++) {
