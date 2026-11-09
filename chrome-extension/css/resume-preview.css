@@ -127,6 +127,9 @@ body.theme-dark .view-btn.active {
     /* A little shorter than the sheet in WebKit: see webkitPageSizes in page-layout.js. */
     height: var(--flow-height, var(--page-height, 1123px));
     column-count: 1;
+    /* Safari before 27 only makes a box of columns when the count or width is set to more than
+       the default, and with `column-count: 1` alone it laid the resume out as one long sheet. */
+    column-width: var(--page-width, 794px);
     column-gap: 0;
     column-fill: auto;
     transform: scale(var(--paper-scale, 1)) translateX(calc(var(--sheet-index, 0) * var(--page-width, 794px) * -1));

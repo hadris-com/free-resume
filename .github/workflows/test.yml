@@ -84,6 +84,35 @@ jobs:
           path: ${{ runner.temp }}/screenshots
           if-no-files-found: ignore
 
+  # Prints every template to PDF through Safari's print path and compares each page with the
+  # preview sheet it was laid out on. Safari prints at its own scale, so only this catches a PDF
+  # that breaks where the preview doesn't.
+  safari-print:
+    name: Safari PDF matches the preview
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Print and compare
+        env:
+          PDF_DIR: ${{ runner.temp }}/safari-pdfs
+        run: node tests/safari-print/run.mjs
+
+      - name: Upload the PDFs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safari-pdfs
+          path: ${{ runner.temp }}/safari-pdfs
+          if-no-files-found: ignore
+
   extension:
     name: Extension assets in sync
     runs-on: ubuntu-latest

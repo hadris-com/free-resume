@@ -98,9 +98,14 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
   }
 
   // Where a gap must go so a sheet opens with `element`: before the whole entry when that
-  // element is the start of a splittable entry's bullets, since the title keeps its first bullet.
-  function sheetOpener(element) {
-    return element.matches(".entry-splittable > ul, .entry-splittable > ul > li:first-child") ? element.closest(".entry") : element;
+  // element is the start of a splittable entry's bullets, since the title keeps its first bullet,
+  // and never inside a grid or flex box, where the gap would take a cell and shift the others.
+  function sheetOpener(element, page) {
+    let opener = element.matches(".entry-splittable > ul, .entry-splittable > ul > li:first-child") ? element.closest(".entry") : element;
+    while (opener.parentElement && opener.parentElement !== page && /grid|flex/.test(window.getComputedStyle(opener.parentElement).display)) {
+      opener = opener.parentElement;
+    }
+    return opener;
   }
 
   /*
@@ -111,7 +116,7 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
    * each gap pushes the rest of the content down.
    */
   function insertSheetGaps(page, flow) {
-    const { widthPx } = getActivePageMetrics();
+    const { widthPx, heightPx } = getActivePageMetrics();
     const elements = [...page.querySelectorAll("*")];
 
     for (let sheet = 1; sheet < page.getClientRects().length && sheet < 50; sheet++) {
@@ -148,16 +153,21 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
         if (sheetOf(first) === sheet) {
           return atTopOfColumn(element, first);
         }
-        // ...or should stay whole but WebKit split it onto this sheet, as it does inside a grid.
+        // ...or WebKit split it onto this sheet when it should stay whole: one that avoids breaks,
+        // as WebKit splits those inside a grid, or a short grid or flex box, which Safari 26
+        // breaks without moving its content's top margin along.
+        if (!(rects.length > 1 && sheetOf(first) === sheet - 1 && sheetOf(rects[1]) === sheet)) {
+          return false;
+        }
+        const style = window.getComputedStyle(element);
+        const height = [...rects].reduce((sum, rect) => sum + rect.height, 0) / scale;
         return (
-          rects.length > 1 &&
-          sheetOf(first) === sheet - 1 &&
-          sheetOf(rects[1]) === sheet &&
-          /avoid/.test(window.getComputedStyle(element).breakInside || window.getComputedStyle(element).pageBreakInside)
+          /avoid/.test(style.breakInside || style.pageBreakInside) ||
+          (/grid|flex/.test(style.display) && !element.matches(".entry-splittable") && height < heightPx / 2)
         );
       });
       // The outermost element that opens the sheet in each column, not its first descendants.
-      const openers = [...new Set(opening.map(sheetOpener))];
+      const openers = [...new Set(opening.map((element) => sheetOpener(element, page)))];
       for (const element of openers.filter((element) => !openers.some((other) => other !== element && other.contains(element)))) {
         const gap = document.createElement("div");
         gap.className = "sheet-gap";
