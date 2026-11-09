@@ -116,7 +116,7 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
    * each gap pushes the rest of the content down.
    */
   function insertSheetGaps(page, flow) {
-    const { widthPx } = getActivePageMetrics();
+    const { widthPx, heightPx } = getActivePageMetrics();
     const elements = [...page.querySelectorAll("*")];
 
     for (let sheet = 1; sheet < page.getClientRects().length && sheet < 50; sheet++) {
@@ -153,12 +153,17 @@ export function createPrintHelpers({ getState, getResumePreviewElement }) {
         if (sheetOf(first) === sheet) {
           return atTopOfColumn(element, first);
         }
-        // ...or should stay whole but WebKit split it onto this sheet, as it does inside a grid.
+        // ...or WebKit split it onto this sheet when it should stay whole: one that avoids breaks,
+        // as WebKit splits those inside a grid, or a short grid or flex box, which Safari 26
+        // breaks without moving its content's top margin along.
+        if (!(rects.length > 1 && sheetOf(first) === sheet - 1 && sheetOf(rects[1]) === sheet)) {
+          return false;
+        }
+        const style = window.getComputedStyle(element);
+        const height = [...rects].reduce((sum, rect) => sum + rect.height, 0) / scale;
         return (
-          rects.length > 1 &&
-          sheetOf(first) === sheet - 1 &&
-          sheetOf(rects[1]) === sheet &&
-          /avoid/.test(window.getComputedStyle(element).breakInside || window.getComputedStyle(element).pageBreakInside)
+          /avoid/.test(style.breakInside || style.pageBreakInside) ||
+          (/grid|flex/.test(style.display) && !element.matches(".entry-splittable") && height < heightPx / 2)
         );
       });
       // The outermost element that opens the sheet in each column, not its first descendants.

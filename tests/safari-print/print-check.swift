@@ -29,9 +29,10 @@ struct Case {
 }
 
 // Letters of a text, counted. PDFKit reads ligatures (fi, fl, ff, tt) as other characters, so those
-// letters are left out, and Berlin draws its section labels several times over, so repeats go.
+// letters are left out, and Berlin draws its section labels several times over, so repeats go,
+// whether PDFKit reads them run together (macOS 27) or apart (macOS 26).
 func letters(_ text: String) -> [Character: Int] {
-  let deduped = text.replacingOccurrences(of: "([A-Z][A-Z ]{2,}?)\\1+", with: "$1", options: .regularExpression)
+  let deduped = text.replacingOccurrences(of: "([A-Z][A-Z ]{2,}?)(\\s*\\1)+", with: "$1", options: .regularExpression)
   var counts: [Character: Int] = [:]
   for c in deduped.precomposedStringWithCompatibilityMapping.lowercased() where (c.isLetter || c.isNumber) && !"filt".contains(c) {
     counts[c, default: 0] += 1
